@@ -4,7 +4,7 @@
             <div class="arrow-icon" @click="tobackdetail">
                 <Icon size="30" type="ios-arrow-back" />
             </div>
-             个人中心
+             我的身份
              <!-- <div class="p-switch" :class="{activeswitch:switchstate}" @click="changeswitch">
                  <span class="s-right" :style="{left:switchstate?'25px':'1px'}"></span>
              </div> -->
