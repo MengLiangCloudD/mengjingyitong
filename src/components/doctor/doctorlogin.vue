@@ -313,7 +313,7 @@ export default {
         let status=loginrequest(that,url,password,_doccode,phone,auth)
         that.spinShow=false
         if(status==1){
-            that.$router.push("/registeredlist");
+            that.$router.push("/Personalcenter");
         } else if (status == 2) {
             that.tipmodal=true
         }else if (status == 0) {

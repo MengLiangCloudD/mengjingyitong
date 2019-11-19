@@ -8,10 +8,13 @@
              <!-- <div class="p-switch" :class="{activeswitch:switchstate}" @click="changeswitch">
                  <span class="s-right" :style="{left:switchstate?'25px':'1px'}"></span>
              </div> -->
-              <div size="large" class="switchopen" :class="{'activeswitchopen':visitstatus==true}" @click="ischangestate()">
+             <div size="large" class="switchopen"  @click="ischangestate()">
+                 切换患者
+             </div>
+              <!-- <div size="large" class="switchopen" :class="{'activeswitchopen':visitstatus==true}" @click="ischangestate()">
                 {{visitstatus==false?"患者":"医生"}}
                 <div class="circle" :class="{'activecircle':visitstatus==true}"></div>
-            </div>
+            </div> -->
         </div>
          <div class="content">
               <div class="userssss"  style="padding-left: 5%; border-bottom:1px solid #ccc;">
@@ -116,7 +119,7 @@ import {hidemenu} from "../../../common/js/hide"
             changestate(){
             this.visitstatus=!this.visitstatus
             if(this.visitstatus==false){
-                // this.$router.push('/doctorlogin');
+                this.$router.push('/Myaccount');
             }
             },
             //弹出层
