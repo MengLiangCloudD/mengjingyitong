@@ -6,7 +6,7 @@
               <Icon size="30" type="ios-arrow-back" />
             </div>
             医生管理
-            <div style=" position: absolute;right: 5%;top:15px" @click="goaddDoctor">
+            <div style=" position: absolute;right: 5%;top:15px" @click="goaddDoctor(1)">
                 <svg t="1574489296024" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4002" width="24" height="24"><path d="M906.212134 565.732986 565.732986 565.732986 565.732986 906.212134C565.732986 926.013685 541.666486 959.972 511.97312 959.972 482.297674 959.972 458.213254 926.013685 458.213254 906.212134L458.213254 565.732986 117.734106 565.732986C97.950475 565.732986 63.97424 541.666486 63.97424 511.97312 63.97424 482.279754 97.950475 458.213254 117.734106 458.213254L458.213254 458.213254 458.213254 117.734106C458.213254 97.950475 482.297674 63.97424 511.97312 63.97424 541.666486 63.97424 565.732986 97.950475 565.732986 117.734106L565.732986 458.213254 906.212134 458.213254C925.995765 458.213254 959.972 482.279754 959.972 511.97312 959.972 541.666486 925.995765 565.732986 906.212134 565.732986Z" p-id="4003" fill="#ffffff"></path></svg>
             </div>
           </div>
@@ -20,7 +20,7 @@
                         <p><span>医生职称：</span><span>{{item.job}}</span></p>
                     </div>
                     <div class="operate">
-                        <Button type="primary" size="small" @click="goaddDoctor">修改</Button>
+                        <Button type="primary" size="small" @click="goaddDoctor(0)">修改</Button>
                         <Button type="error" size="small">删除</Button>
                     </div>
                 </div>
@@ -68,8 +68,8 @@
             tobackdetail(){
                 this.$router.push('/admin');
             },
-            goaddDoctor(){
-                this.$router.push('/addDoctor');
+            goaddDoctor(data){
+                this.$router.push(`/addDoctor?start=${data}`);
             }
         }
     }

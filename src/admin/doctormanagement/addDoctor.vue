@@ -5,7 +5,7 @@
             <div class="arrow-icon" @click="tobackdetail">
               <Icon size="30" type="ios-arrow-back" />
             </div>
-            添加医生
+            {{biao}}
           </div>
         </div>
         <div class="content">
@@ -23,8 +23,10 @@
                     <FormItem label="身份证：">
                         <Input v-model="formInline.id" placeholder="" style="width:200px"/>
                     </FormItem>
-                    <FormItem label="医生描述：">
-                        <Input v-model="formInline.msg" type="textarea"  placeholder="" style="width:200px"/>
+                    <FormItem label="科室：">
+                        <Select v-model="formInline.dep" style="width:200px">
+                            <Option v-for="item in cityList5" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        </Select>
                     </FormItem>
                     <FormItem label="性别：">
                         <Select v-model="formInline.sex" style="width:200px">
@@ -33,9 +35,12 @@
                         </Select>
                     </FormItem>
                     <FormItem label="权限：">
-                        <Select v-model="model18" filterable multiple allow-create @on-create="handleCreate2" style="width:200px">
+                        <Select v-model="formInline.model18" filterable multiple allow-create @on-create="handleCreate2" style="width:200px">
                             <Option v-for="item in cityList4" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
+                    </FormItem>
+                    <FormItem label="医生描述：">
+                        <Input v-model="formInline.msg" type="textarea"  placeholder="" style="width:200px"/>
                     </FormItem>
                     <FormItem>
                         <Button type="primary" long style="width:200px">提交</Button>
@@ -50,13 +55,16 @@
     export default {
          data () {
             return {
+                biao:'添加医生',
                 formInline: {
                     user:'',
                     sex:"",
                     tel:"",
                     email:"",
                     id:"",
-                    msg:""
+                    msg:"",
+                    dep:'',
+                    model18:[]
                 },
                 cityList4: [
                     {
@@ -72,7 +80,32 @@
                         label: '出诊'
                     },
                 ],
-                model18: []
+                cityList5: [
+                    {
+                        value: '妇科门诊一',
+                        label: '妇科门诊一'
+                    },
+                    {
+                        value: '妇科门诊二',
+                        label: '妇科门诊二'
+                    },
+                    {
+                        value: '产科门诊一',
+                        label: '产科门诊一'
+                    },
+                    {
+                        value: '产科门诊二',
+                        label: '产科门诊二'
+                    },
+                    {
+                        value: '儿科门诊一',
+                        label: '儿科门诊一'
+                    },
+                    {
+                        value: '儿科门诊二',
+                        label: '儿科门诊二'
+                    },
+                ],
             }
         },
         methods: {
@@ -95,6 +128,13 @@
             tobackdetail(){
                 this.$router.push('/doctormanagement');
             },
+        },
+        created(){
+            if(this.$route.query.start==0){
+                this.biao="修改医生"
+            }else if(this.$route.query.start==1){
+                this.biao="添加医生"
+            }
         }
     }
 </script>

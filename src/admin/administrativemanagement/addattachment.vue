@@ -5,7 +5,7 @@
             <div class="arrow-icon" @click="tobackdetail">
               <Icon size="30" type="ios-arrow-back" />
             </div>
-            添加科室
+            {{biao}}
           </div>
         </div>
         <div class="content">
@@ -38,6 +38,7 @@
     export default {
          data () {
             return {
+                biao:'添加科室',
                 formInline: {
                     user:'',
                     cold:"",
@@ -66,6 +67,13 @@
             tobackdetail(){
                 this.$router.push('/administrativemanagement');
             },
+        },
+        created(){
+            if(this.$route.query.start==0){
+                this.biao="修改科室"
+            }else if(this.$route.query.start==1){
+                this.biao="添加科室"
+            }
         }
     }
 </script>
