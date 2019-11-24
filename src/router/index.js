@@ -464,5 +464,38 @@ export default new Router({
       name: "helphome",
       component:resolve=>(require(["@/components/help/helphome"],resolve))
     },
+
+
+    /**================================================后台管理系统==================================================== */
+    {
+      path: "/admin",
+      name: "admin",
+      component:resolve=>(require(["@/admin/admin"],resolve))
+    },
+    {
+      path: "/doctormanagement",
+      name: "doctormanagement",
+      component:resolve=>(require(["@/admin/doctormanagement/doctormanagement"],resolve))
+    },
+    {
+      path: "/administrativemanagement",
+      name: "administrativemanagement",
+      component:resolve=>(require(["@/admin/administrativemanagement/administrativemanagement"],resolve))
+    },
+    {
+      path: "/addDoctor",
+      name: "addDoctor",
+      component:resolve=>(require(["@/admin/doctormanagement/addDoctor"],resolve))
+    },
+    {
+      path: "/addattachment",
+      name: "addattachment",
+      component:resolve=>(require(["@/admin/administrativemanagement/addattachment"],resolve))
+    },
+    {
+      path: "/authoritymanagement",
+      name: "authoritymanagement",
+      component:resolve=>(require(["@/admin/authoritymanagement/authoritymanagement"],resolve))
+    },
   ]
 });

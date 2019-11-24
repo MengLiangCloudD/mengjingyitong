@@ -174,7 +174,7 @@ import tabbar from "../../common/tabbar";
                 }
                 let resnum=Math.ceil(_this.doctorType.length/8)
                 for(let i=0;i<resnum;i++){
-                    let _arritem=_this.doctorType.slice(8*(i+1)-8,8*(i+1))
+                    let _arritem=_this.doctorType.slice(8*(i+1)-8,8*(i+1));
                     _this.carouselarr.push(_arritem)
                 }
             },
@@ -230,7 +230,7 @@ import tabbar from "../../common/tabbar";
         },
         created() {
             this.DepartmentList();
-            this.getdoctors()
+            // this.getdoctors()
         },
     }
 </script>

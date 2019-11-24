@@ -17,7 +17,7 @@ const islogin=(that,url)=>{
         } else if (data.status == "1") {
             //如果是0跳到填写信息页
             that.isshowloading = false;
-            that.$router.push("/registeredlist");
+            that.$router.push("/Personalcenter");
         }
         },
             error: function(data) {

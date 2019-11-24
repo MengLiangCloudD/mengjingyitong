@@ -164,7 +164,7 @@ export default {
                          }else if(data.status==0){
                            _this.isDisabl=true;
                             $('.b').html('挂号失败，请重新挂号');
-                           alert('挂号失败，请重新挂号');
+                            alert('挂号失败，请重新挂号');
                          }
                        },
                        error:function(data){

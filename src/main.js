@@ -5,8 +5,8 @@ import App from "./App";
 import router from "./router";
 import store from "./store";
 import "./common/style/base.css";
-import { Button,Icon,Spin,Collapse,Panel,Modal,Message,Form,FormItem,Select,Option,Checkbox,CheckboxGroup,Radio,Input,Badge,Poptip,Menu,MenuItem,RadioGroup,LoadingBar,Step,Steps,Carousel,CarouselItem} from 'iview';
-import { DatePicker,Switch} from 'element-ui';
+import { Button,Icon,Spin,Collapse,Panel,Modal,Message,Form,FormItem,Select,Option,Checkbox,CheckboxGroup,Radio,Input,Badge,Poptip,Menu,MenuItem,RadioGroup,LoadingBar,Step,Steps,Carousel,CarouselItem,Switch} from 'iview';
+import { DatePicker} from 'element-ui';
 import "iview/dist/styles/iview.css";
 import Calendar from "vue-mobile-calendar";
 import fastClick from "fastclick";
@@ -39,12 +39,12 @@ Vue.component('Step', Step);
 Vue.component('Steps', Steps);
 Vue.component("Carousel",Carousel)
 Vue.component("CarouselItem",CarouselItem)
-// Vue.component("Switchs",Switch)
+Vue.component("Switchs",Switch)
 Vue.prototype.$Message=Message;
 Vue.prototype.$Modal=Modal;
 
 Vue.component(DatePicker.name, DatePicker);
-Vue.component(Switch.name, Switch);
+// Vue.component(Switch.name, Switch);
 // Vue.use(iView);
 Vue.use(Calendar);
 // Vue.use(ElementUI);
@@ -77,28 +77,28 @@ router.beforeEach((to,from,next)=>{
           let value=_arr[1];
           cookiearr.push({key,value});
         }
-        // if(cookiearr.length<2){
-        //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=2";
-        // }
+        if(cookiearr.length<2){
+          location.href=store.getters.getUrl + "depart/wxLogin.do?status=2";
+        }
         for(let i=0;i<cookiearr.length;i++){
           if(cookiearr[i].key.trim()=="openid"){
-            // this.key1=cookiearr[i].key
+            this.key1=cookiearr[i].key
             let value1=cookiearr[i].value
-            // if(value1.length>0){
+            if(value1.length>0){
               localStorage.setItem('openid',value1);
-            // }else{
-              // location.href=store.getters.getUrl + "depart/wxLogin.do?status=2";
-            // }
+            }else{
+              location.href=store.getters.getUrl + "depart/wxLogin.do?status=2";
+            }
           }else if(cookiearr[i].key.trim()=="headimgurl"){
-            // this.key2=cookiearr[i].key
+            this.key2=cookiearr[i].key
             let value2=cookiearr[i].value
             let user={headimgurl:value2}
-            // if(value2.length>0){
+            if(value2.length>0){
               localStorage.setItem('user',JSON.stringify(user))
-            // }else{
-              // location.href=store.getters.getUrl + "depart/wxLogin.do?status=2";
-            // }
-            // localStorage.setItem('user',JSON.stringify(user))
+            }else{
+              location.href=store.getters.getUrl + "depart/wxLogin.do?status=2";
+            }
+            localStorage.setItem('user',JSON.stringify(user))
           }
         }
         next()
@@ -121,25 +121,25 @@ router.beforeEach((to,from,next)=>{
             let value=_arr[1];
             cookiearr.push({key,value});
         }
-        // if(cookiearr.length<2){
-        //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=1";
-        // }
+        if(cookiearr.length<2){
+          location.href=store.getters.getUrl + "depart/wxLogin.do?status=1";
+        }
         for(let i=0;i<cookiearr.length;i++){
             if(cookiearr[i].key.trim()=="openid"){
                 let value1=cookiearr[i].value
-                // if(value1.length>0){
+                if(value1.length>0){
                   localStorage.setItem('openid',value1);
-                // }else{
-                //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=1";
-                // }
+                }else{
+                  location.href=store.getters.getUrl + "depart/wxLogin.do?status=1";
+                }
             }else if(cookiearr[i].key.trim()=="headimgurl"){
                 let value2=cookiearr[i].value
                 let user={headimgurl:value2}
-                // if(value2.length>0){
+                if(value2.length>0){
                   localStorage.setItem('user',JSON.stringify(user))
-                // }else{
-                //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=1";
-                // }
+                }else{
+                  location.href=store.getters.getUrl + "depart/wxLogin.do?status=1";
+                }
             }
         }
         next()
@@ -161,26 +161,26 @@ router.beforeEach((to,from,next)=>{
             let value=_arr[1];
             cookiearr.push({key,value});
         }
-        // if(cookiearr.length<2){
-        //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=4";
-        // }
+        if(cookiearr.length<2){
+          location.href=store.getters.getUrl + "depart/wxLogin.do?status=4";
+        }
         for(let i=0;i<cookiearr.length;i++){
             if(cookiearr[i].key.trim()=="openid"){
                 let value1=cookiearr[i].value
-                // if(value1.length>0){
+                if(value1.length>0){
                   localStorage.setItem('openid',value1);
-                // }else{
-                //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=4";
-                // }
+                }else{
+                  location.href=store.getters.getUrl + "depart/wxLogin.do?status=4";
+                }
             }else if(cookiearr[i].key.trim()=="headimgurl"){
                 let value2=cookiearr[i].value
                 let user={headimgurl:value2}
-                // if(value2.length>0){
+                if(value2.length>0){
                   localStorage.setItem('user',JSON.stringify(user))
-                // }else{
-                //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=4";
-                // }
-                // localStorage.setItem('user',JSON.stringify(user))
+                }else{
+                  location.href=store.getters.getUrl + "depart/wxLogin.do?status=4";
+                }
+                localStorage.setItem('user',JSON.stringify(user))
             }
         }
         next()
@@ -202,25 +202,25 @@ router.beforeEach((to,from,next)=>{
             let value=_arr[1];
             cookiearr.push({key,value});
         }
-        // if(cookiearr.length<2){
-        //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=3";
-        // }
+        if(cookiearr.length<2){
+          location.href=store.getters.getUrl + "depart/wxLogin.do?status=3";
+        }
         for(let i=0;i<cookiearr.length;i++){
             if(cookiearr[i].key.trim()=="openid"){
                 let value1=cookiearr[i].value
-                // if(value1.length>0){
+                if(value1.length>0){
                   localStorage.setItem('openid',value1);
-                // }else{
-                //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=3";
-                // }
+                }else{
+                  location.href=store.getters.getUrl + "depart/wxLogin.do?status=3";
+                }
             }else if(cookiearr[i].key.trim()=="headimgurl"){
                 let value2=cookiearr[i].value
                 let user={headimgurl:value2}
-                // if(value2.length>0){
+                if(value2.length>0){
                   localStorage.setItem('user',JSON.stringify(user))
-                // }else{
-                //   location.href=store.getters.getUrl + "depart/wxLogin.do?status=3";
-                // }
+                }else{
+                  location.href=store.getters.getUrl + "depart/wxLogin.do?status=3";
+                }
             }
         }
         next()

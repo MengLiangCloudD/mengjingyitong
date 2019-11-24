@@ -4,7 +4,7 @@
             <div class="arrow-icon" @click="tobackdetail">
                 <Icon size="30" type="ios-arrow-back" />
             </div>
-             个人简介
+             个人中心
         </div>
         <div class="content" v-for="(item,index) in docxiang" :key="index">
             <p style=" padding: 10px 10% 10px 5%;">
@@ -102,7 +102,6 @@ import {hidemenu} from "../../../common/js/hide"
                 var doccode=localStorage.getItem('ysdoccode');
                 //修改内容
                 var expertjob = that.value8;
-                debugger
                 if(expertjob!=''&& that.value8!=that.docxiang[0].expertjob){
                      let ajaxTimeOut = $.ajax({
                         url: url,

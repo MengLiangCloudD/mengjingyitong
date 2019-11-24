@@ -4,11 +4,16 @@
             <div class="arrow-icon" @click="tobackdetail">
                 <Icon size="30" type="ios-arrow-back" />
             </div>
-             历史患者
+             挂号患者列表
         </div>
-        <div class="xuanze"  style="position: relative;">
+        <!-- 切换按钮 -->
+        <div class="btn-warapper">
+          <div @click="changetabstatu(false)" :class="{ active: !tabstatu,disactive: tabstatu}">待就诊</div>
+          <div @click="changetabstatu(true)" :class="{ active: tabstatu,disactive: !tabstatu }">已就诊</div>
+        </div>
+        <div class="xuanze"  style="position: relative;" v-if="tabstatu">
          <div style="display:inline-block;width:100%">
-          <span style="color:rgb(40, 184, 161);font-size:20px;">选择日期:</span>
+          <span style="color: rgb(0, 187, 187);font-size:20px;" @click="qingkong">全部患者</span>
           <el-date-picker
             v-model="value1"
             @change="Querypatients"
@@ -75,10 +80,20 @@ var time = year + "-" + month;
                 value1:currentDay,
                 HistoricpatientsList:1,
                 isshow:false,
-                size:15
+                size:15,
+                tabstatu:true
             }
         },
         methods:{
+           changetabstatu(state){
+              if(state==this.tabstatu){
+                return
+              }
+              if(!state){
+                this.$router.push("/registeredlist");
+              }
+              this.tabstatu=!this.tabstatu
+            },
               //返回上一层
             tobackdetail(){
                this.$router.push('/Personalcenter');
@@ -95,6 +110,9 @@ var time = year + "-" + month;
             },
             p(s) {
               return s < 10 ? "0" + s : s;
+            },
+            qingkong(){
+
             },
             //查询患者信息
             Querypatients(){
@@ -219,6 +237,29 @@ var time = year + "-" + month;
   font-family: PingFangSC-regular;
   position: relative;
   
+}
+.disactive{
+  color: rgb(0, 0, 0);
+  background: rgb(160, 165, 170);
+}
+.active{
+  color:white;
+  background: rgb(0, 166, 172);
+}
+.btn-warapper{
+  display: flex;
+  height: 50px;
+}
+.btn-warapper div{
+  font-size: 16px;
+  flex: 1;
+  text-align: center;
+  line-height: 50px;
+}
+.quite{
+    position: absolute;
+    left: 5%;
+    top: 3px;
 }
 .arrow-icon{
   position: absolute;
