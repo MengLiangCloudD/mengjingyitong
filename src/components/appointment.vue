@@ -9,26 +9,34 @@
         滦平县妇幼保健院挂号平台
       </div>
       <div class="doctorInfo">
-        <p class="doctorName">{{this.$store.getters.getDocName}}</p>
+        <!-- <p class="doctorName">{{this.$store.getters.getDocName}}</p> -->
+        <div class="otherinfo">
+          <p class="otherinfo-title">医生姓名：</p>
+          <p class="otherinfo-text">{{this.$store.getters.getDocName}}</p>
+        </div>
         <div class="otherinfo">
           <p class="otherinfo-title">门诊科室：</p>
           <p class="otherinfo-text">{{this.$store.getters.getDepname}}</p>
         </div>
         <div class="otherinfo">
-          <p class="otherinfo-title">号源名称：</p>
-          <p class="otherinfo-text">{{RegID}}</p>
+          <p class="otherinfo-title">医生职位：</p>
+          <p class="otherinfo-text">{{job}}</p>
+        </div>
+        <div class="otherinfo">
+          <p class="otherinfo-title">医生职称：</p>
+          <p class="otherinfo-text">{{title}}</p>
         </div>
         
         <Poptip  class="avatar" placement="bottom-start" width="300">
           <img class="avatar1" src="../assets/avatar.png" alt>
           <div class="api" slot="content">
               <div  v-for="(item,index) in docxiang" :key="index">
-                <img src="./../assets/toux.png" alt="" width="50px;"  style="vertical-align: top;z-index:999">
+                <img src="./../assets/avatar.png" alt="" width="50px;"  style="vertical-align: top;z-index:999">
                 <div style="vertical-align: top;" class="po">
                   <p><span>医生姓名：</span><span>{{item.name}}</span></p>
                   <p><span>医生编码：</span><span>{{item.username}}</span></p>
-                  <p><span>医生职称：</span><span>{{item.title}}</span></p>
                   <p><span>医生职位：</span><span>{{item.job}}</span></p>
+                  <p><span>医生职称：</span><span>{{item.title}}</span></p>
                   <!-- <div class="otherinfo">
                     <p class="otherinfo-title">医生简介：</p>
                     <p class="otherinfo-text">{{jiajie}}</p>
@@ -39,7 +47,7 @@
         </Poptip>
       </div>
       <div class="otherinfo1" style="border-bottom: 1px solid rgba(187, 187, 187, 1);padding: 0 18px 18px 18px;" v-if="!play">
-          <span class="otherinfo-title" style="padding-left: 16.3333vw;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;" @click="disp">医生简介：{{jiajie}}</span> 
+          <span class="otherinfo-title" style="padding-left: 16.8333vw;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;" @click="disp">医生简介：{{jiajie}}</span> 
           <!-- <span class="otherinfo-text" style=""></span> -->
         </div>
         <div class="otherinfo1" style="border-bottom: 1px solid rgba(187, 187, 187, 1);padding: 0 18px 18px 18px ; "  v-if="play"  @click="disp">
@@ -48,11 +56,18 @@
         </div>
       <div class="divid-line"></div>
       <div class="select-table">
-        <p class="select-item">挂号时间：{{doctor.TimeRegion}} 8:00-17:00</p>
-        <p class="select-item item-color" :class="{pmstate:pmstate=='约满'}">剩余号源：{{pmstate}}</p>
+        <!-- <p class="select-item">挂号时间：{{doctor.TimeRegion}} 8:00-17:00</p> -->
+        <div class="zhou">
+          <div v-for="(item,index) in time" :key="index" class="xuanqi" @click="xuanzeriq(index)">
+            <p>{{item.week}}</p>
+            <p>{{item.times.substring(item.times.length-5,item.times.length)}}</p>
+          </div>
+        </div>
+        <p class="select-item item-color" :class="{pmstate:pmstate=='暂无号源'}">剩余号源：{{pmstate}}</p>
         <div style="display:flex">
           <p style="padding:0 20px;margin:20px 0px;flex:1">
-            <Button @click="amRegistered()" size="large" type="primary" long>预约</Button>
+            <Button @click="amRegistered()" size="large" type="primary" long v-if="pmstate=='未约满'">预约</Button>
+             <Button :disabled="true"  size="large"  type="primary" long v-if="pmstate=='暂无号源'">预约</Button>
           </p>
           <p style="padding:0 20px;margin:20px 0px;flex:1">
             <Button :disabled="true" @click="amRegistered()" size="large" type="primary" long>复诊</Button>
@@ -85,16 +100,27 @@ export default {
       docxiang:[],
       jiajie:'',
       RegID:'',
-      play:false
+      play:false,
+      time:[],
+      title:'',
+      haoyuan:[],
+      job:'',
+      numeer:1
     };
   },
   created(){
+    this.tab(7);
+    
   },
   //在mounted钩子里去获取医生的信息 保存支付费用 存储号源编码
   mounted() {
     this.spinShow = true;
     this.getdoctorinfo();
     this.doctorxinxi()
+    var xuanqi = document.getElementsByClassName('xuanqi');
+    xuanqi[0].style.background='rgba(40, 184, 161, 1)'
+    xuanqi[0].style.color='#fff';
+    this.xuanzeriq(0)
     // let requesturl=this.$store.getters.getUrl + "SweepCode.do";
     //     initwxshare(requesturl,1,"测试数据")
   },
@@ -136,6 +162,44 @@ export default {
       
   },
   methods: {
+    tab(dayNum){
+        var oDate = new Date();   //获取当前时间
+        var dayArr = [oDate];     //定义一个数组存储所以时间
+        var arr = []
+        for(var i=0;i<dayNum;i++){
+            dayArr.push(new Date(oDate.getFullYear(),oDate.getMonth(),oDate.getDate() + i));   //把未来几天的时间放到数组里
+        }
+        for(var i=0;i<dayArr.length;i++){
+            var y = dayArr[i].getFullYear();
+            var m = dayArr[i].getMonth() + 1;
+            if(m<10){
+              m ='0'+m
+            }
+            var d = dayArr[i].getDate();
+            if(d<10){
+              d ='0'+d
+            }
+            var h = dayArr[i].getHours();
+            var f = dayArr[i].getMinutes();
+            // var s = dayArr[i].getSeconds();
+            var week = new Array("周日", "周一", "周二", "周三", "周四", "周五", "周六")[dayArr[i].getDay()];
+            arr.push({times:y+"-"+m+"-"+ d,week:week});
+        }
+        arr.shift();
+        arr[0].week='今日'
+        this.time=arr;  
+    },
+    //选择挂号时间
+    xuanzeriq(index){
+      var xuanqi = document.getElementsByClassName('xuanqi');
+      for(var i =0;i<xuanqi.length;i++){
+        xuanqi[i].style.background='#fff'
+        xuanqi[i].style.color='#000'
+      }
+      xuanqi[index].style.background='rgba(40, 184, 161, 1)'
+      xuanqi[index].style.color='#fff'
+      this.savedoctorinfo(index);
+    },
     disp(){
       this.play=!this.play
     },
@@ -144,8 +208,8 @@ export default {
           this.$router.push("/home")
       },
     //获取当天日期
-    getcurrentday() {
-      let currentDay = new Date();
+    getcurrentday(te) {
+      let currentDay = new Date(te);
       let year = currentDay.getFullYear();
       if((currentDay.getMonth() + 1)<10){
          var  month = '0' + (currentDay.getMonth() + 1);
@@ -162,11 +226,11 @@ export default {
     },
     //去挂号 存储当天日期到vuex仓库 如果有预约号了就跳到确认挂号页，如果没有有预约号就跳弹窗提示
     amRegistered(){
-      if (this.pmstate == "约满") {
+      if (this.pmstate == "约满"||this.pmstate == "暂无号源") {
         //弹出名额已满的提示信息。
-        _this.$Modal.info({
+        this.$Modal.info({
           title: "提示信息",
-          content: "名额已满!"
+          content: "暂无号源!"
         });
         return;
       } else {
@@ -190,41 +254,40 @@ export default {
      
     },
     //存储医生信息
-    savedoctorinfo() {
+    savedoctorinfo(index) {
       let _this = this;
-      console.log(this.doctor)
-      //判断RegRemained是否为空
-      if (_this.doctor.RegRemained === "") {
-        _this.pmstate = "未约满";
-      } else if (_this.doctor.RegRemained == "0") {
-        _this.pmstate = "约满";
-      } else {
-        _this.pmstate = "未约满";
-      }
+      let currentDay=_this.time[index].times;
       //把返回的医生详细信息的费用 号源源码 号源名称保存到vuex
-      let currentDay = _this.getcurrentday();
-      _this.$store.commit("setRegdata", currentDay);
-      var a = 0;
-      for(var i = 0;i<_this.doctor.length;i++){
-        var str = _this.doctor[i].RegID;
-          if(str.indexOf( _this.$store.getters.getDocName) !== -1){
-            if(_this.doctor[i].RegFee!=undefined&&_this.doctor[i].TreatFee!=undefined&&_this.doctor[i].RegID!==undefined&&_this.doctor[i].TimeRegion!=undefined && _this.doctor[i].RegFee!=''&&_this.doctor[i].TreatFee!=''&&_this.doctor[i].RegID!==''&&_this.doctor[i].TimeRegion!=''&&_this.doctor[i].RegFee!=null&&_this.doctor[i].TreatFee!=null&& _this.doctor[i].RegID!==null&&_this.doctor[i].TimeRegion!=null){
-              a = 1
-              _this.$store.commit("setRegprice", _this.doctor[i].RegFee+_this.doctor[i].TreatFee); //挂号支付的费用
-              _this.$store.commit("setRegcode", _this.doctor[i].RegID); //存储号源编码
-              _this.$store.commit("setamprom", _this.doctor[i].TimeRegion); //保存白天昼夜
-              _this.RegID = _this.doctor[i].RegID;
-            }
-             
-          }
+      // let currentDay = _this.getcurrentday();
+      var haoyuans='';
+      for(var i = 0;i<_this.haoyuan.length;i++){
+        if(_this.getcurrentday(_this.haoyuan[i].clinicdate)==currentDay){
+          haoyuans=_this.haoyuan[i];
+        }
       }
-     if(a==0){
-          _this.$Modal.warning({
-              title: "提示信息",
-              content: "获取信息异常"
-          });
-        _this.$router.push("/abnormal");
-     }
+      var a = 0;
+      if(haoyuans!==''){
+        _this.$store.commit("setRegdata", _this.getcurrentday(haoyuans.clinicdate));
+        var str = haoyuans.cliniclabel;
+          if(str.indexOf( _this.$store.getters.getDocName) !== -1){
+              a = 1
+              _this.$store.commit("setRegprice",haoyuans.price); //挂号支付的费用
+              _this.$store.commit("setRegcode", haoyuans.cliniclabel); //存储号源编码
+              _this.$store.commit("setamprom", haoyuans.amorpm); //保存白天昼夜
+              _this.pmstate = '未约满';
+          }
+        }else{
+          _this.pmstate = '暂无号源';
+        }
+    //  if(a==0){
+    //       _this.$Modal.warning({
+    //           title: "提示信息",
+    //           content: "获取信息异常"
+    //       });
+    //     _this.$router.push("/abnormal");
+    //  }
+    if(_this.numeer==1){
+      _this.numeer=0;
       let url1 = location.href;
       //后台接口
       var reurl = this.$store.getters.getUrl + "SweepCode.do";
@@ -265,7 +328,7 @@ export default {
           }
       });
       let targurl=location.href
-      let msg=this.doctor[0].RegID
+      let msg=haoyuans.cliniclabel
       let baseimgurl=this.$store.getters.getUrl
       wx.ready(function() {
           // if(type!=0){
@@ -297,47 +360,32 @@ export default {
             // _this.$Message.error("配置验证失败: " + res.errMsg);
           });
       })
+    }
     },
     //获取医生信息
-    getdoctorinfo() {
-      //把就诊日期存储到vuex仓库
-      var url = this.$store.getters.getUrl + "doctors/getDocSche.do";
-      var _this = this;
-      //获取链接里的医生编码参数
-      var currentdepCode = _this.$store.getters.getdepCode;
-      var doctorname = _this.$store.getters.getDocName;
-      //发送请求获取当前医生详细的排班信息
+    getdoctorinfo(){
+      var that = this;
+      var url = that.$store.getters.getUrl + "doctors/getDocSches.do";
+      var doccode = that.$store.getters.getDoccode;
+      var departid = that.$store.getters.getdepCode;
       let ajaxTimeOut = $.ajax({
         url: url,
         type: "post",
         dataType: "json",
-        // async: false,
+        async: false,
         timeout: 15000, //通过timeout属性，设置超时时间
-        data: { departid: currentdepCode,doctorname:doctorname},
-        success: function(data) {
-          _this.spinShow = false;
-          if (data.Response.ResultCode == "1"&&data.Response.Item!=undefined) {
-                if(data.Response.Item.length==undefined){
-                  _this.doctor.push(data.Response.Item)
-                }else{
-                   _this.doctor=data.Response.Item;
-                }
-            _this.savedoctorinfo();
-          } else {
-            _this.$Modal.warning({
-              title: "提示信息",
-              content: "获取信息异常"
-            });
-            _this.$router.push("/abnormal");
+        data: { doccode,departid},
+        success:function(data){
+          that.spinShow = false;
+          if(data.status==1){
+            that.haoyuan=data.data;
           }
+          // that.savedoctorinfo();
         },
-        error: function(data) {
-          //弹窗提示错误信息
-          _this.spinShow = false;
-          _this.$Modal.error({
-            title: "提示信息",
-            content: "请求失败"
-          });
+        error:function(data){
+          that.spinShow = false;
+          
+          
         },
         complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
             if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
@@ -349,8 +397,60 @@ export default {
               });
             }
         }
-      });
+      })
     },
+    // getdoctorinfo() {
+    //   //把就诊日期存储到vuex仓库
+    //   var url = this.$store.getters.getUrl + "doctors/getDocSche.do";
+    //   var _this = this;
+    //   //获取链接里的医生编码参数
+    //   var currentdepCode = _this.$store.getters.getdepCode;
+    //   var doctorname = _this.$store.getters.getDocName;
+    //   //发送请求获取当前医生详细的排班信息
+    //   let ajaxTimeOut = $.ajax({
+    //     url: url,
+    //     type: "post",
+    //     dataType: "json",
+    //     // async: false,
+    //     timeout: 15000, //通过timeout属性，设置超时时间
+    //     data: { departid: currentdepCode,doctorname:doctorname},
+    //     success: function(data) {
+    //       _this.spinShow = false;
+    //       if (data.Response.ResultCode == "1"&&data.Response.Item!=undefined) {
+    //             if(data.Response.Item.length==undefined){
+    //               _this.doctor.push(data.Response.Item)
+    //             }else{
+    //                _this.doctor=data.Response.Item;
+    //             }
+    //         _this.savedoctorinfo();
+    //       } else {
+    //         _this.$Modal.warning({
+    //           title: "提示信息",
+    //           content: "获取信息异常"
+    //         });
+    //         _this.$router.push("/abnormal");
+    //       }
+    //     },
+    //     error: function(data) {
+    //       //弹窗提示错误信息
+    //       _this.spinShow = false;
+    //       _this.$Modal.error({
+    //         title: "提示信息",
+    //         content: "请求失败"
+    //       });
+    //     },
+    //     complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
+    //         if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
+    //           ajaxTimeOut.abort(); //取消请求
+              
+    //           _this.$Modal.warning({     //超时提示：网络不稳定
+    //             title: '友情提示',
+    //             content: '请求超时',
+    //           });
+    //         }
+    //     }
+    //   });
+    // },
     //查看医生详细信息
     doctorxinxi(){
       // $(".zhe").css("display","block");
@@ -368,6 +468,8 @@ export default {
         success:function(data){
           that.isshowloading = false;
           that.docxiang=data.data;
+          that.title = that.docxiang[0].title;
+         that.job = that.docxiang[0].job;
           if(data.data[0].expertjob!==undefined){
              that.jiajie=data.data[0].expertjob;
           }else{
@@ -438,7 +540,7 @@ export default {
 }
 .doctorInfo .doctorName,
 .doctorInfo .otherinfo {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 .doctorName {
   color: rgba(16, 16, 16, 1);
@@ -578,5 +680,19 @@ export default {
 .pmstate {
   color: red;
 }
-
+.zhou{
+  display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: space-around;
+    justify-content: space-around;
+    width: 100%;
+     margin: 10px 0 0 0;
+}
+.zhou div{
+  text-align: center;
+  padding: 10px  9px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 </style>

@@ -444,22 +444,26 @@ export default new Router({
       component: test2
     },
     /**====================================================帮助======================================================== */
+    //流程图
     {
       path: "/shortcutenter",
       name: "shortcutenter",
       component:resolve=>(require(["@/components/help/shortcutenter"],resolve))
     },
+    //流程图
     {
       path: "/register",
       name: "register",
       component:resolve=>(require(["@/components/help/register"],resolve))
     },
+    //流程图
     {
       path: "/askdoctor",
       name: "askdoctor",
       component:resolve=>(require(["@/components/help/askdoctor"],resolve))
     },
     {
+      //帮助
       path: "/helphome",
       name: "helphome",
       component:resolve=>(require(["@/components/help/helphome"],resolve))
@@ -467,35 +471,65 @@ export default new Router({
 
 
     /**================================================后台管理系统==================================================== */
+    //首页
     {
       path: "/admin",
       name: "admin",
       component:resolve=>(require(["@/admin/admin"],resolve))
     },
+    //医生管理列表
     {
       path: "/doctormanagement",
       name: "doctormanagement",
       component:resolve=>(require(["@/admin/doctormanagement/doctormanagement"],resolve))
     },
+    //科室管理列表
     {
       path: "/administrativemanagement",
       name: "administrativemanagement",
       component:resolve=>(require(["@/admin/administrativemanagement/administrativemanagement"],resolve))
     },
+    //添加修改医生
     {
       path: "/addDoctor",
       name: "addDoctor",
       component:resolve=>(require(["@/admin/doctormanagement/addDoctor"],resolve))
     },
+    //添加修改科室
     {
       path: "/addattachment",
       name: "addattachment",
       component:resolve=>(require(["@/admin/administrativemanagement/addattachment"],resolve))
     },
+    //患者权限管理
     {
       path: "/authoritymanagement",
       name: "authoritymanagement",
       component:resolve=>(require(["@/admin/authoritymanagement/authoritymanagement"],resolve))
+    },
+    // 收入信息
+    {
+      path: "/Incomestatements",
+      name: "Incomestatements",
+      component:resolve=>(require(["@/admin/Incomestatements/Incomestatements"],resolve))
+    },
+    //收入明细
+    {
+      path: "/particulars",
+      name: "particulars",
+      component:resolve=>(require(["@/admin/Incomestatements/particulars"],resolve))
+    },
+    // 管理员管理列表
+    {
+      path: "/Administrator",
+      name: "Administrator",
+      component:resolve=>(require(["@/admin/Administrator/Administrator"],resolve))
+    },
+    //添加管理员
+    {
+      path: "/addAdministrator",
+      name: "addAdministrator",
+      component:resolve=>(require(["@/admin/Administrator/addAdministrator"],resolve))
     },
   ]
 });

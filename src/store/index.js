@@ -133,9 +133,9 @@ export default new Vuex.Store({
   state: {
     //地址
     // url:"http://2p495946b1.qicp.vip/",
-    url:"http://www.yhtcs.cn/",
-    // url:"http://jiayuan1912.51vip.biz/",//花生壳
     // url:"http://www.yhtcs.cn/",
+    // url:"http://jiayuan1912.51vip.biz/",//花生壳
+    url:"http://www.yhtcs.cn/",
     // url:"http://jiayuan1912.51vip.biz/",//花生壳
     // url:'http://2p495946b1.qicp.vip/',
     // url:"http://zhangshenggui.natapp1.cc/",

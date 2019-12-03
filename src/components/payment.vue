@@ -148,9 +148,9 @@ export default {
                        timeout: 15000, //通过timeout属性，设置超时时间
                       // async:false,
                       data:{
-                      orderno:tradeno,
-                      hosdoccode:hosdoccode,
-                      cardno:cardno
+                        orderno:tradeno,
+                        hosdoccode:hosdoccode,
+                        cardno:cardno
                       },
                        success:function(data){
                         //  _this.spinShow = false;

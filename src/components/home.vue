@@ -235,9 +235,9 @@ export default {
       //获取合并之后科室的名称存入数组
       //["depmentname":"产科门诊"]
       _this.doctorType = [];
-      _this.doctorType.push({ depname: "妇科门诊",gynaecology:data.gynaecology});
-      _this.doctorType.push({ depname: "产科门诊" ,obstetrics:data.obstetrics});
-      _this.doctorType.push({ depname: "儿科门诊" ,pediatrics:data.pediatrics});
+      _this.doctorType.push({ depname: "妇科门诊", gynaecology:data.gynaecology});
+      _this.doctorType.push({ depname: "产科门诊", obstetrics:data.obstetrics});
+      _this.doctorType.push({ depname: "儿科门诊", pediatrics:data.pediatrics});
       for (let j = 0; j < data.other.length; j++) {
         if (data.other[j].depname == "皮肤科") {
           _this.doctorType.push({depname: "皮肤科",depCode:data.other[j].depCode});

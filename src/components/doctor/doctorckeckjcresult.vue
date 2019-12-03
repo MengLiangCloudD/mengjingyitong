@@ -225,7 +225,6 @@ export default {
       }else{
         
       }
-      
     },
     shaixuan(){
       if(this.value1==null){

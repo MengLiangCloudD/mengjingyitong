@@ -20,6 +20,11 @@
                     <FormItem label="科室介绍：">
                         <Input v-model="formInline.msg" type="textarea"  placeholder="" style="width:200px"/>
                     </FormItem>
+                    <FormItem label="所属科类：">
+                        <Select v-model="formInline.dep" style="width:200px">
+                            <Option v-for="item in cityList5" :value="item.value" :key="item.value">{{item.label }}</Option>
+                        </Select>
+                    </FormItem>
                     <!-- <FormItem label="权限：">
                         <Select v-model="model18" filterable multiple allow-create @on-create="handleCreate2" style="width:200px">
                             <Option v-for="item in cityList4" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -42,9 +47,23 @@
                 formInline: {
                     user:'',
                     cold:"",
-                    msg:""
+                    msg:"",
+                    dep:''
                 },
-                model18: []
+                model18: [],
+                cityList5:[{
+                     value: '0',
+                     label: '顶级科类'
+                },{
+                     value: '100101',
+                     label: '妇科门诊'
+                },{
+                     value: '100102',
+                     label: '产科门诊'
+                },{
+                     value: '100103',
+                     label: '儿科门诊'
+                },]
             }
         },
         methods: {
@@ -71,6 +90,33 @@
         created(){
             if(this.$route.query.start==0){
                 this.biao="修改科室"
+                var depinforItem =JSON.parse(localStorage.getItem('depinforItem'))
+                if(depinforItem.deptName!=undefined){
+                    this.formInline.user=depinforItem.deptName;
+                }else{
+                    this.formInline.user='';
+                }
+                if(depinforItem.deptCode!=undefined){
+                   this.formInline.cold=depinforItem.deptCode;
+                }else{
+                    this.formInline.cold='';
+                }
+                if(depinforItem.deptCode!='100101'&&depinforItem.deptCode!='100102'&&depinforItem.deptCode!='100103'){
+                   this.formInline.dep='0';
+                   return
+                }else if(depinforItem.deptCode!=undefined){
+                    this.formInline.dep=depinforItem.deptCode;
+                    return
+                }else{
+                    this.formInline.dep='';
+                    return
+                }
+                if(depinforItem.content!=undefined){
+                    this.formInline.msg=depinforItem.content;
+                }else{
+                    this.formInline.msg='';
+                }
+                
             }else if(this.$route.query.start==1){
                 this.biao="添加科室"
             }

@@ -41,10 +41,30 @@ export default {
       }
     },
   mounted(){
-    // window.onbeforeunload = function (e) {
-    //             var storage = window.localStorage;
-    //             storage.clear()
-    //         }
+    let beginTime = 0;//开始时间
+    let differTime = 0;//时间差
+    window.onunload = function (){
+      differTime = new Date().getTime() - beginTime;
+      if(differTime <= 5){
+         var storage = window.localStorage;
+          storage.clear();
+            var date=new Date();
+                date.setTime(date.getTime()-10000);
+                var keys=document.cookie.match(/[^ =;]+(?=\=)/g);
+                console.log("需要删除的cookie名字："+keys);
+                if (keys) {
+                    for (var i =  keys.length; i--;)
+                      document.cookie=keys[i]+"=0; expire="+date.toGMTString()+"; path=/";
+          }
+      } 
+    };
+    window.onbeforeunload = function (){
+      beginTime = new Date().getTime();
+    }
+    // window.onunload  = function (e) {
+    //     var storage = window.localStorage;
+    //       storage.clear()
+    //   }
   }
 }
 

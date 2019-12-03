@@ -14,7 +14,7 @@
              <div size="large" class="switchopen" style="right: 100px;color: #777;"  >
                  患者
              </div>
-             <div size="large" class="switchopen" style="right: 7%;">
+             <div size="large" class="switchopen" style="right: 7%;" @click="changguan()"> 
                  管理员
              </div>
               <!-- <div size="large" class="switchopen" :class="{'activeswitchopen':visitstatus==false}" @click="ischangestate()">
@@ -24,7 +24,6 @@
             <!-- </div> 
           </Poptip> -->
         <!-- </div> -->
-        
       </div>
       <div class="content">
         <div class="zhe" style="width:100%;background: rgb(255, 255, 255);height: 100%;position: absolute;z-index: 900;" v-show="isshowmask" @click="clicusers()"></div>
@@ -42,7 +41,7 @@
             </div>
           </div>
           <div class="userss" style="display:none;position:absolute;z-index:100;width:100%;padding-bottom:50px;" v-show="showuserlist">
-            <RadioGroup  v-model="index" size="large" style="width:100%;" >
+            <RadioGroup  v-model="index" size="large" style="width:100%;">
               <div class="users" v-for="(item,index) in myCardType"  :key="index" style="border-bottom:1px solid #ccc;padding-left: 5%;background:#fff;" @click="seledoctor(index)">
                 <img :src="headimgurl" alt="" width="50px;" style="vertical-align: top;border-radius: 50%;">
                 <div class="user" style="display: inline-block;vertical-align: top;margin-left:10px;">
@@ -208,7 +207,44 @@ export default {
     };
   },
   methods: {
-    //切换用户身份
+    //切换管理员
+    changguan(){
+      var that  = this;
+      // var url  = that.$store.getters.getUrl + "doctor/doctorlogins.do";
+      var url = 'http://192.168.33.22:8081/admin/doctor/loginByIdNo'
+      var index = that.index;
+      var userName = that.myCardType[index].name;
+      // var userName = '曲博';
+      var phoneNumber = that.myCardType[index].phone;
+      // var phoneNumber = '17732886275';
+      var idNo = that.myCardType[index].idno;
+      // var idNo = '130824199007063018';
+        that.spinShow=true;
+        $.ajax({
+          url: url,
+          type: "post",
+          dataType: "json",
+          async: false,
+          data: {idNo:'13262619690702353X'},
+          success: function(data){
+            that.spinShow=false;
+            if(data.code==200){
+                localStorage.setItem('Administrator',JSON.stringify(data.data));
+                that.$router.push('/admin');
+            }else{
+              that.$Modal.warning({
+                  title: '提示警告',
+                  content: '抱歉您并不是管理员，请勿操作'
+              });
+            }
+          },
+          error:function(data){
+            that.spinShow=false;
+          }
+        })
+        
+    },
+    //切换医生身份
     changestate(){
       var that = this;
       that.visitstatus=false;
@@ -238,6 +274,7 @@ export default {
                 that.$router.push('/Personalcenter');
             }else{
               that.$Modal.warning({
+                
                   title: '提示警告',
                   content: '抱歉您并不是医生，请勿操作'
               });
