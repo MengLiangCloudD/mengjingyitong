@@ -150,17 +150,17 @@
     overflow: auto;
 }
 .title {
- background: rgb(0, 187, 187);
-  font-size: 20px;
-  color: white;
-  padding: 10px 0;
-  text-align: center;
-  position: relative;
+    background: rgb(0, 187, 187);
+    font-size: 20px;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
 }
 .arrow-icon{
-  position: absolute;
-  left: 5px;
-  top: 8px;
+    position: absolute;
+    left: 5px;
+    top: 8px;
 }
 .content1{
     text-align: center;
