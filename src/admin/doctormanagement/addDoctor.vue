@@ -53,11 +53,17 @@
                 </Form>
             </div>
         </div>
+        <loading v-show="isshowloading" class="loading"></loading>
     </div>
 </template>
 
 <script>
+import loading from "../../common/loading";
     export default {
+        components: {
+        //加载动画
+        loading
+      },
          data () {
             return {
                 docinforItem:[],
@@ -112,7 +118,8 @@
                         label: '无权限'
                     },
                 ],
-                depList:[]
+                depList:[],
+                isshowloading:false
             }
         },
         methods: {
@@ -179,6 +186,7 @@
             DeptInfoList(){
                 var that =this;
                 var url = 'http://192.168.33.22:8081/admin/dept/getDeptInfoList'
+                that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -186,12 +194,14 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: '',
                     success:function(data){
+                        that.isshowloading=false;
                         if(data.code=='200'){
                             that._dealdata(data.data);
                         }
                         
                     },
                     error:function(data){
+                        that.isshowloading=false;
                     }
                 })
             },
@@ -222,6 +232,7 @@
                 var adminLevel = that.formInline.identity;
                 var doctorRole  =JSON.stringify(that.formInline.jurisdiction);
                 var url = 'http://192.168.33.22:8081/admin/doctor/editDoctorInfoByUserName';
+                that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -229,11 +240,13 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: {userName,deptCode,expertJob,adminLevel,doctorRole},
                     success:function(data){
+                        that.isshowloading=false;
                         if(data.code=='200'){
                             that._dealdata(data.data);
                         }
                     },
                     error:function(data){
+                        that.isshowloading=false;
                     }
                 })
             }

@@ -37,18 +37,25 @@
              {{content}}
             </div>
         </Modal>
+        <loading v-show="isshowloading" class="loading"></loading>
     </div>
 </template>
 
 <script>
+import loading from "../../common/loading";
     export default {
+      components: {
+        //加载动画
+        loading
+      },
         data() {
             return {
                 modal11:false,
                 model1:'',
                 doctorList:[],
                 depList:[],
-                content:''
+                content:'',
+                isshowloading:false
             }
         },
         methods:{
@@ -138,7 +145,8 @@
             //查询科室
             DeptInfoList(){
                 var that =this;
-                var url = 'http://192.168.33.22:8081/admin/dept/getDeptInfoList'
+                var url = 'http://192.168.33.22:8081/admin/dept/getDeptInfoList';
+                that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -146,12 +154,14 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: '',
                     success:function(data){
+                      that.isshowloading=false;
                         if(data.code=='200'){
                             that._dealdata(data.data);
                         }
                         
                     },
                     error:function(data){
+                      that.isshowloading=false;
                     }
                 })
             },
@@ -164,7 +174,7 @@
                 }else{
                   deptCode=''
                 }
-               
+               that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -172,12 +182,13 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: {deptCode},
                     success:function(data){
+                      that.isshowloading=false;
                       if(data.code==200){
                         that.doctorList=data.data;
                       }
                     },
                     error:function(data){
-                      
+                      that.isshowloading=false;
                     }
                 })
             },

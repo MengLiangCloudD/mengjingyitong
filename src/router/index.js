@@ -356,6 +356,10 @@ export default new Router({
       path: "/Personalcenter",
       name: "Personalcenter",
       component: resolve=>(require(["@/components/doctor/doctorpersonal/Personalcenter"],resolve))
+    },{
+      path: "/settingup",
+      name: "settingup",
+      component: resolve=>(require(["@/components/doctor/doctorpersonal/settingup"],resolve))
     },
     //医生个人简介
     {

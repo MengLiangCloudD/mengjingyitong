@@ -250,12 +250,12 @@ export default {
       that.visitstatus=false;
       var url  = that.$store.getters.getUrl + "doctor/doctorlogins.do";
       var index = that.index;
-      var userName = that.myCardType[index].name;
-      // var userName = '曲博';
-      var phoneNumber = that.myCardType[index].phone;
-      // var phoneNumber = '17732886275';
-      var idNo = that.myCardType[index].idno;
-      // var idNo = '130824199007063018';
+      // var userName = that.myCardType[index].name;
+      var userName = '曲博';
+      // var phoneNumber = that.myCardType[index].phone;
+      var phoneNumber = '17732886275';
+      // var idNo = that.myCardType[index].idno;
+      var idNo = '130824199007063018';
       if(that.visitstatus==false){
         that.spinShow=true;
         $.ajax({
@@ -274,7 +274,6 @@ export default {
                 that.$router.push('/Personalcenter');
             }else{
               that.$Modal.warning({
-                
                   title: '提示警告',
                   content: '抱歉您并不是医生，请勿操作'
               });

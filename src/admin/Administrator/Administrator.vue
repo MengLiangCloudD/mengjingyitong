@@ -23,7 +23,6 @@
                 </div>
                 <div class="operate">
                         <Button type="primary" size="small" @click="goaddattachment(0)">修改</Button>
-                        <Button type="error" size="small">删除</Button>
                 </div>
                 
             </div>
@@ -33,12 +32,19 @@
                 </p>
             </Modal> -->
         </div>
+        <loading v-show="isshowloading" class="loading"></loading>
     </div>
 </template>
 <script>
+import loading from "../../common/loading";
     export default {
+        components: {
+        //加载动画
+        loading
+      },
         data() {
             return {
+                isshowloading:false,
                 adminLevel:'',
                 modal11:false,
                 doctorList:[
@@ -86,7 +92,7 @@
                 var that =this;
                 var url = 'http://192.168.33.22:8081/admin/doctor/getAdminListByAdminLevel';
                 var adminLevel = that.adminLevel;
-
+                that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -94,12 +100,13 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: {adminLevel},
                     success:function(data){
+                        that.isshowloading=false;
                         if(data.code=200){
                             that.doctorList=data.data;
                         }
                     },
                     error:function(data){
-                        
+                        that.isshowloading=false;
                     }
                 })
             }

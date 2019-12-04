@@ -11,21 +11,21 @@
                 </div>
             </div>
             <div class="content">
-                <p>累计收入(元)</p>
-                <p style="font-size:50px;">0.00</p>
+                <p>今日收入(元)</p>
+                <p style="font-size:50px;">{{daymoney}}</p>
             </div>
             <div class="content1">
                 <div class="gong">
-                    <p>今日收入(元)</p>
-                    <p style="font-size:25px;">0.00</p>
+                    <p>今年累计收入(元)</p>
+                    <p style="font-size:25px;">{{yearmoney}}</p>
                 </div>
                 <div class="gong">
                     <p>当月收入(元)</p>
-                    <p style="font-size:25px;">0.00</p>
+                    <p style="font-size:25px;" >{{Monthmoney}}</p>
                 </div>    
                 <div class="gong">
-                    <p>挂号人数(个)</p>
-                    <p style="font-size:25px;">0.00</p>
+                    <p>今日挂号人数(个)</p>
+                    <p style="font-size:25px;">{{count}}</p>
                 </div>
             </div>
         </div>
@@ -42,7 +42,9 @@
         </div>
         <Modal v-model="modal11" fullscreen :title="title">
             <div>
+                <!-- <p style="font-size:20px;">全部医生</p> -->
                 <div class="content3" v-if="adminLevel<=1">
+                    <p style="font-size:20px;color:rgb(0, 187, 187);font-weight: 600; text-align: right;" @click="selectquan">全部科室</p>
                      <RadioGroup  v-model="index" size="large" style="width:100%;">
                     <div class="contenter" v-for="(item,index) in doctorList" :key="index" >
                         <div class="doctor" @click=" seledoctor(index)">
@@ -58,40 +60,76 @@
                    
                     </RadioGroup>
                 </div>
-                <div class="content3" v-if="adminLevel>1&&adminLevel<=3">
-                     <RadioGroup  v-model="index" size="large" style="width:100%;">
-                    <div class="contenter" v-for="(item,index) in doctorList" :key="index" >
-                        <div class="doctor" @click=" seledoctor(index)">
-                            <img class="avatar" src="./../../assets/avatar.png" alt="" width="40px;"  >
-                            <div class="xinxi">
-                                <p><span>医生姓名：</span><span>{{item.name}}</span></p>
-                                <p><span>医生职称：</span><span>{{item.title}}</span></p>
+                <div class="content3" v-if="adminLevel>1&&adminLevel<=3" style="position: relative;">
+   
+                    <p style="font-size:20px;color:rgb(0, 187, 187);font-weight: 600; text-align: right;" @click="selectquan">全部医生</p>
+                    <RadioGroup  v-model="index" size="large" style="width:100%;">
+                        <div class="contenter" v-for="(item,index) in doctorList" :key="index" >
+                            <div class="doctor" @click=" seledoctor(index)">
+                                <img class="avatar" src="./../../assets/avatar.png" alt="" width="40px;"  >
+                                <div class="xinxi">
+                                    <p><span>医生姓名：</span><span>{{item.name}}</span></p>
+                                    <p><span>医生职称：</span><span>{{item.title}}</span></p>
+                                </div>
+                                <Radio :label="index" class="rad"><span style="display:none;"></span></Radio>
                             </div>
-                            <Radio :label="index" class="rad"><span style="display:none;"></span></Radio>
+                            
                         </div>
-                         
-                    </div>
-                   
+                    
                     </RadioGroup>
                 </div>
             </div>
         </Modal>
+        <loading v-show="isshowloading" class="loading"></loading>
     </div>
 </template>
 
 <script>
 import {hidemenu} from "../../common/js/hide"
+import loading from "../../common/loading";
+let currentDay = new Date();
+//获取当前年份
+let year = currentDay.getFullYear();
+//获取当前月份
+if( currentDay.getMonth() + 1<10){
+var mon = currentDay.getMonth() + 1;
+var month = '0'+mon;
+}else{
+  var month = currentDay.getMonth() + 1;
+}
+//获取当天日期
+if( currentDay.getDate()<10){
+  var mon =  currentDay.getDate();
+  var day = '0'+mon;
+}else{
+  var day =currentDay.getDate();
+}
+//当前年月日
+var time = year + "-" + month + "-" + day;
     export default {
+        components: {
+        //加载动画
+        loading
+      },
         data() {
             return {
                 biao:'',
                 Administrator:'',
-                index:0,
+                index:'',
                 single:false,
                 modal11:false,
                 doctorList:[],
                 title:'',
-                adminLevel:''
+                adminLevel:'',
+                currentDay:time,
+                moneyDate:{},
+                Monthmoney:'',
+                daymoney:'',
+                yearmoney:"",
+                count:'',
+                selectery:0,
+                depcode:'',
+                isshowloading:false
             }
         },
          methods:{
@@ -101,21 +139,54 @@ import {hidemenu} from "../../common/js/hide"
             },
             //进入明细目录
             Detailed(){
-                 this.$router.push('/particulars');
+                 this.$router.push(`/particulars?depcode=${this.depcode}&selectery=${this.selectery}`);
             },
             //打开弹框
             tomodal(){
                 this.modal11=true;
             },
+            //全部医生
+            selectquan(){
+                if(this.adminLevel>1&&this.adminLevel<=3){
+                    this.modal11=false;
+                    this.index='';
+                    this.biao=this.Administrator.deptName.split('.', 1)[0];
+                    this.selectkeshou(this.Administrator.deptCode);
+                    this.selectery=1;
+                }
+                if(this.adminLevel<=1){
+                     this.modal11=false;
+                     this.index='';
+                     this.biao='医院';
+                     this.selectyiyuan();
+                     this.selectery=0;
+                }
+            },
             //选择医生
-            seledoctor(index){
-                 this.index=index;
-                 this.modal11=false;
+            seledoctor(index,item){
+                if(this.adminLevel>1&&this.adminLevel<=3){
+                    this.index=index;
+                    this.modal11=false;
+                    this.title='选择医生';
+                    this.biao=this.doctorList[index].name
+                    this.selectrenshou(this.doctorList[index].userName);
+                    this.selectery=2;
+                    this.depcode=this.doctorList[index].userName;
+                }
+                if(this.adminLevel<=1){
+                    this.index=index;
+                    this.modal11=false;
+                    this.title='选择科室';
+                    this.biao=this.doctorList[index].deptName.split('.', 1)[0];
+                    this.selectkeshou(this.Administrator.deptCode);
+                    this.selectery=1;
+                    this.depcode=this.doctorList[index].deptCode;
+                }
+                 
             },
             //科室分类
             _dealdata(data){
                 //妇科
-                
                 var gynaecology=[];
                 //产科
                 var obstetrics=[];
@@ -205,13 +276,143 @@ import {hidemenu} from "../../common/js/hide"
                     }
                 })
             },
-            //人收
-            selectrenshou(value){
-
-            },
-            //查询挂号收入
+            //查询科室收入
             selectkeshou(value){
-
+                
+                var that =this;
+                var url = 'http://192.168.33.22:8081/admin/clinic/getDeptClinicTotalByDate'
+                var day = that.currentDay;
+                var deptCode = value;
+                that.isshowloading=true;
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    dataType: "json",
+                    timeout: 15000, //通过timeout属性，设置超时时间
+                    data: {day,deptCode},
+                    success:function(data){
+                        that.isshowloading=false;
+                        if(data.code=='200'){
+                            var moneyDate = data.data;
+                            that.moneyDate=data.data;
+                            if(moneyDate.totalYear.money){
+                                that.yearmoney=moneyDate.totalYear.money
+                            }else{
+                                that.yearmoney='0.00'
+                            }
+                            if(moneyDate.totalDay.money){
+                                that.daymoney=moneyDate.totalDay.money
+                            }else{
+                                that.daymoney='0.00'
+                            }
+                            if(moneyDate.totalDay.count){
+                                that.count=moneyDate.totalDay.count
+                            }else{
+                                that.count='0'
+                            }
+                            if(moneyDate.totalMonth.money){
+                                that.Monthmoney=moneyDate.totalMonth.money
+                            }else{
+                                that.Monthmoney='0.00'
+                            }
+                        }
+                        
+                    },
+                    error:function(data){
+                        that.isshowloading=false;
+                    }
+                })
+            },
+            //查询医生挂号收入
+            selectrenshou(value){
+                var that =this;
+                var url = 'http://192.168.33.22:8081/admin/clinic/getDoctorClinicTotalByDate'
+                var day = that.currentDay;
+                var doctor = value;
+                that.isshowloading=true;
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    dataType: "json",
+                    timeout: 15000, //通过timeout属性，设置超时时间
+                    data: {day,doctor},
+                    success:function(data){
+                        that.isshowloading=false;
+                        if(data.code=='200'){
+                            var moneyDate = data.data;
+                            that.moneyDate=data.data;
+                            if(moneyDate.totalYear.money){
+                                that.yearmoney=moneyDate.totalYear.money
+                            }else{
+                                that.yearmoney='0.00'
+                            }
+                            if(moneyDate.totalDay.money){
+                                that.daymoney=moneyDate.totalDay.money
+                            }else{
+                                that.daymoney='0.00'
+                            }
+                            if(moneyDate.totalDay.count){
+                                that.count=moneyDate.totalDay.count
+                            }else{
+                                that.count='0'
+                            }
+                            if(moneyDate.totalMonth.money){
+                                that.Monthmoney=moneyDate.totalMonth.money
+                            }else{
+                                that.Monthmoney='0.00'
+                            }
+                        }
+                        
+                    },
+                    error:function(data){
+                        that.isshowloading=false;
+                    }
+                })
+            },
+            //查询医院挂号收入
+            selectyiyuan(){
+                var that =this;
+                var url = 'http://192.168.33.22:8081/admin/clinic/getAllClinicTotalByDate'
+                var day = that.currentDay;
+                that.isshowloading=true;
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    dataType: "json",
+                    timeout: 15000, //通过timeout属性，设置超时时间
+                    data: {day},
+                    success:function(data){
+                        that.isshowloading=false;
+                        if(data.code=='200'){
+                            var moneyDate = data.data;
+                            that.moneyDate=data.data;
+                            if(moneyDate.totalYear.money){
+                                that.yearmoney=moneyDate.totalYear.money
+                            }else{
+                                that.yearmoney='0.00'
+                            }
+                            if(moneyDate.totalDay.money){
+                                that.daymoney=moneyDate.totalDay.money
+                            }else{
+                                that.daymoney='0.00'
+                            }
+                            if(moneyDate.totalDay.count){
+                                that.count=moneyDate.totalDay.count
+                            }else{
+                                that.count='0'
+                            }
+                            if(moneyDate.totalMonth.money){
+                                that.Monthmoney=moneyDate.totalMonth.money
+                            }else{
+                                that.Monthmoney='0.00'
+                            }
+                        }
+                        
+                    },
+                    error:function(data){
+                        that.isshowloading=false;
+                    }
+                })
             }
          },
          mounted(){
@@ -219,24 +420,31 @@ import {hidemenu} from "../../common/js/hide"
                     this.Administrator=JSON.parse(localStorage.getItem('Administrator'));
                     this.adminLevel=this.Administrator.adminLevel;
                     if(this.Administrator.adminLevel>1&&this.Administrator.adminLevel<4){
-                        this.biao =this.Administrator.deptName;
+                        this.biao =this.Administrator.deptName.split('.', 1)[0];
                         //查询医生
+                        this.title='选择医生'
                         this.docList({value:this.Administrator.deptCode});
-                        this.selectshou(this.Administrator.deptCode);
+                        this.selectkeshou(this.Administrator.deptCode);
+                        this.depcode=this.Administrator.deptCode;
+                        this.selectery=1;
                     }
                     if(this.Administrator.adminLevel>3 && this.Administrator.adminLevel<5){
                         this.biao = this.Administrator.name;
-                        this.selectshou(this.Administrator.userName);
+                        this.selectrenshou(this.Administrator.userName);
+                        this.depcode = this.Administrator.userName;
+                        this.selectery=2;
                     }
                     if(this.Administrator.adminLevel<=1){
                          this.biao = '医院';
                          this.title='选择科室'
+                         this.selectery=0;
                          this.DeptInfoList();
+                         this.selectyiyuan();
                     }
             }
          },
          created(){
-            let that=this
+            let that=this 
             const requesturl=that.$store.getters.getUrl + "SweepCode.do";
             hidemenu(requesturl);
          }
@@ -291,6 +499,7 @@ import {hidemenu} from "../../common/js/hide"
 }
 .monted p{
      position: relative;
+     
 }
 .monted p svg {
   vertical-align: middle;

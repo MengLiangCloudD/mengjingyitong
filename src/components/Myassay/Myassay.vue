@@ -277,7 +277,6 @@ export default {
     },
     //查看化验明细
     Testdetails(index){
-      
       var that = this;
       that.modal11 = true;
       var url =that.$store.getters.getUrl + "chemicalexam/getAssayResult.do";

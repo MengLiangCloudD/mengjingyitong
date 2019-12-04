@@ -31,15 +31,22 @@
                 </p>
             </Modal>
         </div>
+        <loading v-show="isshowloading" class="loading"></loading>
     </div>
 </template>
 <script>
+import loading from "../../common/loading";
     export default {
+        components: {
+        //加载动画
+        loading
+      },
         data() {
             return {
                 content:'',
                 modal11:false,
-                doctorList:[]
+                doctorList:[],
+                isshowloading:false
             }
         },
         methods:{
@@ -64,6 +71,7 @@
                 var that =this;
                 var deptCode = that.doctorList[index].deptCode;
                 var url = 'http://192.168.33.22:8081/admin/dept/getDeptContentByDeptCode'
+                that.isshowloading=true;
                  $.ajax({
                     url: url,
                     type: "post",
@@ -71,6 +79,7 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data:{deptCode},
                     success:function(data){
+                        that.isshowloading=false;
                         if(data.code=='200'){
                             that.modal11=true;
                             that.content = data.data
@@ -81,6 +90,7 @@
                         }
                     },
                     error:function(data){
+                        that.isshowloading=false;
                     }
                 })
                 
@@ -135,6 +145,7 @@
             DeptInfoList(){
                 var that =this;
                 var url = 'http://192.168.33.22:8081/admin/dept/getDeptInfoList'
+                that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -142,12 +153,14 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: '',
                     success:function(data){
+                        that.isshowloading=false;
                         if(data.code=='200'){
                             that._dealdata(data.data);
                         }
                         
                     },
                     error:function(data){
+                        that.isshowloading=false;
                     }
                 })
             }

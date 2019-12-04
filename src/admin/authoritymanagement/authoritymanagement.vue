@@ -12,7 +12,7 @@
             <div class="list-content" v-if="deptorList.length>0">
                 <div class="item-box" v-for="(item,index) in deptorList" :key="index">
                     <div class="text-content">{{item.deptName}}病历查看</div>
-                    <div size="large" class="switchopen" :class="{'activeswitchopen':item.patientReport=='0'}" @click="ischangestates(item)">
+                    <div size="large" class="switchopen" :class="{'activeswitchopen':item.patientReport=='0'}" @click="ischangestate(item)">
                         {{item.patientReport=='1'?"ON":"OFF"}}
                         <div class="circle" :class="{'activecircle':item.patientReport=='0'}"></div>
                     </div>
@@ -62,26 +62,36 @@
 </template>
 
 <script>
+import loading from "../../common/loading";
     export default {
+        components: {
+        //加载动画
+        loading
+      },
         data() {
             return {
                 Administrator:'',
                 adminLevel:'',
+                //标题
                 biao:'',
+                //医生列表
                 doctorList:[],
-                swites:false,
-                switees:true,
+                //打开或关闭
                 allswites:'',
                 patientReport:'',
+                //弹框
                 statemodel:false,
+                //弹框
                 statemodeles:false,
+                //选中的
                 currentitem:{},
-                deptorList:[]
+                //科室编码
+                deptorList:[],
+                isshowloading:false
             }
         },
         methods:{
             ischangestate(item){
-                debugger
                 this.currentitem=item
                 this.statemodel=true
             },
@@ -106,7 +116,7 @@
                 }else{
                   deptCode=''
                 }
-               
+               that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -114,12 +124,13 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: {deptCode},
                     success:function(data){
+                        that.isshowloading=false;
                       if(data.code==200){
                         that.doctorList=data.data;
                       }
                     },
                     error:function(data){
-                      
+                       that.isshowloading=false;
                     }
                 })
             },
@@ -137,6 +148,7 @@
                 }else if(that.allswites==1){
                     var patientReport =0;
                 }
+                 that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -144,6 +156,7 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: {patientReport,deptCode},
                     success:function(data){
+                         that.isshowloading=false;
                       if(data.code==200){
                           if(that.Administrator.adminLevel>1&&that.Administrator.adminLevel<4){
                             that.selectquan(that.Administrator.deptCode);
@@ -155,7 +168,7 @@
                       }
                     },
                     error:function(data){
-                      
+                       that.isshowloading=false;
                     }
                 })
             },
@@ -164,6 +177,7 @@
                 var that =this;
                 var url = 'http://192.168.33.22:8081/admin/doctor/getPatientReportByDeptCode';
                 var deptCode = value;
+                 that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -171,12 +185,13 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: {deptCode},
                     success:function(data){
+                         that.isshowloading=false;
                       if(data.code==200){
                             that.allswites=data.data;
                       }
                     },
                     error:function(data){
-                      
+                       that.isshowloading=false;
                     }
                 })
             },
@@ -190,7 +205,7 @@
                 }else if(that.currentitem.patientReport==1){
                     var patientReport =0;
                 }
-
+                     that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -198,6 +213,7 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: {patientReport,userName},
                     success:function(data){
+                         that.isshowloading=false;
                       if(data.code==200){
                           if(that.Administrator.adminLevel>1&&that.Administrator.adminLevel<4){
                               that.selectquan(that.Administrator.deptCode);
@@ -214,7 +230,7 @@
                       }
                     },
                     error:function(data){
-                      
+                       that.isshowloading=false;
                     }
                 })
             },
@@ -239,26 +255,59 @@
                         other.push(data[i]);
                     }
                 }
+                var gynae=[];
+                 for(var i = 0;i<gynaecology.length;i++){
+                    if(gynaecology[i].patientReport==0){
+                        gynae.push(gynaecology[i])
+                    }
+                }
+                var obs=[];
+                 for(var i = 0;i<obstetrics.length;i++){
+                    if(obstetrics[i].patientReport==0){
+                        gynae.push(obstetrics[i])
+                    }
+                }
+                var ped=[];
+                 for(var i = 0;i<pediatrics.length;i++){
+                    if(pediatrics[i].patientReport==0){
+                        gynae.push(pediatrics[i])
+                    }
+                }
                 this.deptorList=[]
-                this.deptorList.push({ deptName: "妇科门诊", gynaecology:gynaecology,deptCode:'100101'});
-                this.deptorList.push({ deptName: "产科门诊", obstetrics:obstetrics,deptCode:'100102'});
-                this.deptorList.push({ deptName: "儿科门诊", pediatrics:pediatrics,deptCode:'100103'});
+                if(gynae.length>0){
+                     this.deptorList.push({ deptName: "妇科门诊", gynaecology:gynaecology,deptCode:'100101',patientReport:0});
+                }else{
+                     this.deptorList.push({ deptName: "妇科门诊", gynaecology:gynaecology,deptCode:'100101',patientReport:1});
+                }
+                if(obs.length>0){
+                    this.deptorList.push({ deptName: "产科门诊", obstetrics:obstetrics,deptCode:'100102',patientReport:0});
+                }else{
+                    this.deptorList.push({ deptName: "产科门诊", obstetrics:obstetrics,deptCode:'100102',patientReport:1});
+                }
+                if(ped.length>0){
+                    this.deptorList.push({ deptName: "儿科门诊", pediatrics:pediatrics,deptCode:'100103',patientReport:0});
+                }else{
+                    this.deptorList.push({ deptName: "儿科门诊", pediatrics:pediatrics,deptCode:'100103',patientReport:1});
+                }
                 for (let j = 0; j < other.length; j++) {
                     if (other[j].deptName == "皮肤科") {
-                    this.deptorList.push({deptName: "皮肤科",deptCode:other[j].deptCode});
+                    this.deptorList.push({deptName: "皮肤科",deptCode:other[j].deptCode,patientReport:other[j].patientReport});
                     }
                 }
                 //其他没合并的科室
                 for (let i = 0; i < other.length; i++) {
                     let deptName = "";
-                    let deptCode = ''
+                    let deptCode = '';
+                    var patientReport=''
                     deptName = other[i].deptName;
                     deptCode=other[i].deptCode;
+                    patientReport=other[i].patientReport
                     if (deptName != "皮肤科") {
                     let depitem = {
                         //合并科室的名称
                         deptName: deptName,
-                        deptCode:deptCode
+                        deptCode:deptCode,
+                        patientReport:patientReport
                     };
                     this.deptorList.push(depitem);
                     }
@@ -268,6 +317,7 @@
             DeptInfoList(){
                 var that =this;
                 var url = 'http://192.168.33.22:8081/admin/dept/getDeptInfoList'
+                 that.isshowloading=true;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -275,12 +325,14 @@
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: '',
                     success:function(data){
+                         that.isshowloading=false;
                         if(data.code=='200'){
                             that._dealdata(data.data);
                         }
                         
                     },
                     error:function(data){
+                         that.isshowloading=false;
                     }
                 })
             }
@@ -299,7 +351,7 @@
                         this.patientReport=this.Administrator.patientReport;
                     }
                     if(this.Administrator.adminLevel<=1){
-                        this.DeptInfoList()
+                        this.DeptInfoList();
                     }
             }
         }
