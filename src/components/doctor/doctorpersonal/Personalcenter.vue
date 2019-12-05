@@ -233,7 +233,7 @@ import {hidemenu} from "../../../common/js/hide"
               var that = this;
               var url = that.$store.getters.getUrl + "doctors/getdoctor.do";
               //医生编码
-              var doccode='000LSQ';
+              var doccode=localStorage.getItem('ysdoccode');
               let ajaxTimeOut = $.ajax({
                 url: url,
                 type: "post",

@@ -70,7 +70,7 @@ import loading from "../../common/loading";
                 // }
                 var that =this;
                 var deptCode = that.doctorList[index].deptCode;
-                var url = 'http://192.168.33.22:8081/admin/dept/getDeptContentByDeptCode'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptContentByDeptCode'
                 that.isshowloading=true;
                  $.ajax({
                     url: url,
@@ -144,7 +144,7 @@ import loading from "../../common/loading";
             // 查询科室
             DeptInfoList(){
                 var that =this;
-                var url = 'http://192.168.33.22:8081/admin/dept/getDeptInfoList'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList'
                 that.isshowloading=true;
                 $.ajax({
                     url: url,

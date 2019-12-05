@@ -185,7 +185,7 @@ import loading from "../../common/loading";
             //查询科室
             DeptInfoList(){
                 var that =this;
-                var url = 'http://192.168.33.22:8081/admin/dept/getDeptInfoList'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList'
                 that.isshowloading=true;
                 $.ajax({
                     url: url,
@@ -231,7 +231,7 @@ import loading from "../../common/loading";
                 var expertJob = that.formInline.msg;
                 var adminLevel = that.formInline.identity;
                 var doctorRole  =JSON.stringify(that.formInline.jurisdiction);
-                var url = 'http://192.168.33.22:8081/admin/doctor/editDoctorInfoByUserName';
+                var url = that.$store.getters.getUrl +'admin/doctor/editDoctorInfoByUserName';
                 that.isshowloading=true;
                 $.ajax({
                     url: url,

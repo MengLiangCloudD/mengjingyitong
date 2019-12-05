@@ -211,7 +211,7 @@ export default {
     changguan(){
       var that  = this;
       // var url  = that.$store.getters.getUrl + "doctor/doctorlogins.do";
-      var url = 'http://192.168.33.22:8081/admin/doctor/loginByIdNo'
+      var url = that.$store.getters.getUrl +'admin/doctor/loginByIdNo'
       var index = that.index;
       var userName = that.myCardType[index].name;
       // var userName = '曲博';
@@ -225,7 +225,7 @@ export default {
           type: "post",
           dataType: "json",
           async: false,
-          data: {idNo:'13262619690702353X'},
+          data: {idNo:'130824199109233524'},
           success: function(data){
             that.spinShow=false;
             if(data.code==200){
@@ -250,12 +250,12 @@ export default {
       that.visitstatus=false;
       var url  = that.$store.getters.getUrl + "doctor/doctorlogins.do";
       var index = that.index;
-      // var userName = that.myCardType[index].name;
-      var userName = '曲博';
-      // var phoneNumber = that.myCardType[index].phone;
-      var phoneNumber = '17732886275';
-      // var idNo = that.myCardType[index].idno;
-      var idNo = '130824199007063018';
+      var userName = that.myCardType[index].name;
+      // var userName = '曲博';
+      var phoneNumber = that.myCardType[index].phone;
+      // var phoneNumber = '17732886275';
+      var idNo = that.myCardType[index].idno;
+      // var idNo = '130824199007063018';
       if(that.visitstatus==false){
         that.spinShow=true;
         $.ajax({

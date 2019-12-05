@@ -832,9 +832,9 @@ import {hidemenu} from "../../common/js/hide"
               var that =this;
               that.isshowloading=true;
               //将费用存到vuex里
-                that.$store.commit("setRegprice", that.payFee);
-                //把卡号存到vuex
-                that.$store.commit("setCardCode",localStorage.getItem("cardno"));
+              that.$store.commit("setRegprice", that.payFee);
+              //把卡号存到vuex
+              that.$store.commit("setCardCode",localStorage.getItem("cardno"));
               var url = that.$store.getters.getUrl+ 'prescription/PrescriptionNum.do';
               var obj={};
               //患者卡号
@@ -842,14 +842,13 @@ import {hidemenu} from "../../common/js/hide"
               //支付费用
               obj.chargeFee=that.payFee;
               //患者姓名
-              obj.name = localStorage.getItem('cardername');;
+              obj.name = localStorage.getItem('cardername');
               //所选中的处方
               obj.prescriptions=JSON.stringify(that.setlocaldayarr);
               obj.fee = that.payFee;
-              
               //支付描述
               obj.body='微信处方';
-              var object =JSON.stringify(obj)
+              var object =JSON.stringify(obj);
               localStorage.setItem("obj",object); 
               var arr={};
                 arr.cardno =localStorage.getItem("cardno");
@@ -1221,10 +1220,9 @@ import {hidemenu} from "../../common/js/hide"
                         }
                     });
                 })
-                
             },
             toggledoctorlist(){
-              this.isshowdoctorlist=!this.isshowdoctorlist
+              this.isshowdoctorlist=!this.isshowdoctorlist;
             },
             selectdoctor(item,index){
               let that=this
@@ -1237,10 +1235,9 @@ import {hidemenu} from "../../common/js/hide"
               this.currenticonindex=index
               this.currentdoctor=item
               localStorage.setItem('hosdoccode',this.currentdoctor.hosdoccode);
-              
               this.isshowloading=true
               setTimeout(function(){
-                that.init(item)
+                that.init(item);
               },100)
               this.sumpayfee(this.dayarr)
               

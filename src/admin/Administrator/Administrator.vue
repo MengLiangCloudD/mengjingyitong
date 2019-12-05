@@ -19,7 +19,6 @@
                         <p><span>管理员姓名：</span><span>{{item.name}}</span></p>
                         <p><span>管理员职称：</span><span>{{item.job}}</span></p>
                     </div>
-                    
                 </div>
                 <div class="operate">
                         <Button type="primary" size="small" @click="goaddattachment(0)">修改</Button>
@@ -90,7 +89,7 @@ import loading from "../../common/loading";
             },
             DeptInfoList(){
                 var that =this;
-                var url = 'http://192.168.33.22:8081/admin/doctor/getAdminListByAdminLevel';
+                var url =that.$store.getters.getUrl + 'admin/doctor/getAdminListByAdminLevel';
                 var adminLevel = that.adminLevel;
                 that.isshowloading=true;
                 $.ajax({
@@ -113,10 +112,10 @@ import loading from "../../common/loading";
         },
         created(){
             if(localStorage.getItem('Administrator')!=undefined&&localStorage.getItem('Administrator')!=''){
-            this.Administrator=JSON.parse(localStorage.getItem('Administrator'));
-                this.adminLevel=this.Administrator.adminLevel
+                this.Administrator=JSON.parse(localStorage.getItem('Administrator'));
+                this.adminLevel=this.Administrator.adminLevel;
             }
-            this.DeptInfoList()
+                this.DeptInfoList()
         }
     }
 </script>

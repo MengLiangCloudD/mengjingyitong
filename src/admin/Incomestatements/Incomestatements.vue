@@ -232,7 +232,7 @@ var time = year + "-" + month + "-" + day;
             // 查询科室
             DeptInfoList(){
                 var that =this;
-                var url = 'http://192.168.33.22:8081/admin/dept/getDeptInfoList'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList'
                 $.ajax({
                     url: url,
                     type: "post",
@@ -252,7 +252,7 @@ var time = year + "-" + month + "-" + day;
             //查询医生
             docList(value){
               var that =this;
-                var url = 'http://192.168.33.22:8081/admin/doctor/getDoctorInfoList'
+                var url = that.$store.getters.getUrl +'admin/doctor/getDoctorInfoList'
                 var deptCode;
                 if(value!=undefined){
                    deptCode =value.value
@@ -280,7 +280,7 @@ var time = year + "-" + month + "-" + day;
             selectkeshou(value){
                 
                 var that =this;
-                var url = 'http://192.168.33.22:8081/admin/clinic/getDeptClinicTotalByDate'
+                var url = that.$store.getters.getUrl +'admin/clinic/getDeptClinicTotalByDate'
                 var day = that.currentDay;
                 var deptCode = value;
                 that.isshowloading=true;
@@ -326,7 +326,7 @@ var time = year + "-" + month + "-" + day;
             //查询医生挂号收入
             selectrenshou(value){
                 var that =this;
-                var url = 'http://192.168.33.22:8081/admin/clinic/getDoctorClinicTotalByDate'
+                var url = that.$store.getters.getUrl +'admin/clinic/getDoctorClinicTotalByDate'
                 var day = that.currentDay;
                 var doctor = value;
                 that.isshowloading=true;
@@ -372,7 +372,7 @@ var time = year + "-" + month + "-" + day;
             //查询医院挂号收入
             selectyiyuan(){
                 var that =this;
-                var url = 'http://192.168.33.22:8081/admin/clinic/getAllClinicTotalByDate'
+                var url = that.$store.getters.getUrl +'admin/clinic/getAllClinicTotalByDate'
                 var day = that.currentDay;
                 that.isshowloading=true;
                 $.ajax({

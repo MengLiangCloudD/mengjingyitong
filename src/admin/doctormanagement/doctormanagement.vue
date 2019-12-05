@@ -145,7 +145,7 @@ import loading from "../../common/loading";
             //查询科室
             DeptInfoList(){
                 var that =this;
-                var url = 'http://192.168.33.22:8081/admin/dept/getDeptInfoList';
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList';
                 that.isshowloading=true;
                 $.ajax({
                     url: url,
@@ -167,7 +167,7 @@ import loading from "../../common/loading";
             },
             docList(value){
               var that =this;
-                var url = 'http://192.168.33.22:8081/admin/doctor/getDoctorInfoList'
+                var url = that.$store.getters.getUrl +'admin/doctor/getDoctorInfoList'
                 var deptCode;
                 if(value!=undefined){
                    deptCode =value.value

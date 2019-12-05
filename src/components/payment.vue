@@ -212,38 +212,38 @@ export default {
                                       window.location.href =_this.$store.getters.getUrl + "#/reportss";
                                   }
                                   if(data.Response.ResultCode==0){
-                                  var url =_this.$store.getters.getUrl+'prescriptionRefund.do';
-                                  var tradeno = localStorage.getItem("tradeno");
-                                  _this.spinShow = true;
-                                  let ajaxTimeOut =$.ajax({
-                                    type:"post",
-                                      url:url,
-                                      dataType:'json',
-                                       timeout: 15000, //通过timeout属性，设置超时时间
-                                      // async:false,
-                                      data:{
-                                        tradeno:tradeno
-                                      },
-                                      success:function(data){
-                                          _this.spinShow = false;
-                                        if(data.status=1){
-                                          _this.$Message.error('支付失败请重新支付');
-                                        }
-                                      },
-                                      error:function(data){
-                                        _this.spinShow = false;
-                                      },
-                                       complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
-                                          if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
-                                            ajaxTimeOut.abort(); //取消请求
-                                            
-                                            _this.$Modal.warning({     //超时提示：网络不稳定
-                                              title: '友情提示',
-                                              content: '请求超时',
-                                            });
+                                    var url =_this.$store.getters.getUrl+'prescriptionRefund.do';
+                                    var tradeno = localStorage.getItem("tradeno");
+                                    _this.spinShow = true;
+                                    let ajaxTimeOut =$.ajax({
+                                      type:"post",
+                                        url:url,
+                                        dataType:'json',
+                                        timeout: 15000, //通过timeout属性，设置超时时间
+                                        // async:false,
+                                        data:{
+                                          tradeno:tradeno
+                                        },
+                                        success:function(data){
+                                            _this.spinShow = false;
+                                          if(data.status=1){
+                                            _this.$Message.error('支付失败请重新支付');
                                           }
-                                        }
-                                  }) 
+                                        },
+                                        error:function(data){
+                                          _this.spinShow = false;
+                                        },
+                                        complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
+                                            if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
+                                              ajaxTimeOut.abort(); //取消请求
+                                              
+                                              _this.$Modal.warning({     //超时提示：网络不稳定
+                                                title: '友情提示',
+                                                content: '请求超时',
+                                              });
+                                            }
+                                          }
+                                    }) 
                                   }
                                   
                                 },

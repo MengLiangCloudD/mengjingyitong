@@ -72,7 +72,7 @@ import loading from '../../../common/loading'
             async changestate(){
                 let item=this.currentitem
                 let that=this
-                    const cliniclabel=item.cliniclabel
+                    const cliniclabel=item.cliniclabel;
                     let code
                     if(item.visitstatus=="1"){
                         code=0
