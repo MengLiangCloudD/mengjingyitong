@@ -70,7 +70,7 @@ import loading from "../../common/loading";
                 // }
                 var that =this;
                 var deptCode = that.doctorList[index].deptCode;
-                var url = that.$store.getters.getUrl +'admin/dept/getDeptContentByDeptCode'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptContentByDeptCode.do'
                 that.isshowloading=true;
                  $.ajax({
                     url: url,
@@ -144,7 +144,7 @@ import loading from "../../common/loading";
             // 查询科室
             DeptInfoList(){
                 var that =this;
-                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList.do'
                 that.isshowloading=true;
                 $.ajax({
                     url: url,

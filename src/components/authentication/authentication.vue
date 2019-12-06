@@ -20,11 +20,11 @@
     <div class="inp">
       <p>
         <label for="name">姓名</label>
-        <input type="text" name id="name" class="name" placeholder="请输入姓名" v-model="Name"  @input="ischange()" @blur.prevent="inputLoseFocus">
+        <input type="text" name id="name" class="name" placeholder="请输入姓名" v-model="Name"  @input="ischange()" @blur.prevent="inputLoseFocus" >
       </p>
       <p>
         <label for="IdNumber">证件号码</label>
-        <input type="text" name id="IdNumber" class="name" placeholder="请输入身份证号码" v-model="IdNumber" @input="ischange()" @blur.prevent="inputLoseFocus">
+        <input type="text" name id="IdNumber" class="name" placeholder="请输入身份证号码" v-model="IdNumber" @input="ischange()"  @blur.prevent="inputLoseFocus">
       </p>
     </div>
     <div class="nav">就诊人联系电话</div>
@@ -55,9 +55,6 @@
             <span v-if="!sendMsgDisabled">获取验证码</span></button>
         </span>
       </p>
-    </div>
-    <div>
-        
     </div>
     <div class="butn">
       <button
@@ -108,10 +105,59 @@ export default {
       isSend:false,//控制验证码按钮能不能点击
       //控制加载动画的显示
       spinShow: false,
-      isbinen:true
+      isbinen:true,
+      number:1
     };
   },
   methods: {
+    bulre(){
+      var that = this;
+      var Name=that.Name;
+      var IdNumber = that.IdNumber;
+      var openid = localStorage.getItem('openid') //openid
+      var url = that.$store.getters.getUrl+'builbin/Verified.do'
+      if(Name!=''&&IdNumber!=''&&that.number==1){
+        that.number=0;
+        $.ajax({
+          url: url,
+          type: "post",
+          dataType: "json",
+          // contentType:'application/json',
+          timeout: 15000, //通过timeout属性，设置超时时间
+          async: true,
+          data:{Name,IdNumber,openid},
+          success:function(data){
+            that.number=1;
+            if(data.code!=500){
+              if(data.code==10010){
+                that.$Modal.warning({     //超时提示：网络不稳定
+                  title: '提示',
+                  content: '验证功能欠费',
+                });
+              }
+              if(data.result.resp.code==0){
+                  that.docloing();
+              }else{
+                that.$Modal.warning({     //超时提示：网络不稳定
+                  title: '提示',
+                  content: '身份证和姓名不匹配',
+                });
+              }
+            }else{
+              that.$Modal.warning({     //超时提示：网络不稳定
+                  title: '提示',
+                  content: '频繁操作，请一个小时之后进行操作',
+                });
+            }
+              
+          },
+          error:function(data){
+            that.number=1;
+          }
+        })
+      }
+      
+    },
     //返回上一层
       tobackdetail(){
         if(location.hash.indexOf('myCard')!=-1){
@@ -161,10 +207,9 @@ export default {
         setTimeout(() => {
           window.scrollTo(0, 0);
         }, 100);
-      },
+    },
     //提交验证
     verifyBtn(){
-      debugger
         var _this = this;
         if (_this.Name == '') {
               _this.btnTimer("姓名不能为空",0);
@@ -203,14 +248,17 @@ export default {
             return
         }
         else{
-          
+          _this.bulre();
+        }
+    },
+    docloing(){
+      var _this =this;
           var name= _this.Name//姓名
           var idNo= _this.IdNumber//身份证号
           var phone= _this.phoneNumber//电话
           var authCode= _this.authCode//验证码
           var openid=localStorage.getItem('openid') //openid
           _this.spinShow=true;
-          
           if(_this.isbinen){
                 var url = _this.$store.getters.getUrl+"builbin/insertCard.do?code="+authCode;
                 let obj={
@@ -257,7 +305,7 @@ export default {
                         }
                     },
                     error: function(data) {
-                      debugger
+                      
                        _this.spinShow=false;
                         _this.$Message.error('请求失败!');
                     },
@@ -273,61 +321,6 @@ export default {
                     }
                 });
           }
-          // else if(!_this.isbinen){
-          //     var url = _this.$store.getters.getUrl+"builbin/updateBinding.do";
-          //       let ajaxTimeOut =  $.ajax({
-          //           url: url,
-          //           type: "post",
-          //           dataType: "json",
-          //           timeout: 15000, //通过timeout属性，设置超时时间
-          //           async: true,
-          //           data: {
-          //               name:name,
-          //               idno:idNo,
-          //               phone:phone,
-          //               code:authCode,
-          //               openid:openid
-          //           },
-          //           success: function(data) {
-          //           _this.spinShow=false;
-          //           //返回数据后关闭加载动画
-          //               if(data.status=="1"){
-          //                   _this.erromodal=true
-          //                   _this.$Message.info(data.message);
-          //                   _this.$router.push("/home");
-          //               }else{
-          //                   if(data==1&&data.status==0){
-          //                       _this.$Message.info(data.message);
-          //                       _this.isbinen=!_this.isbinen;
-          //                   }else{
-          //                        $('.name').val('');
-          //                       _this.Name=''; //姓名
-          //                       _this.IdNumber='';  //证件号码
-          //                       _this.phoneNumber=''; //电话
-          //                       _this.authCode='';
-          //                        _this.$Message.info(data.message);
-
-          //                   }
-          //               }
-          //           },
-          //           error: function(data) {
-          //              _this.spinShow=false;
-          //               _this.$Message.error('请求失败!');
-          //           },
-          //           complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
-          //             if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
-          //               ajaxTimeOut.abort(); //取消请求
-                        
-          //               _this.$Modal.warning({     //超时提示：网络不稳定
-          //                 title: '友情提示',
-          //                 content: '请求超时',
-          //               });
-          //             }
-          //           }
-          //       });
-          // }
-         
-        }
     },
     //获取验证码
     verifyclick(){

@@ -145,7 +145,7 @@ import loading from "../../common/loading";
             //查询科室
             DeptInfoList(){
                 var that =this;
-                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList';
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList.do';
                 that.isshowloading=true;
                 $.ajax({
                     url: url,
@@ -167,7 +167,7 @@ import loading from "../../common/loading";
             },
             docList(value){
               var that =this;
-                var url = that.$store.getters.getUrl +'admin/doctor/getDoctorInfoList'
+                var url = that.$store.getters.getUrl +'admin/doctor/getDoctorInfoList.do'
                 var deptCode;
                 if(value!=undefined){
                    deptCode =value.value

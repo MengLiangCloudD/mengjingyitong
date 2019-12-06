@@ -113,7 +113,7 @@ if( currentDay.getDate()<10){
             //查询科室
             selectke(){
                var that =this;
-                var url = that.$store.getters.getUrl +'admin/clinic/getDeptClinicInfoByMonth'
+                var url = that.$store.getters.getUrl +'admin/clinic/getDeptClinicInfoByMonth.do'
                 var month =that.datatime(that.value1);
                 var deptCode = that.depcode;
                 var size = that.size;
@@ -142,7 +142,7 @@ if( currentDay.getDate()<10){
             //查询医生
             selectdoc(){
               var that =this;
-                var url = that.$store.getters.getUrl +'admin/clinic/getDoctorClinicInfoByMonth'
+                var url = that.$store.getters.getUrl +'admin/clinic/getDoctorClinicInfoByMonth.do'
                 var month =that.datatime(that.value1);
                 var doctor = that.depcode;
                 var size = that.size;
@@ -168,7 +168,7 @@ if( currentDay.getDate()<10){
             //查询医院
             selectyuan(){
               var that =this;
-                var url = that.$store.getters.getUrl +'admin/clinic/getAllClinicInfoByMonth'
+                var url = that.$store.getters.getUrl +'admin/clinic/getAllClinicInfoByMonth.do'
                 var month =that.datatime(that.value1);
                 var doctor = that.depcode;
                 var size = that.size;

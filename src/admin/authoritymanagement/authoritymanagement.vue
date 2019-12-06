@@ -109,7 +109,7 @@ import loading from "../../common/loading";
             //查询医生
             docList(value){
               var that =this;
-                var url = that.$store.getters.getUrl +'admin/doctor/getDoctorInfoList'
+                var url = that.$store.getters.getUrl +'admin/doctor/getDoctorInfoList.do'
                 var deptCode;
                 if(value!=undefined){
                    deptCode =value.value
@@ -137,7 +137,7 @@ import loading from "../../common/loading";
             // 修改科室权限
             updatedkequan(){
                  var that =this;
-                var url = that.$store.getters.getUrl +'admin/doctor/editPatientReportByDeptCode';
+                var url = that.$store.getters.getUrl +'admin/doctor/editPatientReportByDeptCode.do';
                 if(that.Administrator.adminLevel<=1){
                     var deptCode =that.currentitem.deptCode
                 }else if(that.Administrator.adminLevel>1&&that.Administrator.adminLevel<4){
@@ -175,7 +175,7 @@ import loading from "../../common/loading";
             //根据科室编码查看患者权限
             selectquan(value){
                 var that =this;
-                var url = that.$store.getters.getUrl +'admin/doctor/getPatientReportByDeptCode';
+                var url = that.$store.getters.getUrl +'admin/doctor/getPatientReportByDeptCode.do';
                 var deptCode = value;
                  that.isshowloading=true;
                 $.ajax({
@@ -198,7 +198,7 @@ import loading from "../../common/loading";
             //修改单个医生
             updatedquan(){
                 var that =this;
-                var url = that.$store.getters.getUrl +'admin/doctor/editPatientReportByUserName';
+                var url = that.$store.getters.getUrl +'admin/doctor/editPatientReportByUserName.do';
                 var userName =that.currentitem.userName;
                 if(that.currentitem.patientReport==0){
                     var patientReport =1;
@@ -316,7 +316,7 @@ import loading from "../../common/loading";
             // 查询科室
             DeptInfoList(){
                 var that =this;
-                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList.do'
                  that.isshowloading=true;
                 $.ajax({
                     url: url,

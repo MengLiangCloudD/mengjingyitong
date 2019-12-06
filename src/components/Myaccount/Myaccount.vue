@@ -211,7 +211,7 @@ export default {
     changguan(){
       var that  = this;
       // var url  = that.$store.getters.getUrl + "doctor/doctorlogins.do";
-      var url = that.$store.getters.getUrl +'admin/doctor/loginByIdNo'
+      var url = that.$store.getters.getUrl +'admin/doctor/loginByIdNo.do'
       var index = that.index;
       var userName = that.myCardType[index].name;
       // var userName = '曲博';

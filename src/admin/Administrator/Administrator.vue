@@ -89,7 +89,7 @@ import loading from "../../common/loading";
             },
             DeptInfoList(){
                 var that =this;
-                var url =that.$store.getters.getUrl + 'admin/doctor/getAdminListByAdminLevel';
+                var url =that.$store.getters.getUrl + 'admin/doctor/getAdminListByAdminLevel.do';
                 var adminLevel = that.adminLevel;
                 that.isshowloading=true;
                 $.ajax({
