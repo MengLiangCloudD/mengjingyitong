@@ -140,7 +140,7 @@ export default new Vuex.Store({
     // url:'http://2p495946b1.qicp.vip/',
     // url:"http://zhangshenggui.natapp1.cc/",
     // url: "http://192.168.0.104:8080/", //阿贵
-    // url: "http://192.168.33.168:8080/", //王烁
+    // url: "http://192.168.33.22:8080/", //王烁
     // url: "http://222.223.131.135:8888/", //春涛
     //医生编码 在首页点击医生跳转时保存
     //支付后保存信息用

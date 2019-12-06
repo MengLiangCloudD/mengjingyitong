@@ -250,12 +250,12 @@ export default {
       that.visitstatus=false;
       var url  = that.$store.getters.getUrl + "doctor/doctorlogins.do";
       var index = that.index;
-      var userName = that.myCardType[index].name;
-      // var userName = '曲博';
-      var phoneNumber = that.myCardType[index].phone;
-      // var phoneNumber = '17732886275';
-      var idNo = that.myCardType[index].idno;
-      // var idNo = '130824199007063018';
+      // var userName = that.myCardType[index].name;
+      var userName = '曲博';
+      // var phoneNumber = that.myCardType[index].phone;
+      var phoneNumber = '17732886275';
+      // var idNo = that.myCardType[index].idno;
+      var idNo = '130824199007063018';
       if(that.visitstatus==false){
         that.spinShow=true;
         $.ajax({
@@ -271,6 +271,7 @@ export default {
                 localStorage.setItem('ysdepcode',data.data[0].dept_code);
                 localStorage.setItem('ysdepname',data.data[0].dept_name);
                 localStorage.setItem('ysdocname',data.data[0].name);
+                // localStorage.setItem('adminLevel',data.data[0].adminLevel);
                 that.$router.push('/Personalcenter');
             }else{
               that.$Modal.warning({

@@ -117,12 +117,6 @@ export default new Router({
       path: "/authentication",
       name: "authentication",
       component: resolve=>(require(["@/components/authentication/authentication"],resolve)),
-      // meta: {
-      //   requiresAuth: true,
-      //   privilege: ['capacityStatus'],
-      //   keepAlive: true,//此组件需要被缓存
-      //   isBack:false, //用于判断上一个页面是哪个
-      // }
     },
     {
       path: "/reportss",

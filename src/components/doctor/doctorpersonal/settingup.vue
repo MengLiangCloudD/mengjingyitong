@@ -70,7 +70,6 @@
             },
             uploadImg(e){
                 var that = this;
-                
             },
             setconfig(){
                 let _this=this

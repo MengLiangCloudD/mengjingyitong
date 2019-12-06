@@ -92,7 +92,7 @@ import loading from '../../../common/loading'
         created(){
             let _this=this
             setTimeout(function(){
-                _this.fetchyscode()
+                _this.fetchyscode();
                 const requesturl=_this.$store.getters.getUrl + "SweepCode.do";
                 hidemenu(requesturl);
             },10)

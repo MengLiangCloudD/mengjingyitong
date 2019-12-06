@@ -48,7 +48,6 @@
       </div>
       <div class="otherinfo1" style="border-bottom: 1px solid rgba(187, 187, 187, 1);padding: 0 18px 18px 18px;" v-if="!play">
           <span class="otherinfo-title" style="padding-left: 16.8333vw;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 1;overflow: hidden;" @click="disp">医生简介：{{jiajie}}</span> 
-          <!-- <span class="otherinfo-text" style=""></span> -->
         </div>
         <div class="otherinfo1" style="border-bottom: 1px solid rgba(187, 187, 187, 1);padding: 0 18px 18px 18px ; "  v-if="play"  @click="disp">
           <span class="otherinfo-title" style="padding-left: 16.3333vw;" >医生简介：</span>
@@ -56,7 +55,6 @@
         </div>
       <div class="divid-line"></div>
       <div class="select-table">
-        <!-- <p class="select-item">挂号时间：{{doctor.TimeRegion}} 8:00-17:00</p> -->
         <div class="zhou">
           <div v-for="(item,index) in time" :key="index" class="xuanqi" @click="xuanzeriq(index)">
             <p>{{item.week}}</p>
@@ -201,12 +199,12 @@ export default {
       this.savedoctorinfo(index);
     },
     disp(){
-      this.play=!this.play
+        this.play=!this.play
     },
     //返回上一层
-      tobackdetail(){
-          this.$router.push("/home")
-      },
+    tobackdetail(){
+        this.$router.push("/home");
+    },
     //获取当天日期
     getcurrentday(te) {
       let currentDay = new Date(te);
@@ -242,16 +240,14 @@ export default {
       //开启加载动画
       let _this = this;
       if(_this.$store.getters.getDoccode==null||_this.$store.getters.getDoccode=='null'||_this.$store.getters.getDoccode==undefined||_this.$store.getters.getDepname==null||_this.$store.getters.getDepname=='null'||_this.$store.getters.getDepname==undefined||_this.$store.getters.getdepCode==null||_this.$store.getters.getdepCode=='null'||_this.$store.getters.getdepCode==undefined||_this.$store.getters.getDocName==null||_this.$store.getters.getDocName=='null'||_this.$store.getters.getDocName==undefined){
-        _this.$Modal.warning({//超时提示：网络不稳定
-           title: '友情提示',
-           content: '获取信息异常，请重新获取',
-        });
+      _this.$Modal.warning({//超时提示：网络不稳定
+          title: '友情提示',
+          content: '获取信息异常，请重新获取',
+      });
         _this.$router.push("/home");                    
       }else{
         _this.$router.push("/registeredInfo");
       }
-      
-     
     },
     //存储医生信息
     savedoctorinfo(index) {
@@ -271,7 +267,7 @@ export default {
         var str = haoyuans.cliniclabel;
           if(str.indexOf( _this.$store.getters.getDocName) !== -1){
               a = 1
-              _this.$store.commit("setRegprice",haoyuans.price); //挂号支付的费用
+              _this.$store.commit("setRegprice", haoyuans.price); //挂号支付的费用
               _this.$store.commit("setRegcode", haoyuans.cliniclabel); //存储号源编码
               _this.$store.commit("setamprom", haoyuans.amorpm); //保存白天昼夜
               _this.pmstate = '未约满';
@@ -279,13 +275,6 @@ export default {
         }else{
           _this.pmstate = '暂无号源';
         }
-    //  if(a==0){
-    //       _this.$Modal.warning({
-    //           title: "提示信息",
-    //           content: "获取信息异常"
-    //       });
-    //     _this.$router.push("/abnormal");
-    //  }
     if(_this.numeer==1){
       _this.numeer=0;
       let url1 = location.href;
