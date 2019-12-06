@@ -143,7 +143,7 @@ export default {
           success: function(data) {
             //判断已有几张卡
             if(data.data.length>0){
-               localStorage.setItem('cardno',data.data[0].cardno);
+              localStorage.setItem('cardno',data.data[0].cardno);
               localStorage.setItem('cardername',data.data[0].name);
               _this.$store.commit('setCardCode',data.data[0].cardno);
             }

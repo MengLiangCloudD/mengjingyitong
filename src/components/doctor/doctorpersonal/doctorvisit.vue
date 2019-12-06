@@ -61,7 +61,7 @@ import loading from '../../../common/loading'
                 }else if(codedata.status=="0"){
 
                 }else{
-                    that.infomodel=true
+                    that.infomodel=true;
                     that.infomsg="获取医生出诊状态异常！" 
                 }
             },
