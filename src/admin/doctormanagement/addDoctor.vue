@@ -41,7 +41,7 @@
                     </FormItem>
                     <FormItem label="身份：">
                         <Select v-model="formInline.identity" style="width:200px" :disabled="disabled">
-                            <Option v-for="item in cityList5" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                            <Option v-for="item in authorityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
                     </FormItem>
                     <FormItem label="医生描述：">
@@ -92,7 +92,7 @@ import loading from "../../common/loading";
                         label: '出诊'
                     },
                 ],
-                cityList5: [
+                authorityList: [
                     {
                         value: '0',
                         label: '超级管理员'
@@ -123,6 +123,25 @@ import loading from "../../common/loading";
             }
         },
         methods: {
+            //权限分类
+            authority(){
+                var that =this;
+                var url =  that.$store.getters.getUrl +'';
+                that.isshowloading=true;
+                $.ajax({
+                    url:url,
+                    type:post,
+                    dataType:'json',
+                    data:{},
+                    timeout:1500,
+                    success:function(data){
+                        debugger
+                    },
+                    error:function(data){
+                        debugger
+                    }
+                })
+            },
             //科室分类
             _dealdata(data){
                 var that = this;
@@ -198,7 +217,6 @@ import loading from "../../common/loading";
                         if(data.code=='200'){
                             that._dealdata(data.data);
                         }
-                        
                     },
                     error:function(data){
                         that.isshowloading=false;
@@ -217,6 +235,8 @@ import loading from "../../common/loading";
                     this.$router.push('/doctormanagement');
                 }else if(this.$route.query.start==1){
                     this.$router.push('/admin');
+                }else if(this.$route.query.start==2){
+                    this.$router.push('/Administrator');
                 }
             },
             //选择权限
@@ -300,6 +320,45 @@ import loading from "../../common/loading";
                 }
             }else if(this.$route.query.start==1){
                 this.biao="添加医生"
+            }else if(this.$route.query.start==2){
+                this.biao="修改管理员"
+                this.docinforItem=JSON.parse(localStorage.getItem('docinforItem'));
+                var docinforItem =this.docinforItem;
+                if(docinforItem.name!=undefined){
+                    this.formInline.user=docinforItem.name;
+                }else{
+                    this.formInline.user='';
+                }
+                if(docinforItem.phoneNo!=undefined){
+                   this.formInline.tel=docinforItem.phoneNo;
+                }else{
+                    this.formInline.tel='';
+                }
+                if(docinforItem.cardNo!=undefined){
+                   this.formInline.id=docinforItem.cardNo;
+                }else{
+                    this.formInline.id='';
+                }
+                if(docinforItem.expertJob!=undefined){
+                   this.formInline.msg=docinforItem.expertJob;
+                }else{
+                    this.formInline.msg='';
+                }
+                if(docinforItem.deptCode!=undefined){
+                   this.formInline.dep=docinforItem.deptCode; 
+                }else{
+                    this.formInline.dep='';
+                }
+                if(docinforItem.doctorRole!=undefined){
+                   this.formInline.jurisdiction=JSON.parse( docinforItem.doctorRole); 
+                }else{
+                    this.formInline.jurisdiction='';
+                }
+                if(docinforItem.adminLevel!=undefined){
+                   this.formInline.identity=docinforItem.adminLevel; 
+                }else{
+                    this.formInline.identity='';
+                }
             }
             this.DeptInfoList()
         }

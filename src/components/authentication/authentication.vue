@@ -149,7 +149,6 @@ export default {
                   content: '频繁操作，请一个小时之后进行操作',
                 });
             }
-              
           },
           error:function(data){
             that.number=1;

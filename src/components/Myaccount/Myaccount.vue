@@ -113,7 +113,7 @@
             @on-ok="goMyCard()"
             >
             <p>请先激活您的就诊卡</p>
-        </Modal>
+      </Modal>
         <!-- <Modal v-model="statemodel"  @on-ok="changestate" title="提示信息">
             <p>请确认是否切换！</p>
         </Modal> -->
@@ -225,7 +225,7 @@ export default {
           type: "post",
           dataType: "json",
           async: false,
-          data: {idNo:'130824199109233524'},
+          data: {idNo:'132626196407100025'},
           success: function(data){
             that.spinShow=false;
             if(data.code==200){
@@ -250,12 +250,12 @@ export default {
       that.visitstatus=false;
       var url  = that.$store.getters.getUrl + "doctor/doctorlogins.do";
       var index = that.index;
-      // var userName = that.myCardType[index].name;
-      var userName = '曲博';
-      // var phoneNumber = that.myCardType[index].phone;
-      var phoneNumber = '17732886275';
-      // var idNo = that.myCardType[index].idno;
-      var idNo = '130824199007063018';
+      var userName = that.myCardType[index].name;
+      // var userName = '曲博';
+      var phoneNumber = that.myCardType[index].phone;
+      // var phoneNumber = '17732886275';
+      var idNo = that.myCardType[index].idno;
+      // var idNo = '130824199007063018';
       if(that.visitstatus==false){
         that.spinShow=true;
         $.ajax({

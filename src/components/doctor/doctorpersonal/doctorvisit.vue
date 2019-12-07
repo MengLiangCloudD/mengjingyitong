@@ -59,7 +59,7 @@ import loading from '../../../common/loading'
                 if(codedata.status=="1"){
                     this.visitlist=codedata.data
                 }else if(codedata.status=="0"){
-
+                    
                 }else{
                     that.infomodel=true;
                     that.infomsg="获取医生出诊状态异常！" 

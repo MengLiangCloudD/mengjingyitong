@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="operate">
-                        <Button type="primary" size="small" @click="goaddattachment(0)">修改</Button>
+                        <Button type="primary" size="small" @click="goaddattachment(item,2)">修改</Button>
                 </div>
                 
             </div>
@@ -81,8 +81,11 @@ import loading from "../../common/loading";
                 this.$router.push('/admin');
             },
             //添加科室或修改科室
-            goaddattachment(data){
-                this.$router.push(`/addAdministrator?start=${data}`);
+            goaddattachment(item,data){
+                if(data==0){
+                  localStorage.setItem('docinforItem',JSON.stringify(item));
+                }
+               this.$router.push(`/addDoctor?start=${data}`);
             },
             jiankai(){
                 this.modal11=true;

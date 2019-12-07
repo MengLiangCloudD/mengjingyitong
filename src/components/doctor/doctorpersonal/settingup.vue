@@ -155,6 +155,7 @@
     padding: 10px 0;
     text-align: center;
     position: relative;
+    
 }
 .arrow-icon{
     position: absolute;
