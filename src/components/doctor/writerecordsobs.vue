@@ -424,8 +424,6 @@
                             _this.questmodel=true
                             _this.infomsg="病历提交失败！"
                         }
-                        
-                        
                     },
                     error: function(data) {
                         _this.isshowloading=false

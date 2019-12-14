@@ -281,6 +281,7 @@ export default {
       // that.$Loading.start();
       var cardno =  localStorage.getItem("cardno");
       that.isloading=true;
+      that.orderList=[]
       let ajaxTimeOut =$.ajax({
         url: url,
         type: "post",
@@ -299,6 +300,7 @@ export default {
             for(var i = 0;i<dept.length;i++){
                if( /\d{4}-\d{1,2}/g.exec(dept[i].regdate)[0]==that.datatime(that.value1)){
                that.orderList.push(dept[i]);
+               
              }else{
                that.orderList=[]
              }
@@ -309,7 +311,6 @@ export default {
           }else{
                that.orderList=[]
              }
-         
         },
         error: function(data) {
           //关闭加载动画
@@ -352,7 +353,7 @@ export default {
       let ajaxTimeOut =$.ajax({
         url: url,
         type: "post",
-         timeout: 15000, //通过timeout属性，设置超时时间
+        timeout: 15000, //通过timeout属性，设置超时时间
         // dataType: "json",
         // async: false,
         data: {
@@ -366,78 +367,84 @@ export default {
              //获取到订单列表的数据
              var datas= JSON.parse(data);
              if(datas.status==1){
-                that.fsorderListes=datas.data;
-                var visitnoArr=[];
-                for(var i = 0;i<datas.data.length;i++){
-                  visitnoArr.push(datas.data[i].visitno);
-                }
-                if(visitnoArr.length>0){
-                  var url1 = that.$store.getters.getUrl + "register/getTradenoVisitno.do";
-                  var visitnoArr =JSON.stringify(visitnoArr).replace(/\[|]/g,'');
-                  var type = '微信挂号';
-                  $.ajax({
-                      url: url1,
-                      type: "post",
-                      timeout: 15000, //通过timeout属性，设置超时时间
-                      // dataType: "json",
-                      // async: false,
-                      data: {
-                        //卡号
-                        visitnoArr: visitnoArr,
-                        type:type
-                      },
-                      success:function(data1){
-                        if(JSON.parse(data1).status==1){
-                          var obj =that.fsorderListes;
-                          var obj1=JSON.parse(data1).data;
-                          var obj2=[];
-                          for(var i = 0;i<obj.length;i++){
-                              var p ={}
-                              for(var j = 0;j<obj1.length;j++){
-                                  if(obj[i].visitno==obj1[j].visitno){
-                                      p.name=obj[i].name;
-                                      p.age=obj[i].age;
-                                      p.amorpm=obj[i].amorpm;
-                                      p.birthdate=obj[i].birthdate;
-                                      p.cardname=obj[i].cardname;
-                                      p.cardno=obj[i].cardno;
-                                      p.clinicno=obj[i].clinicno;
-                                      p.doctorno=obj[i].doctorno;
-                                      p.hosdepcode=obj[i].hosdepcode;
-                                      p.hosdepname=obj[i].hosdepname;
-                                      p.hosdoccode=obj[i].hosdoccode;
-                                      p.hosdocname=obj[i].hosdocname;
-                                      p.idno=obj[i].idno;
-                                      p.operator=obj[i].operator;
-                                      p.pj=obj[i].pj;
-                                      p.regcode=obj[i].regcode;
-                                      p.regdate=obj[i].regdate;
-                                      p.registerfee=obj[i].registerfee;
-                                      p.sex=obj[i].sex;
-                                      p.status=obj[i].status;
-                                      p.visitno=obj[i].visitno;
-                                      p.tradeno=obj1[j].tradeno;
-                                      obj2.push(p);
-                                  }
-                              }
-                          }
-                           that.orderListes=obj2;
-                        }
-                      },
-                      error:function(data){
-                      }
-                  })
-                }else{
-                  that.orderListes=[]
-                }
-             }else if(datas.status==-1){
-               that.orderListes=[]
-                that.$Message.warning(datas.message);
-             }else{
-                that.orderListes=[]
+              for(var i = 0;i<datas.data.length;i++){
+               datas.data[i].tradeno=datas.data[i].clinicno;
+              }
+              that.orderListes=datas.data;
              }
-          //关闭加载动画
-          // that.$Loading.finish();
+          //    if(datas.status==1){
+          //       that.fsorderListes=datas.data;
+          //       var visitnoArr=[];
+          //       for(var i = 0;i<datas.data.length;i++){
+          //         visitnoArr.push(datas.data[i].visitno);
+          //       }
+          //       if(visitnoArr.length>0){
+          //         var url1 = that.$store.getters.getUrl + "register/getTradenoVisitno.do";
+          //         var visitnoArr =JSON.stringify(visitnoArr).replace(/\[|]/g,'');
+          //         var type = '微信挂号';
+          //         $.ajax({
+          //             url: url1,
+          //             type: "post",
+          //             timeout: 15000, //通过timeout属性，设置超时时间
+          //             // dataType: "json",
+          //             // async: false,
+          //             data: {
+          //               //卡号
+          //               visitnoArr: visitnoArr,
+          //               type:type
+          //             },
+          //             success:function(data1){
+          //               if(JSON.parse(data1).status==1){
+          //                 var obj =that.fsorderListes;
+          //                 var obj1=JSON.parse(data1).data;
+          //                 var obj2=[];
+          //                 for(var i = 0;i<obj.length;i++){
+          //                     var p ={}
+          //                     for(var j = 0;j<obj1.length;j++){
+          //                         if(obj[i].visitno==obj1[j].visitno){
+          //                             p.name=obj[i].name;
+          //                             p.age=obj[i].age;
+          //                             p.amorpm=obj[i].amorpm;
+          //                             p.birthdate=obj[i].birthdate;
+          //                             p.cardname=obj[i].cardname;
+          //                             p.cardno=obj[i].cardno;
+          //                             p.clinicno=obj[i].clinicno;
+          //                             p.doctorno=obj[i].doctorno;
+          //                             p.hosdepcode=obj[i].hosdepcode;
+          //                             p.hosdepname=obj[i].hosdepname;
+          //                             p.hosdoccode=obj[i].hosdoccode;
+          //                             p.hosdocname=obj[i].hosdocname;
+          //                             p.idno=obj[i].idno;
+          //                             p.operator=obj[i].operator;
+          //                             p.pj=obj[i].pj;
+          //                             p.regcode=obj[i].regcode;
+          //                             p.regdate=obj[i].regdate;
+          //                             p.registerfee=obj[i].registerfee;
+          //                             p.sex=obj[i].sex;
+          //                             p.status=obj[i].status;
+          //                             p.visitno=obj[i].visitno;
+          //                             p.tradeno=obj1[j].tradeno;
+          //                             obj2.push(p);
+          //                         }
+          //                     }
+          //                 }
+          //                  that.orderListes=obj2;
+          //               }
+          //             },
+          //             error:function(data){
+          //             }
+          //         })
+          //       }else{
+          //         that.orderListes=[]
+          //       }
+          //    }else if(datas.status==-1){
+          //      that.orderListes=[]
+          //       that.$Message.warning(datas.message);
+          //    }else{
+          //       that.orderListes=[]
+          //    }
+          // //关闭加载动画
+          // // that.$Loading.finish();
         },
         error: function(data) {
           //关闭加载动画
@@ -502,13 +509,13 @@ export default {
           //关闭弹窗
           _this.isloading=false;
           _this.isDisable = false;
-          if (data.status == 1) {
+          if (data.code == 200) {
             //返回模板信息
             //用户提示
             _this.$Message.success("您已成功取消订单");
             //刷新数据
             _this.Tobeevaluated();
-          } else if (data.status == 0) {
+          } else {
             //退款失败提示
             _this.$Message.error("退款失败");
           }

@@ -78,9 +78,9 @@ var time = year + "-" + month;
                 success: function(data) {
                   that.isShowLoading = false;
                   that.PatientList=[];
-                  if(data.status==1){
+                  if(data.code==200){
                     that.PatientList=data.data;
-                  }else if(data.status==0){
+                  }else if(data.code==500){
                      that.PatientList=[];
                   }else if(data.status==-1){
                     that.$Modal.error({

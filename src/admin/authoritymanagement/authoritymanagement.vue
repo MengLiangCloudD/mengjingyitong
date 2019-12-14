@@ -12,7 +12,7 @@
             <div class="list-content" v-if="deptorList.length>0">
                 <div class="item-box" v-for="(item,index) in deptorList" :key="index">
                     <div class="text-content">{{item.deptName}}病历查看</div>
-                    <div size="large" class="switchopen" :class="{'activeswitchopen':item.patientReport=='0'}" @click="ischangestate(item)">
+                    <div size="large" class="switchopen" :class="{'activeswitchopen':item.patientReport=='0'}" @click="ischangestates(item)">
                         {{item.patientReport=='1'?"ON":"OFF"}}
                         <div class="circle" :class="{'activecircle':item.patientReport=='0'}"></div>
                     </div>
@@ -139,14 +139,19 @@ import loading from "../../common/loading";
                  var that =this;
                 var url = that.$store.getters.getUrl +'admin/doctor/editPatientReportByDeptCode.do';
                 if(that.Administrator.adminLevel<=1){
-                    var deptCode =that.currentitem.deptCode
+                    var deptCode =that.currentitem.deptCode;
+                    if(that.currentitem.patientReport==1){
+                         var patientReport =0;
+                    }else if(that.currentitem.patientReport==0){
+                         var patientReport =1;
+                    }
                 }else if(that.Administrator.adminLevel>1&&that.Administrator.adminLevel<4){
                     var deptCode =that.Administrator.deptCode
-                }
-                if(that.allswites==0){
-                    var patientReport =1;
-                }else if(that.allswites==1){
-                    var patientReport =0;
+                     if(that.allswites==0){
+                        var patientReport =1;
+                    }else if(that.allswites==1){
+                        var patientReport =0;
+                    }
                 }
                  that.isshowloading=true;
                 $.ajax({
@@ -187,6 +192,7 @@ import loading from "../../common/loading";
                     success:function(data){
                          that.isshowloading=false;
                       if(data.code==200){
+                          debugger
                             that.allswites=data.data;
                       }
                     },
@@ -237,7 +243,6 @@ import loading from "../../common/loading";
             //科室分类
             _dealdata(data){
                 //妇科
-                
                 var gynaecology=[];
                 //产科
                 var obstetrics=[];
@@ -258,22 +263,22 @@ import loading from "../../common/loading";
                 var gynae=[];
                  for(var i = 0;i<gynaecology.length;i++){
                     if(gynaecology[i].patientReport==0){
-                        gynae.push(gynaecology[i])
+                        gynae.push(gynaecology[i]);
                     }
                 }
                 var obs=[];
                  for(var i = 0;i<obstetrics.length;i++){
                     if(obstetrics[i].patientReport==0){
-                        gynae.push(obstetrics[i])
+                        obs.push(obstetrics[i]);
                     }
                 }
                 var ped=[];
                  for(var i = 0;i<pediatrics.length;i++){
                     if(pediatrics[i].patientReport==0){
-                        gynae.push(pediatrics[i])
+                        ped.push(pediatrics[i]);
                     }
                 }
-                this.deptorList=[]
+                this.deptorList=[];
                 if(gynae.length>0){
                      this.deptorList.push({ deptName: "妇科门诊", gynaecology:gynaecology,deptCode:'100101',patientReport:0});
                 }else{
@@ -312,6 +317,7 @@ import loading from "../../common/loading";
                     this.deptorList.push(depitem);
                     }
                 }
+                console.log(this.deptorList)
             },
             // 查询科室
             DeptInfoList(){

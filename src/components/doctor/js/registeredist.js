@@ -71,7 +71,6 @@ const changedoctorstate=(url,cliniclabel,code,that)=>{
             complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
                 if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
                     ajaxTimeOut.abort(); //取消请求
-                    
                     that.$Modal.warning({     //超时提示：网络不稳定
                         title: '友情提示',
                         content: '请求超时',
@@ -81,17 +80,25 @@ const changedoctorstate=(url,cliniclabel,code,that)=>{
         });
     })
 }
-
-const fetchdoctorstate=(url,doctorno,that)=>{
+const fetchdoctorstate=(url,doctorno,that,deptVisible,adminLevel)=>{
     let result
-    that.isShowLoading=true
+    that.isShowLoading=true;
+    var b = JSON.parse(deptVisible);
+    var a;
+    if(b.length==1){
+        a = b[0];
+    }else if(b.length>1){
+        a= b.join(',');
+    }
+    var deptVisible=a;
     $.ajax({
         url: url,
         type: "post",
         dataType: "json",
         async: false,
         data: {
-            doctorno
+            doctorno:doctorno,
+            deptVisible:deptVisible
         },
         success: function(data) {
             that.isShowLoading=false

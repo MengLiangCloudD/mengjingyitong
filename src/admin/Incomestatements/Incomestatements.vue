@@ -43,26 +43,37 @@
         <Modal v-model="modal11" fullscreen :title="title">
             <div>
                 <!-- <p style="font-size:20px;">全部医生</p> -->
-                <div class="content3" v-if="adminLevel<=1">
-                    <p style="font-size:20px;color:rgb(0, 187, 187);font-weight: 600; text-align: right;" @click="selectquan">全部科室</p>
-                     <RadioGroup  v-model="index" size="large" style="width:100%;">
-                    <div class="contenter" v-for="(item,index) in doctorList" :key="index" >
-                        <div class="doctor" @click=" seledoctor(index)">
-                            <img class="avatar" src="./../../assets/avatar.png" alt="" width="40px;"  >
-                            <div class="xinxi">
-                                <p><span>科室名称：</span><span>{{item.deptName}}</span></p>
-                                <p><span>科室编码：</span><span>{{item.deptCode}}</span></p>
-                            </div>
-                            <Radio :label="index" class="rad"><span style="display:none;"></span></Radio>
-                        </div>
-                         
+                <div class="content3" v-if="adminLevel<=1&&zhaungt==0">
+                    <div>
+                        <p class="qunabu" style="font-size:20px;color:rgb(0, 187, 187);font-weight: 600; " @click="selectquan">全部科室</p>
+                    <Select class="a" v-model="model1" style="border:0; position: absolute;right: 3%;top: 5px;width:30%;"  :label-in-value="true" placeholder="选择医生科室" @on-change="socListess">
+                    <Option v-for="item in depList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    </Select>
                     </div>
-                   
+                    
+                    <!-- <p class="qunabu" style="font-size:20px;color:rgb(0, 187, 187);font-weight: 600; position: absolute;right: 5%;" >选择医生</p> -->
+                    <RadioGroup  v-model="index" size="large" style="width:100%;">
+                        <div class="contenter" v-for="(item,index) in doctorList" :key="index" >
+                            <div class="doctor" >
+                                <img class="avatar" src="./../../assets/avatar.png" alt="" width="40px;"  >
+                                <div class="xinxi">
+                                    <p><span>科室名称：</span><span>{{item.deptName}}</span></p>
+                                    <p><span>科室编码：</span><span>{{item.deptCode}}</span></p>
+                                </div>
+                                <p class="pped" @click="seledoctor(index)"></p>
+                                <Radio :label="index" class="rad"><span style="display:none;"></span></Radio>
+                            </div>
+                        </div>
                     </RadioGroup>
                 </div>
-                <div class="content3" v-if="adminLevel>1&&adminLevel<=3" style="position: relative;">
-   
-                    <p style="font-size:20px;color:rgb(0, 187, 187);font-weight: 600; text-align: right;" @click="selectquan">全部医生</p>
+                <div class="content3" v-if="(adminLevel>1&&adminLevel<=3)||zhaungt==1" style="position: relative;">
+                    <div v-if="zhaungt==1">
+                        <p class="qunabu" style="font-size:20px;color:rgb(0, 187, 187);font-weight: 600; " @click="selectquan">全部科室</p>
+                    <Select class="a" v-model="model1" style="border:0; position: absolute;right: 3%;top: 5px;width:30%;"  :label-in-value="true" placeholder="选择医生科室" @on-change="socListess">
+                    <Option v-for="item in depList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    </Select>
+                    </div>
+                    <p v-if="zhaungt==0" style="font-size:20px;color:rgb(0, 187, 187);font-weight: 600; text-align: right;" @click="selectquan">全部医生</p>
                     <RadioGroup  v-model="index" size="large" style="width:100%;">
                         <div class="contenter" v-for="(item,index) in doctorList" :key="index" >
                             <div class="doctor" @click=" seledoctor(index)">
@@ -129,13 +140,44 @@ var time = year + "-" + month + "-" + day;
                 count:'',
                 selectery:0,
                 depcode:'',
-                isshowloading:false
+                isshowloading:false,
+                depList:[],
+                model1:'',
+                zhaungt:0
             }
         },
          methods:{
             //返回上一层
             tobackdetail(){
                this.$router.push('/admin');
+            },
+            socListess(value){
+                var that =this;
+                var url = that.$store.getters.getUrl +'admin/doctor/getDoctorInfoList.do'
+                var deptCode;
+                if(value!=undefined){
+                    that.zhaungt=1;
+                   deptCode =value.value
+                
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    dataType: "json",
+                    timeout: 15000, //通过timeout属性，设置超时时间
+                    data: {deptCode},
+                    success:function(data){
+                      if(data.code==200){
+                          that.index=''
+                        that.doctorList=data.data;
+                      }
+                    },
+                    error:function(data){
+                      
+                    }
+                })
+                }else{
+                  deptCode=''
+                }
             },
             //进入明细目录
             Detailed(){
@@ -147,24 +189,29 @@ var time = year + "-" + month + "-" + day;
             },
             //全部医生
             selectquan(){
-                if(this.adminLevel>1&&this.adminLevel<=3){
+                if((this.adminLevel>1&&this.adminLevel<=3)&&this.zhaungt==0){
                     this.modal11=false;
                     this.index='';
                     this.biao=this.Administrator.deptName.split('.', 1)[0];
                     this.selectkeshou(this.Administrator.deptCode);
                     this.selectery=1;
                 }
-                if(this.adminLevel<=1){
+                if(this.adminLevel<=1||this.zhaungt==1){
                      this.modal11=false;
                      this.index='';
                      this.biao='医院';
                      this.selectyiyuan();
                      this.selectery=0;
+                     if(this.zhaungt==1){
+                        this.zhaungt=0;
+                        this.DeptInfoList();
+                        this.model1=''
+                     }
                 }
             },
             //选择医生
             seledoctor(index,item){
-                if(this.adminLevel>1&&this.adminLevel<=3){
+                if((this.adminLevel>1&&this.adminLevel<=3)||this.zhaungt==1){
                     this.index=index;
                     this.modal11=false;
                     this.title='选择医生';
@@ -173,12 +220,12 @@ var time = year + "-" + month + "-" + day;
                     this.selectery=2;
                     this.depcode=this.doctorList[index].userName;
                 }
-                if(this.adminLevel<=1){
+                if(this.adminLevel<=1&&this.zhaungt==0){
                     this.index=index;
                     this.modal11=false;
                     this.title='选择科室';
                     this.biao=this.doctorList[index].deptName.split('.', 1)[0];
-                    this.selectkeshou(this.Administrator.deptCode);
+                    this.selectkeshou(this.doctorList[index].deptCode);
                     this.selectery=1;
                     this.depcode=this.doctorList[index].deptCode;
                 }
@@ -228,11 +275,24 @@ var time = year + "-" + month + "-" + day;
                     this.doctorList.push(depitem);
                     }
                 }
+                this.depList=[]
+                for(var i =0;i<this.doctorList.length;i++){
+                  let depname = "";
+                  let depCode = ''
+                  depname = this.doctorList[i].deptName;
+                  depCode=this.doctorList[i].deptCode;
+                  let depitem = {
+                      //合并科室的名称
+                      label: depname,
+                      value:depCode
+                    };
+                    this.depList.push(depitem)
+                }
             },
             // 查询科室
             DeptInfoList(){
                 var that =this;
-                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList.do'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptList.do'
                 $.ajax({
                     url: url,
                     type: "post",
@@ -259,7 +319,6 @@ var time = year + "-" + month + "-" + day;
                 }else{
                   deptCode=''
                 }
-               
                 $.ajax({
                     url: url,
                     type: "post",
@@ -278,7 +337,6 @@ var time = year + "-" + month + "-" + day;
             },
             //查询科室收入
             selectkeshou(value){
-                
                 var that =this;
                 var url = that.$store.getters.getUrl +'admin/clinic/getDeptClinicTotalByDate.do'
                 var day = that.currentDay;
@@ -551,5 +609,22 @@ var time = year + "-" + month + "-" + day;
     right: 5%;
     top: 30%;
 }
-
+.pped{
+    position: absolute;
+    right: 8%;
+    top: 30%;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    z-index: 888;
+}
+.content3{
+    position: relative;
+    padding: 10px 0;
+}
+.qunabu{
+    /* position: absolute;
+    left: 10%; */
+    display:inline-block;
+}
 </style>

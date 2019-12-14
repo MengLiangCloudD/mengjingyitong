@@ -283,7 +283,7 @@ import loading from '../../common/loading'
             setTimeout(function(){
                 _this.initdata()
                 _this.getcurrentdayrecord()
-                _this.init()
+                _this.init();
             },10)
         },
         methods:{
@@ -351,8 +351,7 @@ import loading from '../../common/loading'
                     d="0"+d
                 }
                 let visitdate=y+'-'+m+'-'+d;
-                let doccode=yspatientinfo.doctor
-                
+                let doccode=yspatientinfo.doctor;
                 let url =_this.$store.getters.getUrl + "medicalrecord/getthesamedayoutpmr.do";
                     let ajaxTimeOut =$.ajax({
                         url: url,

@@ -481,12 +481,38 @@ export default new Router({
       name: "doctormanagement",
       component:resolve=>(require(["@/admin/doctormanagement/doctormanagement"],resolve))
     },
+    //医生账单
+    {
+      path: "/zhangdan",
+      name: "zhangdan",
+      component:resolve=>(require(["@/admin/doctormanagement/zhangdan"],resolve))
+    },
+    //医生二维码
+    {
+      path: "/docCard",
+      name: "docCard",
+      component:resolve=>(require(["@/admin/doctormanagement/docCard"],resolve))
+    },
+    //所有医生
+    {
+      path: "/docAll",
+      name: "docAll",
+      component:resolve=>(require(["@/admin/doctormanagement/docAll"],resolve))
+    },
+    
     //科室管理列表
     {
       path: "/administrativemanagement",
       name: "administrativemanagement",
       component:resolve=>(require(["@/admin/administrativemanagement/administrativemanagement"],resolve))
     },
+    //科室信息
+    {
+      path: "/deptbill",
+      name: "deptbill",
+      component:resolve=>(require(["@/admin/administrativemanagement/deptbill"],resolve))
+    },
+    
     //添加修改医生
     {
       path: "/addDoctor",

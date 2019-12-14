@@ -32,7 +32,6 @@
              <img class="avatar" src="./../../assets/xian.png" alt="" width="40px;"  >
              <div class="xinxi">
                 <p style="font-size:16px;font-weight: 500;">来自{{item.name}}挂号费用</p>
-                <!-- <p>{{item.time}}</p> -->
             </div>
             <div style="position: absolute;right:5%;font-size:16px;color:#F4A460;">
               ￥{{item.money}}
@@ -53,7 +52,7 @@ let year = currentDay.getFullYear();
 //获取当前月份
 if( currentDay.getMonth() + 1<10){
 var mon = currentDay.getMonth() + 1;
-var month = '0'+mon;
+var month = '0'+ mon;
 }else{
   var month = currentDay.getMonth() + 1;
 }
@@ -92,24 +91,23 @@ if( currentDay.getDate()<10){
               var m = this.p(d.getMonth() + 1);
               var t = this.p(d.getDate());
               var resDate = y + "-" + m;
-
               return resDate;
             },
-             p(s) {
-                return s < 10 ? "0" + s : s;
-              },
-              //日期筛选
-              selecttime(){
-                var that =this;
-                if(that.selectery==1){
-                  that.selectke()
-                }else if(that.selectery==2){
-                  that.selectdoc()
-                }else if(that.selectery==0){
-                  that.selectyuan()
-                }
+            p(s) {
+              return s < 10 ? "0" + s : s;
+            },
+            //日期筛选
+            selecttime(){
+              var that =this;
+              if(that.selectery==1){
+                that.selectke()
+              }else if(that.selectery==2){
+                that.selectdoc()
+              }else if(that.selectery==0){
+                that.selectyuan()
+              }
                 
-              },
+            },
             //查询科室
             selectke(){
                var that =this;

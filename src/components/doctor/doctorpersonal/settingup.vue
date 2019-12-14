@@ -11,7 +11,7 @@
         <div class="content">
            <p>行医资格证：</p> 
            <div class="content1">
-                <div class="Patient1" style="text-align: center;">
+                <div class="Patient1" style="text-align: center;" @click="shngchua">
                     <p><svg t="1566457223344" class="icon" viewBox="0 0 1027 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4050" width="50" height="50"><path d="M853.95951925 475.5066105h-310.08967642v-300.83326917c0-13.88461268-13.88461268-32.39742862-32.39742936-32.39742862-18.51281666 0-32.39742862 18.51281666-32.39742861 37.02563333v300.83326844H178.2417157c-18.51281666-4.62820399-37.02563333 13.88461268-37.02563262 32.39742934s18.51281666 32.39742862 32.39742863 32.39742861h300.83326916v300.83326845c4.62820399 18.51281666 18.51281666 37.02563333 37.02563261 37.02563334s32.39742862-18.51281666 32.39742935-32.39742862v-305.46147317h305.46147243c18.51281666 0 32.39742862-18.51281666 32.39742934-32.39742861s-9.25640796-37.02563333-27.76922535-37.02563333z" fill="#e6e6e6" p-id="4051"></path></svg></p>
                     <p>添加图片</p>
                 </div>
@@ -78,8 +78,7 @@
                 $.ajax({
                     url: reurl,
                     type: "post",
-                    dataType: "json",
-                    async: false,
+                    dataType: "json",async: false,
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: { url: url },
                     success: function(data) {
@@ -134,6 +133,9 @@
                         success: function (res) {
                         }
                     })
+                    wx.hideMenuItems({// 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+                        menuList: ["menuItem:setFont"]
+                    });
                 })
             },
         },

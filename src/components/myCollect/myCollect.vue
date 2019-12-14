@@ -14,26 +14,32 @@
           <img class="card-img" src="../../assets/avatar.png" alt>
           <div class="card-news">
             <div class="card-bold">
-              <span>{{item.docname}}</span>
+              <span>{{item.hosdocname}}</span>
               <span style="color:#000">主治医生</span>
-              <Button class="noCollect" @click="unfollow(item.doccode)">取消关注</Button>
+              <Button class="noCollect" @click="follow(item.doccode)">取消关注</Button>
             </div>
             <div class="hos-info">
               <span>{{item.depname}}</span>
               <span>滦平县妇幼保健院</span>
             </div>
-            <div class="card-easy">
-              <span>擅长：</span>
-              <span>{{item.specialty}}</span>
-            </div>
             <div class="star-class">
               <img class="star-img" src="../../assets/pingjia.png" alt>
               <span>4.8</span>
+              <Button class="noCollect" type="success" @click="goappointment(index)">去找医生</Button>
             </div>
           </div>
         </div>
       </div>
+     
     </div>
+     <Modal
+          title="提示"
+          v-model="modal10"
+          class-name="vertical-center-modal"
+          @on-ok="unfollow"
+          >
+            <p>您确认要取消关注吗</p>
+      </Modal>
     <!-- </pull-refresh> -->
     <tabbar class="pubtabbar"></tabbar>
      <loading v-show="isshowloading" class="loading"></loading>
@@ -58,10 +64,17 @@ export default {
       //医生编号
       doccode: "",
       isshowloading:false,
-      size:10
+      size:10,
+      modal10:false,
+      doccodeser:''
     };
   },
   methods: {
+    //去挂号
+    goappointment(index){
+      var that = this;
+      that.$router.push(`/appointment?depCode=${that.attentionList[index].specialty}&depname=${that.attentionList[index].hosdepname}&docName=${that.attentionList[index].hosdocname}&docCode=${that.attentionList[index].doccode}`);
+    },
      //下拉刷新
     refresh() {
       return new Promise((resolve, reject) => {
@@ -115,14 +128,19 @@ export default {
           }
       });
     },
+    follow(doccode){
+      this.modal10=true;
+      this.doccodeser=doccode
+    },
     //取消关注
-    unfollow(doccode) {
+    unfollow() {
       //开启加载动画
       // this.$Loading.start();
       var that = this;
       // 拿到openid
       var openid = localStorage.getItem("openid");
       var cardno = localStorage.getItem('cardno');
+      var doccode= that.doccodeser;
       //定义url地址
       var url = this.$store.getters.getUrl + "follow/deleInfo.do";
      let ajaxTimeOut =  $.ajax({
@@ -139,7 +157,11 @@ export default {
           //关闭加载动画
           // that.$Loading.finish();
           //重新调用渲染的方法
-          that.attention();
+          if(data.status==1){
+            that.$Message.info('取消成功');
+            that.attention();
+          }
+          
         },
         error: function(data) {
           //关闭加载的动画
@@ -214,15 +236,14 @@ export default {
   background: #fff;
 }
 .card-img {
-  width: 40px;
-  height: 40px;
+  width: 50px;
   position: absolute;
   top: 13%;
   left: 5%;
   border-radius: 50%;
 }
 .card-news {
-  margin-left: 20%;
+  margin-left: 24%;
   padding-top: 2%;
   padding-bottom: 2%;
 }
@@ -249,13 +270,14 @@ export default {
 .star-class {
   font-family: PingFangSC;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
   color: #ff9800;
   margin: 10px 0;
+  position: relative;
 }
 .star-img {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 }
 .easy-label {
   margin: 10px 0;

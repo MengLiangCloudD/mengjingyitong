@@ -1,6 +1,7 @@
 <template>
   <div class="home-wrapper">
     <div class="home-page">
+      
       <div class="tittle" @click="tia()">滦平县妇幼保健院挂号平台</div>
       <div class="hospital-info">
         <img class="logo-img" src=".././assets/logo.jpg" width="50" height="50" alt>
@@ -134,7 +135,7 @@ export default {
   methods: {
     //ces
     tia(){
-      this.$router.push('/consultadoctor')
+      // this.$router.push('/consultadoctor')
     },
     //---------------------------------------------------------------------------------------------------//
     fetchScanConfig() {
@@ -230,7 +231,8 @@ export default {
     },
     //处理获取医生的数据 此方法只在页面加载时触发一次
     _dealdata(data) {
-      
+      // debugger
+      // var data = JSON.parse(data)
       var _this = this;
       //获取合并之后科室的名称存入数组
       //["depmentname":"产科门诊"]
@@ -401,7 +403,8 @@ export default {
               'uploadVoice',
               'downloadVoice',
               'playVoice',
-              'translateVoice'
+              'translateVoice',
+              "hideMenuItems"
               ] // 必填,需要使用的JS接口列表
           });
         },
@@ -418,6 +421,9 @@ export default {
       });
       let baseimgurl=this.$store.getters.getUrl
       wx.ready(function() {
+        wx.hideMenuItems({// 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+              menuList: ["menuItem:setFont"]
+          });
           wx.onMenuShareAppMessage({ 
               title: '滦平县妇幼保健院挂号缴费平台', // 分享标题
               desc: "滦平县妇幼保健院挂号缴费平台", // 分享描述

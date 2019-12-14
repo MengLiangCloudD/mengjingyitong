@@ -479,6 +479,9 @@ import countdown from "../../../common/countdown"
                             _this.onVoiceRecordEnd()
                         }
                     })
+                    wx.hideMenuItems({// 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+                        menuList: ["menuItem:setFont"]
+                    });
                 })
             },
             initVoiceAnimate(){

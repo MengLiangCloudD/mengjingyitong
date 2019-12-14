@@ -104,6 +104,9 @@ export default {
       });
       let baseimgurl=this.$store.getters.getUrl
       wx.ready(function() {
+        wx.hideMenuItems({// 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+              menuList: ["menuItem:setFont"]
+          });
           wx.onMenuShareAppMessage({ 
               title: '滦平县妇幼保健院挂号缴费平台', // 分享标题
               desc: "医生登录", // 分享描述

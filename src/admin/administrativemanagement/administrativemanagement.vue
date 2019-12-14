@@ -54,45 +54,8 @@ import loading from "../../common/loading";
             tobackdetail(){
                 this.$router.push('/admin');
             },
-            // //添加科室或修改科室
-            // goaddattachment(item,data){
-            //     if(data==0){
-            //       localStorage.setItem('depinforItem',JSON.stringify(item));
-            //     }
-            //     this.$router.push(`/addattachment?start=${data}`);
-            // },
             jiankai(index){
-                // this.modal11=true;
-                // if(this.doctorList[index].content!=undefined){
-                //     this.content=this.doctorList[index].content;
-                // }else{
-                //     this.content ='无'
-                // }
-                var that =this;
-                var deptCode = that.doctorList[index].deptCode;
-                var url = that.$store.getters.getUrl +'admin/dept/getDeptContentByDeptCode.do'
-                that.isshowloading=true;
-                 $.ajax({
-                    url: url,
-                    type: "post",
-                    dataType: "json",
-                    timeout: 15000, //通过timeout属性，设置超时时间
-                    data:{deptCode},
-                    success:function(data){
-                        that.isshowloading=false;
-                        if(data.code=='200'){
-                            that.modal11=true;
-                            that.content = data.data
-                            // that._dealdata(data.data);
-                        }else if(data.code=='500'){
-                            that.modal11=true;
-                            that.content = '无'
-                        }
-                    },
-                    error:function(data){
-                        that.isshowloading=false;
-                    }
-                })
+                 this.$router.push(`/deptbill?doctor=${this.doctorList[index].deptCode}&&name=${this.doctorList[index].deptName}`);
                 
             },
             //科室分类
@@ -144,7 +107,7 @@ import loading from "../../common/loading";
             // 查询科室
             DeptInfoList(){
                 var that =this;
-                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList.do'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptList.do'
                 that.isshowloading=true;
                 $.ajax({
                     url: url,

@@ -9,9 +9,9 @@
         <div class="list-content" v-if="visitlist.length>0">
             <div class="item-box" v-for="(item,index) in visitlist" :key="index">
                 <div class="text-content">{{item.cliniclabel}}</div>
-                <div size="large" class="switchopen" :class="{'activeswitchopen':item.visitstatus=='0'}" @click="ischangestate(item)">
-                    {{item.visitstatus=='1'?"出诊":"未出诊"}}
-                    <div class="circle" :class="{'activecircle':item.visitstatus=='0'}"></div>
+                <div size="large" class="switchopen" :class="{'activeswitchopen':item.visitstatus=='1'}" @click="ischangestate(item)">
+                    {{item.visitstatus=='0'?"出诊":"未出诊"}}
+                    <div class="circle" :class="{'activecircle':item.visitstatus=='1'}"></div>
                 </div>
             </div>
         </div>
@@ -55,7 +55,9 @@ import loading from '../../../common/loading'
                 let that=this
                 let url=that.$store.getters.getUrl + "doctorvisit/OutVisit.do";
                 let doccode=localStorage.getItem("ysdoccode");
-                const codedata=fetchdoctorstate(url,doccode,that);
+                let adminLevel = localStorage.getItem("adminLevel");
+                let deptVisible =JSON.parse(localStorage.getItem("deptVisible"));
+                const codedata=fetchdoctorstate(url,doccode,that,deptVisible,adminLevel);
                 if(codedata.status=="1"){
                     this.visitlist=codedata.data
                 }else if(codedata.status=="0"){

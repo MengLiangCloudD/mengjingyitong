@@ -7,7 +7,7 @@
             </div>
             {{biao}}
           </div>
-          <div class="xuanze" style="position: relative;" v-if="Administrator.adminLevel<=1&&starter!=5">
+          <div class="xuanze" style="position: relative;" v-if="Administrator.adminLevel<=1">
             <div style="display:inline-block;width:100%">
               <span style="color:rgb(0, 187, 187);font-size:20px;" @click="qingkong">全部医生</span>
               <Select class="a" v-model="model1" style="border:0; position: absolute;right: 5%;top: 7px;width:30%;"  :label-in-value="true" placeholder="选择科室" @on-change="docList">
@@ -16,26 +16,26 @@
             </div>
           </div>
         </div>
-        <div class="content" style="padding-top: 100px;" v-if="Administrator.adminLevel<=1&&starter!=5">
+        <div class="content" style="padding-top: 100px;" v-if="Administrator.adminLevel<=1">
             <div class="contenter" v-for="(item,index) in doctorList" :key="index" >
                 <div class="doctor" >
-                    <img class="avatar" src="./../../assets/avatar.png" alt="" width="40px;"  >
+                    <img class="avatar" src="./../../assets/avatar.png" alt="" width="40px;">
                     <div class="xinxi">
                         <p><span>医生姓名：</span><span>{{item.name}}</span></p>
                         <p><span>医生职称：</span><span>{{item.job}}</span></p>
                     </div>
                 </div>
-                <div class="operate" >
+                <!-- <div class="operate" v-if="start==1">
                         <Button type="success" size="small" @click="goaddDoctor(item,0)">修改</Button>
                         <Button type="primary" size="small" @click="jiankai(index)">查看</Button>
-                </div>
-                <!-- <div class="operate" v-if="start==0">
-                      <Button type="success" size="small" @click="goaddDoctor(item,5)">设置管理权限</Button>
-                </div> -->
+                 </div> -->
+                 <div class="operate" v-if="start==0">
+                        <Button type="success" size="small" @click="goaddDoctor(item,5)">设置管理权限</Button>
+                 </div>
                 
             </div>
         </div>
-        <div class="content" style="padding-top: 50px;" v-if="Administrator.adminLevel>1||starter==5">
+        <div class="content" style="padding-top: 50px;" v-if="Administrator.adminLevel>1">
             <div class="contenter" v-for="(item,index) in doctorList" :key="index" >
                 <div class="doctor" >
                     <img class="avatar" src="./../../assets/avatar.png" alt="" width="40px;"  >
@@ -44,13 +44,14 @@
                         <p><span>医生职称：</span><span>{{item.job}}</span></p>
                     </div>
                 </div>
-                <div class="operate" >
+                <!-- <div class="operate" v-if="start==1">
                         <Button type="success" size="small" @click="goaddDoctor(item,0)">修改</Button>
                         <Button type="primary" size="small" @click="jiankai(index)">查看</Button>
-                 </div>
-                 <!-- <div class="operate" v-if="start==0">
-                        <Button type="success" size="small" @click="goaddDoctor(item,5)">设置管理权限</Button>
                  </div> -->
+                 <div class="operate" v-if="start==0">
+                        <Button type="success" size="small" @click="goaddDoctor(item,5)">设置管理权限</Button>
+                 </div>
+                
             </div>
         </div>
         <loading v-show="isshowloading" class="loading"></loading>
@@ -72,41 +73,28 @@ import loading from "../../common/loading";
                 depList:[],
                 content:'',
                 isshowloading:false,
-                biao:'医生管理',
+                biao:'管理员设置',
                 start:1,
                 docxiang:[],
                 play:false,
                 Administrator:'',
-                starter:''
             }
         },
         methods:{
             disp(){
               this.play=!this.play;
             },
-            //查询全部医生
             qingkong(){
               this.model1='';
               this.docList('');
             },
             //返回上一层
             tobackdetail(){
-              if(this.starter==5){
-                 this.$router.push('/administrativemanagement');
-              }else{
-                 this.$router.push('/admin');
-              }
+                 this.$router.push('/Administrator');
             },
-            //修改医生
             goaddDoctor(item,data){
-                localStorage.setItem('docinforItem',JSON.stringify(item));
-                this.$router.push(`/addDoctor?start=${data}`);
-            },
-            //查看医生信息账单
-            jiankai(index){
-              localStorage.setItem('IDdocname',this.doctorList[index].name);
-              localStorage.setItem('IDdoccode',this.doctorList[index].userName);
-              this.$router.push(`/zhangdan?doctor=${this.doctorList[index].userName}&&name=${this.doctorList[index].name}`);
+                  localStorage.setItem('docinforItem',JSON.stringify(item));
+                  this.$router.push(`/addDoctor?start=${data}`);
             },
             //科室分类
             _dealdata(data){
@@ -189,7 +177,6 @@ import loading from "../../common/loading";
                     }
                 })
             },
-            //查询医生
             docList(value){
               var that =this;
                 var url = that.$store.getters.getUrl +'admin/doctor/getDoctorInfoList.do'
@@ -219,19 +206,18 @@ import loading from "../../common/loading";
             },
         },
         mounted(){
+          if(this.$route.query.start==1){
+            this.biao="管理员设置"
+            this.start=0;
+          }
           if(localStorage.getItem('Administrator')!=undefined&&localStorage.getItem('Administrator')!=''){
             this.Administrator=JSON.parse(localStorage.getItem('Administrator'));
             if(this.Administrator.adminLevel>1){
               this.docList({value:this.Administrator.deptCode});
             }else{
-              if(this.$route.query.start==5){
-                this.docList({value:this.$route.query.deptCode});
-                this.biao=`${this.$route.query.deptName}医生`
-                this.starter = this.$route.query.start;
-              }else{
                 this.docList();
                 this.DeptInfoList();
-              }
+              
             }
           }
           

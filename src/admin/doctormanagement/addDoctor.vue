@@ -28,6 +28,11 @@
                             <Option v-for="item in depList" :value="item.value" :key="item.value">{{item.label }}</Option>
                         </Select>
                     </FormItem>
+                    <FormItem label="查看医生出诊：">
+                        <Select v-model="formInline.deptVisible" filterable multiple allow-create @on-create="handleCreate2" style="width:200px" ref="resetSelect" clearable @on-change="changedeptVisible">
+                            <Option v-for="item in depList" :value="item.value" :key="item.value">{{item.label }}</Option>
+                        </Select>
+                    </FormItem>
                     <!-- <FormItem label="性别：">
                         <Select v-model="formInline.sex" style="width:200px">
                             <Option value="nan">男</Option>
@@ -35,7 +40,7 @@
                         </Select>
                     </!--> 
                     <FormItem label="权限：">
-                        <Select v-model="formInline.jurisdiction" filterable multiple allow-create @on-create="handleCreate2" style="width:200px" @on-change="changejurisdiction">
+                        <Select v-model="formInline.jurisdiction" filterable multiple allow-create @on-create="handleCreate2" style="width:200px" >
                             <Option v-for="item in cityList4" :value="item.value" :key="item.value">{{ item.label }}</Option>
                         </Select>
                     </FormItem>
@@ -45,7 +50,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="医生描述：">
-                        <Input v-model="formInline.msg" type="textarea"  placeholder="" style="width:200px"/>
+                        <Input v-model="formInline.msg" type="textarea" :autosize='true'  placeholder="" style="width:200px" />
                     </FormItem>
                     <FormItem>
                         <Button type="primary" long style="width:200px" @click="Submiter">提交</Button>
@@ -76,7 +81,8 @@ import loading from "../../common/loading";
                     msg:"",
                     dep:'',
                     identity:'',
-                    jurisdiction:[]
+                    jurisdiction:[],
+                    deptVisible:[]
                 },
                 cityList4: [
                     {
@@ -93,52 +99,47 @@ import loading from "../../common/loading";
                     },
                 ],
                 authorityList: [
-                    {
-                        value: '0',
-                        label: '超级管理员'
-                    },
-                    {
-                        value: '1',
-                        label: '副院长'
-                    },
-                    {
-                        value: '2',
-                        label: '科主任'
-                    },
-                    {
-                        value: '3',
-                        label: '副主任'
-                    },
-                    {
-                        value: '4',
-                        label: '普通医生'
-                    },
-                    {
-                        value: '5',
-                        label: '无权限'
-                    },
                 ],
                 depList:[],
-                isshowloading:false
+                isshowloading:false,
+                Administrator:''
             }
         },
         methods: {
             //权限分类
             authority(){
                 var that =this;
-                var url =  that.$store.getters.getUrl +'';
+                var url = that.$store.getters.getUrl +'admin/doctor/getAdminLevel.do';
                 that.isshowloading=true;
+                // var adminLevel= this.Administrator.adminLevel;
                 $.ajax({
                     url:url,
-                    type:post,
+                    type:'post',
                     dataType:'json',
                     data:{},
+                    async:false,
                     timeout:1500,
                     success:function(data){
-                        debugger
+                        that.isshowloading=false;
+                        var lister=[]
+                        if(data.code==200){
+                            lister=data.data;
+                        }
+                        if(lister.length>0){
+                            for(var i = 0;i<lister.length;i++){
+                                if(lister[i].levelValue<=that.Administrator){
+                                    var authorityObj ={
+                                    value:lister[i].levelValue,
+                                    label:lister[i].levelLabel
+                                    }
+                                    that.authorityList.push(authorityObj);
+                                }
+                                
+                            }
+                        }
                     },
                     error:function(data){
-                        debugger
+                        that.isshowloading=false;
                     }
                 })
             },
@@ -204,7 +205,7 @@ import loading from "../../common/loading";
             //查询科室
             DeptInfoList(){
                 var that =this;
-                var url = that.$store.getters.getUrl +'admin/dept/getDeptInfoList.do'
+                var url = that.$store.getters.getUrl +'admin/dept/getDeptList.do'
                 that.isshowloading=true;
                 $.ajax({
                     url: url,
@@ -212,6 +213,7 @@ import loading from "../../common/loading";
                     dataType: "json",
                     timeout: 15000, //通过timeout属性，设置超时时间
                     data: '',
+                    async:false,
                     success:function(data){
                         that.isshowloading=false;
                         if(data.code=='200'){
@@ -237,11 +239,20 @@ import loading from "../../common/loading";
                     this.$router.push('/admin');
                 }else if(this.$route.query.start==2){
                     this.$router.push('/Administrator');
+                }else if(this.$route.query.start==5){
+                    this.$router.push(`/doctormanagement/?start=1`);
                 }
             },
             //选择权限
-            changejurisdiction(val){
-
+            changedeptVisible(val){
+                var that = this;
+                if(val[val.length-1]==0){
+                    that.formInline.deptVisible=[0];
+                }else if(val[val.length-1]==1){
+                    that.formInline.deptVisible=[1];
+                }else if(val[0]==1||val[0]==0){
+                    that.formInline.deptVisibleval=val.splice(0,1)
+                }
             },
             //修改医生
             Submiter(){
@@ -251,6 +262,7 @@ import loading from "../../common/loading";
                 var expertJob = that.formInline.msg;
                 var adminLevel = that.formInline.identity;
                 var doctorRole  =JSON.stringify(that.formInline.jurisdiction);
+                var deptVisible  =JSON.stringify(that.formInline.deptVisible);
                 var url = that.$store.getters.getUrl +'admin/doctor/editDoctorInfoByUserName.do';
                 that.isshowloading=true;
                 $.ajax({
@@ -258,15 +270,27 @@ import loading from "../../common/loading";
                     type: "post",
                     dataType: "json",
                     timeout: 15000, //通过timeout属性，设置超时时间
-                    data: {userName,deptCode,expertJob,adminLevel,doctorRole},
+                    data: {userName,deptCode,expertJob,adminLevel,doctorRole,deptVisible},
                     success:function(data){
                         that.isshowloading=false;
                         if(data.code=='200'){
-                            that._dealdata(data.data);
+                            // that._dealdata(data.data);
+                            that.$Message.info('修改成功');
+                            if(that.$route.query.start==0){
+                                that.$router.push('/doctormanagement');
+                            }else if(that.$route.query.start==2||that.$route.query.start==5){
+                                that.$router.push('/Administrator');
+                            }
+                        }else{
+                            that.$Message.error('修改失败');
                         }
                     },
                     error:function(data){
                         that.isshowloading=false;
+                        that.$Modal.warning({   
+                            title: '提示',
+                            content: '请求失败',
+                        });
                     }
                 })
             }
@@ -275,10 +299,23 @@ import loading from "../../common/loading";
             if(localStorage.getItem('Administrator')!=undefined&&localStorage.getItem('Administrator')!=''){
             this.Administrator=JSON.parse(localStorage.getItem('Administrator'));
                 if(this.Administrator.adminLevel>1){
-                this.disabled=true;
+                    // this.disabled=true;
                     
                 }
           }
+            
+            this.deptVisibleList=this.depList;
+            this.deptVisibleList.push({
+                label: '查看所有',
+                value:0
+            },{
+                label: '查看自己',
+                value:1
+            })
+            this.DeptInfoList()
+            this.authority();
+        },
+        mounted(){
             if(this.$route.query.start==0){
                 this.biao="修改医生"
                 this.docinforItem=JSON.parse(localStorage.getItem('docinforItem'));
@@ -304,20 +341,47 @@ import loading from "../../common/loading";
                     this.formInline.msg='';
                 }
                 if(docinforItem.deptCode!=undefined){
-                   this.formInline.dep=docinforItem.deptCode; 
+                    if(docinforItem.deptCode.substring(0,6)=='100101'){
+                        this.formInline.dep='100101'
+                    }else if(docinforItem.deptCode.substring(0,6)=='100102'){
+                        this.formInline.dep='100102'
+                    }else if(docinforItem.deptCode.substring(0,6)=='100103'){
+                        this.formInline.dep='100103'
+                    }else{
+                        this.formInline.dep=docinforItem.deptCode; 
+                    }
+                   
                 }else{
                     this.formInline.dep='';
                 }
                 if(docinforItem.doctorRole!=undefined){
-                   this.formInline.jurisdiction=JSON.parse( docinforItem.doctorRole); 
+                   this.formInline.jurisdiction=JSON.parse(docinforItem.doctorRole); 
                 }else{
                     this.formInline.jurisdiction='';
                 }
+                if(docinforItem.deptVisible!=undefined){
+                   this.formInline.deptVisible=JSON.parse(docinforItem.deptVisible); 
+                }else{
+                    this.formInline.deptVisible='';
+                }
                 if(docinforItem.adminLevel!=undefined){
-                   this.formInline.identity=docinforItem.adminLevel; 
+                    if(docinforItem.adminLevel>this.Administrator.adminLevel){
+                        this.formInline.identity=docinforItem.adminLevel;
+                        var index  
+                         for(var i=0;i<this.authorityList.length;i++){
+                            if(this.authorityList[i].value==this.Administrator.adminLevel){
+                                index=i
+                                }
+                            }
+                            this.authorityList.splice(index,5);
+                    }else{
+                        this.formInline.identity=docinforItem.adminLevel; 
+                        this.disabled=true;
+                    }
                 }else{
                     this.formInline.identity='';
                 }
+                
             }else if(this.$route.query.start==1){
                 this.biao="添加医生"
             }else if(this.$route.query.start==2){
@@ -345,7 +409,16 @@ import loading from "../../common/loading";
                     this.formInline.msg='';
                 }
                 if(docinforItem.deptCode!=undefined){
-                   this.formInline.dep=docinforItem.deptCode; 
+                    if(docinforItem.deptCode.substring(0,6)=='100101'){
+                        this.formInline.dep='100101'
+                    }else if(docinforItem.deptCode.substring(0,6)=='100102'){
+                        this.formInline.dep='100102'
+                    }else if(docinforItem.deptCode.substring(0,6)=='100103'){
+                        this.formInline.dep='100103'
+                    }else{
+                        this.formInline.dep=docinforItem.deptCode; 
+                    }
+                   
                 }else{
                     this.formInline.dep='';
                 }
@@ -355,12 +428,75 @@ import loading from "../../common/loading";
                     this.formInline.jurisdiction='';
                 }
                 if(docinforItem.adminLevel!=undefined){
-                   this.formInline.identity=docinforItem.adminLevel; 
+                   if(docinforItem.adminLevel>this.Administrator.adminLevel){
+                        this.formInline.identity=docinforItem.adminLevel; 
+                    }else{
+                        this.formInline.identity=docinforItem.adminLevel; 
+                        this.disabled=true;
+                    }
+                }
+                if(docinforItem.deptVisible!=undefined){
+                   this.formInline.deptVisible=JSON.parse(docinforItem.deptVisible); 
                 }else{
-                    this.formInline.identity='';
+                    this.formInline.deptVisible='';
+                }
+            }else if(this.$route.query.start==5){
+                this.biao="添加管理员权限"
+                this.docinforItem=JSON.parse(localStorage.getItem('docinforItem'));
+                var docinforItem =this.docinforItem;
+                if(docinforItem.name!=undefined){
+                    this.formInline.user=docinforItem.name;
+                }else{
+                    this.formInline.user='';
+                }
+                if(docinforItem.phoneNo!=undefined){
+                   this.formInline.tel=docinforItem.phoneNo;
+                }else{
+                    this.formInline.tel='';
+                }
+                if(docinforItem.cardNo!=undefined){
+                   this.formInline.id=docinforItem.cardNo;
+                }else{
+                    this.formInline.id='';
+                }
+                if(docinforItem.expertJob!=undefined){
+                   this.formInline.msg=docinforItem.expertJob;
+                }else{
+                    this.formInline.msg='';
+                }
+                if(docinforItem.deptCode!=undefined){
+                    if(docinforItem.deptCode.substring(0,6)=='100101'){
+                        this.formInline.dep='100101'
+                    }else if(docinforItem.deptCode.substring(0,6)=='100102'){
+                        this.formInline.dep='100102'
+                    }else if(docinforItem.deptCode.substring(0,6)=='100103'){
+                        this.formInline.dep='100103'
+                    }else{
+                        this.formInline.dep=docinforItem.deptCode; 
+                    }
+                   
+                }else{
+                    this.formInline.dep='';
+                }
+                if(docinforItem.doctorRole!=undefined){
+                   this.formInline.jurisdiction=JSON.parse( docinforItem.doctorRole); 
+                }else{
+                    this.formInline.jurisdiction='';
+                }
+                if(docinforItem.adminLevel!=undefined){
+                   if(docinforItem.adminLevel>this.Administrator.adminLevel){
+                        this.formInline.identity=docinforItem.adminLevel; 
+                    }else{
+                        this.formInline.identity=docinforItem.adminLevel; 
+                        this.disabled=true;
+                    }
+                }
+                if(docinforItem.deptVisible!=undefined){
+                   this.formInline.deptVisible=JSON.parse(docinforItem.deptVisible); 
+                }else{
+                    this.formInline.deptVisible='';
                 }
             }
-            this.DeptInfoList()
         }
     }
 </script>

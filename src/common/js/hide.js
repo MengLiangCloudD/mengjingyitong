@@ -18,6 +18,7 @@ const hidemenu=(requesturl)=>{
             signature: data.signature, // 必填,签名
             jsApiList: [
               "hideAllNonBaseMenuItem",
+              "hideMenuItems"
               ] // 必填,需要使用的JS接口列表
           });
         },
@@ -35,6 +36,9 @@ const hidemenu=(requesturl)=>{
                 success:function(res){
                 }
             });
+            wx.hideMenuItems({// 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+              menuList: ["menuItem:setFont"]
+          });
             /* 处理失败验证 */
             wx.error(function(res) {
                 // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名

@@ -12,15 +12,17 @@
               <img src="./../../../assets/toux.png" alt width="50px" style=" border-radius:50%; vertical-align: middle">
              <div style="display: inline-block;vertical-align: middle;margin-left:10px;"> 
               <p style="font-size: 16px">{{item.name}}</p>
+              <p style="  font-size: 16px;display: inline-block;vertical-align: middle;">
+                <span style="text-indent:25px">{{ /\d{4}-\d{1,2}-\d{1,2}/g.exec(item.pjdate)[0]}}</span>
+              </p>
+              <p style="margin-left:10px; display: inline-block; vertical-align: middle;">
+                <span style="  font-size: 20px;color:#f37f12;display: inline-block;vertical-align: middle;">{{calculate(index)}}</span>
+                <img src="./../../../assets/_星星1.png" alt="" width="22" style="vertical-align: middle;">
+              </p>
             </div>
-            <p style="  font-size: 16px;display: inline-block;vertical-align: middle;">
-              <span style="text-indent:25px">{{ /\d{4}-\d{1,2}-\d{1,2}/g.exec(item.pjdate)[0]}}</span>
-            </p>
+            
             <p style="text-indent:2rem;font-size:18px;padding:10px 0">{{item.content}}</p>
-            <p style="float:right;margin-right:10px;">
-              <span style="  font-size: 20px;color:#f37f12;display: inline-block;vertical-align: middle;">{{calculate(index)}}</span>
-            <img src="./../../../assets/_星星1.png" alt="" width="22" style="vertical-align: middle;">
-            </p>
+            
             
           </div>
         </div>
@@ -87,11 +89,11 @@ var time = year + "-" + month;
                 success: function(data) {
                   that.isShowLoading=false;
                   that.commentList=[];
-                  if(data.status==1){
+                  if(data.code==200){
                     that.commentList=data.data;
-                  }else if(data.status==0){
+                  }else if(data.code==500){
                     that.commentList=[];
-                  }else if(data.status==-1){
+                  }else if(data.code==-1){
                     that.$Modal.error({
                       title: "提示信息",
                       content: "请求异常!"
@@ -165,11 +167,11 @@ var time = year + "-" + month;
   top: 0px;
 }
 .comment {
-  padding: 15px 2%;
+  padding: 15px 5%;
   border-bottom: 3px solid #ccc;
   background: #fff;
   position: relative;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
 }
 .ping{
   height: 100%;

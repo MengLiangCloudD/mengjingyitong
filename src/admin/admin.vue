@@ -2,24 +2,26 @@
     <div class="ge" style="height:100%;overflow: auto;">
         <div class="tittle" style="background: rgb(0, 187, 187);color:white">
              我的身份
-             <div size="large" class="switchopen" style="right: 160px;">
+             <div size="large" class="switchopen" style="right: 160px;" @click="changestate">
                  医生
              </div>
-             <div size="large" class="switchopen" style="right: 100px;" >
+             <div size="large" class="switchopen" style="right: 100px;"  @click="changehuan">
                  患者
              </div>
              <div size="large" class="switchopen" style="right: 7%;color: #777;">
                  管理员
              </div>
         </div>
+        
         <div class="content">
             <div class="userssss"  style="padding-left: 5%; border-bottom:1px solid #ccc;">
-                <img src="./../assets/avatar.png" alt="" width="50px;" style="vertical-align: top;margin-left:10px;" >
-                 <!-- <img :src="headimgurl" alt="" width="50px;" style="vertical-align: top;border-radius: 50%;" > -->
+                <!-- <img src="./../assets/avatar.png" alt="" width="50px;" style="vertical-align: top;margin-left:10px;" > -->
+                 <img :src="headimgurl" alt="" width="50px;" style="vertical-align: top;border-radius: 50%;margin-left:10px;" >
                 <div class="user" style="display: inline-block;vertical-align: top;margin-left:10px;"  >
                     <p><span>管理员姓名：</span><span>{{Administrator.name}}</span></p>
                     <p><span>所属部门：</span><span>&nbsp;&nbsp;&nbsp;{{Administrator.deptName}}</span></p>
                     <p><span>管理职位：</span><span>&nbsp;&nbsp;&nbsp;{{Administrator.job}}</span></p>
+                    <p><span>管理职称：</span><span>&nbsp;&nbsp;&nbsp;{{Administrator.title}}</span></p>
                 </div>
               </div>
             <div class="content2">
@@ -77,7 +79,8 @@
         data() {
             return {
                 Administrator:[],
-                deptCode:''
+                deptCode:'',
+                headimgurl:''
             }
         },
         methods:{
@@ -91,14 +94,60 @@
             goauthoritymanagement(){
                 this.$router.push('/authoritymanagement');
             },
+            //账单
             goIncomestatements(){
                 this.$router.push(`/Incomestatements`);
             },
+            //管理员
             goAdministrator(){
                 this.$router.push(`/Administrator`);
             },
+            //切换患者身份
+            changehuan(){
+                this.$router.push('/Myaccount');
+            },
+            //切换医生身份
+            changestate(){
+                var that = this;
+                var url  = that.$store.getters.getUrl + "doctor/doctorlogins.do";
+                var userName = that.Administrator.name;
+                var phoneNumber = that.Administrator.phoneNo;
+                var idNo = that.Administrator.cardNo;
+                $.ajax({
+                  url: url,
+                  type: "post",
+                  dataType: "json",
+                  async: false,
+                  data: { userName,phoneNumber,idNo},
+                  success: function(data){
+                      that.spinShow=false;
+                      if(data.status==1){
+                          localStorage.setItem('ysdoccode',data.data[0].user_name);
+                          localStorage.setItem('ysdepcode',data.data[0].dept_code);
+                          localStorage.setItem('ysdepname',data.data[0].dept_name);
+                          localStorage.setItem('ysdocname',data.data[0].name);
+                          localStorage.setItem('adminLevel',data.data[0].adminLevel);
+                          localStorage.setItem('idno',data.data[0].idno);
+                          localStorage.setItem('deptVisible',JSON.stringify(data.data[0].deptVisible));
+                          that.$router.push('/Personalcenter');
+                      }else{
+                      that.$Modal.warning({
+                          title: '提示警告',
+                          content: '抱歉您并不是医生，请勿操作'
+                      });
+                      }
+                  },
+                  error:function(data){
+                      that.spinShow=false;
+                  }
+                })
+            }
        },
        mounted(){
+           if(localStorage.getItem("user")!=null&&JSON.parse(localStorage.getItem("user")).headimgurl!=undefined){
+            var headimgurl= JSON.parse(localStorage.getItem("user")).headimgurl;
+            this.headimgurl  = headimgurl.substring(1,headimgurl.length-1); 
+            }
             if(localStorage.getItem('Administrator')!=undefined&&localStorage.getItem('Administrator')!=''){
                     this.Administrator=JSON.parse(localStorage.getItem('Administrator'));
                     this.deptCode=(this.Administrator.deptCode).substring(0,4);
@@ -119,13 +168,10 @@
 }
 .switchopen{
   height: 25px;
-  /* width: 70px; */
   border-radius: 15px;
-  /* background: #2d8cf0; */
   line-height: 25px;
   font-size: 4.2vw;
   text-align: left;
-  /* padding: 0 10px; */
   position: absolute;
   top: 12px;
   right: 10px;
@@ -144,7 +190,6 @@
 }
 .activeswitchopen{
   text-align: right;
-  /* background:rgb(33, 106, 179); */
 } 
 .userssss{
     padding: 10px 0;
@@ -152,22 +197,16 @@
 }
 .user{
     padding-left: 10px;
-    
 }
 .user p {
     color: rgb(0, 0, 0);
     line-height: 1.7;
-    /* font-weight: 600;
-    font-size: 14px;
-     */
-   
 }
 .content2{
     border-top: 1px solid #ddd;
     padding-bottom: 50px;
-    /* font-size: 14px; */
 }
-.content2 p{
+.content2 p{ 
      position: relative;
 }
 .content2 p svg {

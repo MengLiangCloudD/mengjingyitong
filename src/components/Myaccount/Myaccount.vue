@@ -210,8 +210,8 @@ export default {
     //切换管理员
     changguan(){
       var that  = this;
-      // var url  = that.$store.getters.getUrl + "doctor/doctorlogins.do";
       var url = that.$store.getters.getUrl +'admin/doctor/loginByIdNo.do'
+      // var url ='http://192.168.33.22:8080/admin/doctor/loginByIdNo.do'
       var index = that.index;
       var userName = that.myCardType[index].name;
       // var userName = '曲博';
@@ -225,7 +225,7 @@ export default {
           type: "post",
           dataType: "json",
           async: false,
-          data: {idNo:'132626196407100025'},
+          data: {idNo:idNo},
           success: function(data){
             that.spinShow=false;
             if(data.code==200){
@@ -271,7 +271,9 @@ export default {
                 localStorage.setItem('ysdepcode',data.data[0].dept_code);
                 localStorage.setItem('ysdepname',data.data[0].dept_name);
                 localStorage.setItem('ysdocname',data.data[0].name);
-                // localStorage.setItem('adminLevel',data.data[0].adminLevel);
+                localStorage.setItem('adminLevel',data.data[0].adminLevel);
+                localStorage.setItem('idno',data.data[0].idno);
+                localStorage.setItem('deptVisible',JSON.stringify(data.data[0].deptVisible));
                 that.$router.push('/Personalcenter');
             }else{
               that.$Modal.warning({

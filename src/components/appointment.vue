@@ -61,14 +61,25 @@
             <p>{{item.times.substring(item.times.length-5,item.times.length)}}</p>
           </div>
         </div>
-        <p class="select-item item-color" :class="{pmstate:pmstate=='暂无号源'}">剩余号源：{{pmstate}}</p>
+        <p class="select-item item-color" :class="{pmstate:pmstate=='暂无号源'||pmstate=='未出诊'}">剩余号源：{{pmstate}}</p>
         <div style="display:flex">
           <p style="padding:0 20px;margin:20px 0px;flex:1">
-            <Button @click="amRegistered()" size="large" type="primary" long v-if="pmstate=='未约满'">预约</Button>
-             <Button :disabled="true"  size="large"  type="primary" long v-if="pmstate=='暂无号源'">预约</Button>
+             <Button :disabled="yuyue" @click="amRegistered()" size="large" type="primary" long v-if="pmstate=='未约满'">预约</Button>
+             <Button :disabled="yuyue"  size="large"  type="primary" long v-if="pmstate=='暂无号源'||pmstate=='未出诊'">预约</Button>
           </p>
           <p style="padding:0 20px;margin:20px 0px;flex:1">
-            <Button :disabled="true" @click="amRegistered()" size="large" type="primary" long>复诊</Button>
+            <Button :disabled="fuzhen" @click="amRegistered()" size="large" type="primary" long>复诊</Button>
+          </p>
+          <!-- <p style="padding:0 20px;margin:20px 0px;flex:1">
+            <Button :disabled="zixun" @click="amRegistered()" size="large" type="primary" long>咨询</Button>
+          </p> -->
+        </div>
+        <div style="display:flex">
+          <p style="padding:0 20px;margin:20px 0px;flex:1">
+            <Button :disabled="zixun" @click="amRegistered()" size="large" type="primary" long>咨询</Button>
+          </p>
+          <p style="padding:0 20px;margin:20px 0px;flex:1;opacity: 0;">
+            <Button :disabled="true" @click="amRegistered()" size="large" type="primary" long>咨询</Button>
           </p>
         </div>
       </div>
@@ -103,7 +114,11 @@ export default {
       title:'',
       haoyuan:[],
       job:'',
-      numeer:1
+      numeer:1,
+      doctorRole:'',
+      yuyue:true,
+      fuzhen:true,
+      zixun:true
     };
   },
   created(){
@@ -263,18 +278,36 @@ export default {
       }
       var a = 0;
       if(haoyuans!==''){
-        _this.$store.commit("setRegdata", _this.getcurrentday(haoyuans.clinicdate));
-        var str = haoyuans.cliniclabel;
-          if(str.indexOf( _this.$store.getters.getDocName) !== -1){
-              a = 1
-              _this.$store.commit("setRegprice", haoyuans.price); //挂号支付的费用
-              _this.$store.commit("setRegcode", haoyuans.cliniclabel); //存储号源编码
-              _this.$store.commit("setamprom", haoyuans.amorpm); //保存白天昼夜
-              _this.pmstate = '未约满';
-          }
+        if(haoyuans.ghzt!=1){
+            _this.$store.commit("setRegdata", _this.getcurrentday(haoyuans.clinicdate));
+            var str = haoyuans.cliniclabel;
+            if(str.indexOf( _this.$store.getters.getDocName) !== -1){
+                a = 1
+                _this.$store.commit("setRegprice", haoyuans.price); //挂号支付的费用
+                _this.$store.commit("setRegcode", haoyuans.cliniclabel); //存储号源编码
+                _this.$store.commit("setamprom", haoyuans.amorpm); //保存白天昼夜
+                _this.pmstate = '未约满';
+                _this.doctorRole=JSON.parse(haoyuans.doctorrole);
+                for(var i =0;i<_this.doctorRole.length;i++){
+                  if(_this.doctorRole[i]==2){
+                    _this.yuyue=false;
+                  }
+                  if(_this.doctorRole[i]==1){
+                    _this.zixun=false;
+                  }
+                  if(_this.doctorRole[i]==0){
+                    _this.fuzhen=false;
+                  }
+                }
+            }
         }else{
-          _this.pmstate = '暂无号源';
+          _this.pmstate = '未出诊';
+         _this.yuyue=true;
         }
+      }else{
+        _this.pmstate = '暂无号源';
+        _this.yuyue=true;
+      }
     if(_this.numeer==1){
       _this.numeer=0;
       let url1 = location.href;
@@ -326,6 +359,9 @@ export default {
           //         }
           //     });
           // }
+          wx.hideMenuItems({// 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+              menuList: ["menuItem:setFont"]
+          });
           wx.onMenuShareAppMessage({ 
               title: '滦平县妇幼保健院挂号缴费平台', // 分享标题
               desc: msg, // 分享描述
@@ -662,6 +698,7 @@ export default {
 }
 .item-color {
   color: green;
+  
 }
 .amstate {
   color: red;

@@ -6,7 +6,7 @@
               <Icon size="30" type="ios-arrow-back" />
             </div>
             管理员管理
-            <div style=" position: absolute;right: 5%;top:15px" @click="goaddattachment(1)">
+            <div style=" position: absolute;right: 5%;top:15px" @click="goaddattachment(0,1)">
                 <svg t="1574489296024" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4002" width="24" height="24"><path d="M906.212134 565.732986 565.732986 565.732986 565.732986 906.212134C565.732986 926.013685 541.666486 959.972 511.97312 959.972 482.297674 959.972 458.213254 926.013685 458.213254 906.212134L458.213254 565.732986 117.734106 565.732986C97.950475 565.732986 63.97424 541.666486 63.97424 511.97312 63.97424 482.279754 97.950475 458.213254 117.734106 458.213254L458.213254 458.213254 458.213254 117.734106C458.213254 97.950475 482.297674 63.97424 511.97312 63.97424 541.666486 63.97424 565.732986 97.950475 565.732986 117.734106L565.732986 458.213254 906.212134 458.213254C925.995765 458.213254 959.972 482.279754 959.972 511.97312 959.972 541.666486 925.995765 565.732986 906.212134 565.732986Z" p-id="4003" fill="#ffffff"></path></svg>
             </div>
           </div>
@@ -21,15 +21,17 @@
                     </div>
                 </div>
                 <div class="operate">
-                        <Button type="primary" size="small" @click="goaddattachment(item,2)">修改</Button>
+                        <Button v-if="item.adminLevel>adminLevel" type="primary" size="small" @click="goaddattachment(item,2)">修改</Button>
+                        <Button v-if="item.adminLevel<=adminLevel" :disabled="true" type="primary" size="small" @click="goaddattachment(item,2)">修改</Button>
+                        <Button type="error" size="small" @click="erromodallist(item)">移除</Button>
                 </div>
-                
             </div>
-            <!-- <Modal v-model="modal11" fullscreen title="科室介绍">
-                <p style="text-indent:24pt;font-size:16px" v-for="(item,index) in content.trim().split(/\s+/)" :key="index">
-                    {{item}}
-                </p>
-            </Modal> -->
+            <Modal
+                v-model="erromodal"
+                @on-ok="removeAdmin"
+                title="提示">
+                <p>您确认移除该管理员吗!</p>
+            </Modal>
         </div>
         <loading v-show="isshowloading" class="loading"></loading>
     </div>
@@ -46,33 +48,9 @@ import loading from "../../common/loading";
                 isshowloading:false,
                 adminLevel:'',
                 modal11:false,
-                doctorList:[
-                    {
-                        doctorName:'刘淑琴',
-                        doctorCode:'000LSQ',
-                        depName:'产科门诊一',
-                        depCode:'100213',
-                        job:'产科专家'
-                    },{
-                        doctorName:'刘淑琴',
-                        doctorCode:'000LSQ',
-                        depName:'产科门诊二',
-                        depCode:'100213',
-                        job:'产科专家'
-                    },{
-                        doctorName:'刘淑琴',
-                        doctorCode:'000LSQ',
-                        depName:'妇科门诊一',
-                        depCode:'100213',
-                        job:'产科专家'
-                    },{
-                        doctorName:'刘淑琴',
-                        doctorCode:'000LSQ',
-                        depName:'妇科门诊二',
-                        depCode:'100213',
-                        job:'产科专家'
-                    },
-                ]
+                doctorList:[],
+                erromodal:false,
+                culbItem:{}
             }
         },
         methods:{
@@ -80,19 +58,22 @@ import loading from "../../common/loading";
             tobackdetail(){
                 this.$router.push('/admin');
             },
-            //添加科室或修改科室
+            //添加或修改
             goaddattachment(item,data){
-                if(data==0){
+                if(data==2){
                   localStorage.setItem('docinforItem',JSON.stringify(item));
+                  this.$router.push(`/addDoctor?start=${data}`);
+                }else if(data==1){
+                    this.$router.push(`docAll/?start=${data}`);
                 }
-               this.$router.push(`/addDoctor?start=${data}`);
+                
             },
             jiankai(){
                 this.modal11=true;
             },
             DeptInfoList(){
                 var that =this;
-                var url =that.$store.getters.getUrl + 'admin/doctor/getAdminListByAdminLevel.do';
+                var url =that.$store.getters.getUrl + 'admin/doctor/getAdminList.do';
                 var adminLevel = that.adminLevel;
                 that.isshowloading=true;
                 $.ajax({
@@ -100,7 +81,7 @@ import loading from "../../common/loading";
                     type: "post",
                     dataType: "json",
                     timeout: 15000, //通过timeout属性，设置超时时间
-                    data: {adminLevel},
+                    data: {},
                     success:function(data){
                         that.isshowloading=false;
                         if(data.code=200){
@@ -109,6 +90,47 @@ import loading from "../../common/loading";
                     },
                     error:function(data){
                         that.isshowloading=false;
+                    }
+                })
+            },
+            erromodallist(item){
+                this.erromodal=true;
+                this.culbItem=item;
+            },
+            //移除
+            removeAdmin(){
+                var that =this;
+                var url = that.$store.getters.getUrl +'admin/doctor/editAdminLevelByUserName.do';
+                var userName = that.culbItem.userName;
+                // var deptCode = that.culbItem.deptCode;
+                // var expertJob = that.culbItem.expertJob;
+                var adminLevel = 4;
+                // var doctorRole  =that.culbItem.doctorRole
+                // var deptVisible  =that.culbItem.deptVisible;
+                that.isshowloading=true;
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    dataType: "json",
+                    timeout: 15000, //通过timeout属性，设置超时时间
+                    data: {userName,adminLevel},
+                    success:function(data){
+                        that.isshowloading=false;
+                        if(data.code=='200'){
+                            // that._dealdata(data.data);
+                            that.$Message.info('删除成功');
+                            that.DeptInfoList();
+
+                        }else{
+                            that.$Message.error('删除失败');
+                        }
+                    },
+                    error:function(data){
+                        that.isshowloading=false;
+                        that.$Modal.warning({   
+                            title: '提示',
+                            content: '请求失败',
+                        });
                     }
                 })
             }

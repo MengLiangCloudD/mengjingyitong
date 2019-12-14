@@ -29,8 +29,8 @@
                 <div class="doctort" v-for="(item,index) in doctorlist" :key="index">
                     <img class="avatar" src="./../../assets/toux.png" alt="" height="14%">
                     <div class="docto">
-                       <p><span style="font-weight: 900;font-size:20px;">{{item.doctorname}}</span><span style="font-weight: 500;font-size:18px;padding: 0px 10px;display: inline-block;">{{item.zhi}}</span></p>
-                       <p  style="font-size:16px;"><span>滦平县妇幼保健院</span><span style="padding: 0px 10px;display: inline-block;">{{item.debname}}</span></p>
+                       <p><span style="font-weight: 900;font-size:20px;">{{item.name}}</span><span style="font-weight: 500;font-size:18px;padding: 0px 10px;display: inline-block;">{{item.zhi}}</span></p>
+                       <p  style="font-size:16px;"><span>滦平县妇幼保健院</span><span style="padding: 0px 10px;display: inline-block;">{{item.title}}</span></p>
                        <p style="font-size:16px;" class="ppoo" :class="{ppo:currentindex==index}"><span>擅长：</span><span @click="showjob(index)">{{item.job}}</span></p>
                        <p><span style="font-size:20px;color:#00BBBB">￥{{item.preouds}}</span><span><Button shape="circle" class="btn" @click="goDescribecondition()">问医生</Button></span></p> 
                     </div>
@@ -132,7 +132,7 @@ import tabbar from "../../common/tabbar";
                     success: function(data) {
                         // _this.isshowloading = false;
                         if(data.status==-1||data.status==undefined){
-                            that.$router.push("/abnormal");
+                            // that.$router.push("/abnormal");
                         }else{
                             that._dealdata(data.data);
                         }
@@ -201,25 +201,29 @@ import tabbar from "../../common/tabbar";
                 this.$router.push('/yishenList');
             },
             getdoctors(){
-                let url=this.$store.getters.getUrl + "depart/DepartDoctors.do"
+                let url=this.$store.getters.getUrl + "advisory/getAllDoctors.do"
                 let _this=this
                 $.ajax({
                     url: url,
                     type: "post",
                     dataType: "json",
                     async: true,
-                    data: {depCode:100101},
+                    data: {deptCode:''},
                     success: function(data) {
+                        debugger
+                        if(data.code==200){
+                            _this.doctorlist=data.data
+                        }
                         //_this.isshowloading = false;
-                        let resarr=JSON.parse(data.data)
-                        // let concatarr=[]
-                        // console.log(resarr)
-                        // for(let i=0;i<resarr.length;i++){
-                        //     console.log(resarr[i])
-                        // }
-                        // _this.doctorType=concatarr
-                        // _this.doctorType=resarr
-                        console.log(_this.doctorType)
+                        // let resarr=JSON.parse(data.data)
+                        // // let concatarr=[]
+                        // // console.log(resarr)
+                        // // for(let i=0;i<resarr.length;i++){
+                        // //     console.log(resarr[i])
+                        // // }
+                        // // _this.doctorType=concatarr
+                        // // _this.doctorType=resarr
+                        // console.log(_this.doctorType)
                         
                     },
                     error: function(data) {
@@ -230,7 +234,7 @@ import tabbar from "../../common/tabbar";
         },
         created() {
             this.DepartmentList();
-            // this.getdoctors()
+            this.getdoctors()
         },
     }
 </script>

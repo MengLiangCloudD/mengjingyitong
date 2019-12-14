@@ -111,10 +111,9 @@ export default {
           };
           //连接成功建立的回调方法  
           websocket.onopen = function() {  
-             console.log('成功');
+              console.log('成功');
               heartCheck.reset().start();  
           }  
-          
           //接收到消息的回调方法  
           websocket.onmessage = function(event) {
              heartCheck.reset().start();  
@@ -125,7 +124,6 @@ export default {
                   localStorage.setItem('hzwsnum',num)
                   _this.$store.commit("setnum", num);
                 }
-               
               }
           }  
               

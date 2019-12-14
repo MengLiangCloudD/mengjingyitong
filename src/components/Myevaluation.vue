@@ -19,19 +19,22 @@
           </Modal>
         <div class="content" v-for="(item,index) in commentList" :key="index">
           <!-- <img src=".././assets/x.png" alt width="20" class="sha" @click.stop="test(index)"> -->
-          <p>
+          <div>
+            
+          </div>
+          <p style="display: inline-block;vertical-align: middle;"> 
             <span>
-              <img :src="item.headimgurl" alt width="30px" style=" border-radius:50%; vertical-align: middle">
+              <img src=".././assets/avatar.png" alt width="50px" style=" border-radius:50%; vertical-align: middle">
             </span>
-            <span style="font-size: 18px">{{item.docnames}}</span>
             <!-- <span style="font-size:18px">{{item.docname}}</span> -->
           </p>
-          <p style="  font-size: 16px;">
-            <span style="text-indent:25px">{{ /\d{4}-\d{1,2}-\d{1,2}/g.exec(item.pjdate)[0]}}</span>
+          <p style="font-size: 16px;display: inline-block;vertical-align: middle;">
+            <span style="font-size: 18px">{{item.docnames}}</span><br>
+            <span >{{ /\d{4}-\d{1,2}-\d{1,2}/g.exec(item.pjdate)[0]}}</span>
             <span >{{item.doccode}}</span>
             <span style="  font-size: 20px;color:#f37f12;display: inline-block;vertical-align: middle;">{{calculate(index)}}</span><img src="./../assets/_星星1.png" alt="" width="22" style="vertical-align: middle;">
           </p>
-          <p style="text-indent:25px;font-size:18px;">{{item.content}}</p>
+          <p style="text-indent:25px;font-size:18px;padding: 3.53333vw 2.66667vw;">{{item.content}}</p>
         </div>
       </div>
       
@@ -242,16 +245,17 @@ export default {
   font-weight: 900;
   background: #28b8a1;
   position: relative;
+  
 }
 .coo {
   margin-top: 15px;
 }
 .content {
-  padding: 15px 2%;
+  padding: 15px 5%;
   border-bottom: 3px solid #ccc;
   background: #fff;
   position: relative;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
 }
 .sha {
   position: absolute;

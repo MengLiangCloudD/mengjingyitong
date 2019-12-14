@@ -379,6 +379,9 @@ import voiceanimate from "../../../common/voice"
                         success: function (res) {
                         }
                     })
+                    wx.hideMenuItems({// 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+                        menuList: ["menuItem:setFont"]
+                    });
                 })
             },
             initVoiceAnimate(){

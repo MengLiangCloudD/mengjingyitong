@@ -235,8 +235,9 @@ export default {
           type: "post",
           dataType: "json",
           timeout: 15000, //通过timeout属性，设置超时时间
+          contentType: 'application/json',
           // async: false,
-          data: obj,
+          data:JSON.stringify(obj) ,
           success: function(data) {
             that.isshowloading=false;
             if (data.status == 1) {
@@ -269,6 +270,7 @@ export default {
     //关注医生
     attention() {
       var that = this;
+      var items = JSON.parse(localStorage.getItem('pingitems'));
       //取地openid
       var openid = localStorage.getItem("openid");
       //url地址
@@ -283,6 +285,7 @@ export default {
       var name = that.$store.state.name;
       //患者卡号
       var cardno = localStorage.getItem('cardno');
+      var specialty = items.hosdepcode;
       $.ajax({
         url: url,
         type: "post",
@@ -298,7 +301,9 @@ export default {
           hosdepname: depname,
           //患者姓名
           name: name,
-          cardno:cardno
+          cardno:cardno,
+          //科室编码
+          specialty:specialty
         },
         success: function(data) {
           that.isshowloading=false;

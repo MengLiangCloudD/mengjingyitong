@@ -22,7 +22,7 @@
         <img class="duihao-img" src="../assets/WXduihao.png">
       </div>
       <div class="btn">
-        <div><button v-bind:disabled="isDisabl" class="add-btn"  id="getBrandWCPayRequest"> 立即支付</button> </div>
+        <div><Button type="success"  v-bind:disabled="isDisabl" class="add-btn" id="getBrandWCPayRequest">立即支付</Button></div>
       </div>
     </div>
     <tabbar class="pubtabbar"></tabbar>
@@ -134,9 +134,12 @@ export default {
                 paySign: json.paySign //微信签名
               },
               function(e) {
-                if(e.err_msg == "get_brand_wcpay_request:ok" ){
+                if(e.err_msg == "get_brand_wcpay_request:ok"){
+                   _this.isDisabl=false;
+                   var add = document.getElementsByClassName('add-btn')[0];
+                    add.style.background="#ccc";
                   if(localStorage.getItem("body")=='微信挂号'){
-                    var url =_this.$store.getters.getUrl+'register/addRegister.do';
+                     var url =_this.$store.getters.getUrl+'register/addRegister.do';
                      var tradeno = localStorage.getItem("tradeno");
                      var cardno  = localStorage.getItem('cardno');
                      var hosdoccode =_this.$store.getters.getDoccode; //挂号医生编号
@@ -320,9 +323,12 @@ export default {
           
         // return minute + ':'+ second;
         }else{
+          debugger
             // b[i].innerHTML='';
             this.isDisabl=true;
             $('.b').html('支付超时，请重新挂号');
+            var add = document.getElementsByClassName('add-btn')[0];
+            add.style.background="#ccc"
         }
          
       },
@@ -394,7 +400,7 @@ export default {
   display: inline-block;
   padding: 7px 0;
   border: 0;
-outline: none;
+  outline: none;
 }
 .btn {
   width: 100%;
