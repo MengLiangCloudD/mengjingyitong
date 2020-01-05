@@ -29,10 +29,10 @@
                 <div class="doctort" v-for="(item,index) in doctorlist" :key="index">
                     <img class="avatar" src="./../../assets/toux.png" alt="" height="14%">
                     <div class="docto">
-                       <p><span style="font-weight: 900;font-size:20px;">{{item.name}}</span><span style="font-weight: 500;font-size:18px;padding: 0px 10px;display: inline-block;">{{item.zhi}}</span></p>
+                       <p><span style="font-weight: 900;font-size:20px;">{{item.name}}</span><span style="font-weight: 500;font-size:18px;padding: 0px 10px;display: inline-block;">{{item.title}}</span></p>
                        <p  style="font-size:16px;"><span>滦平县妇幼保健院</span><span style="padding: 0px 10px;display: inline-block;">{{item.title}}</span></p>
-                       <p style="font-size:16px;" class="ppoo" :class="{ppo:currentindex==index}"><span>擅长：</span><span @click="showjob(index)">{{item.job}}</span></p>
-                       <p><span style="font-size:20px;color:#00BBBB">￥{{item.preouds}}</span><span><Button shape="circle" class="btn" @click="goDescribecondition()">问医生</Button></span></p> 
+                       <p style="font-size:16px;" class="ppoo" :class="{ppo:currentindex==index}"><span>擅长：</span><span @click="showjob(index)">{{item.expertJob}}</span></p>
+                       <p><span style="font-size:20px;color:#00BBBB">￥{{item.consultationPrice}}</span><span><Button shape="circle" class="btn" @click="goDescribecondition(item)">问医生</Button></span></p> 
                     </div>
                 </div>
             </div>
@@ -49,62 +49,12 @@ import tabbar from "../../common/tabbar";
         },
         data() {
             return {
+                size:10,
                 carouselarr:[],
                 carouselindex:0,
                 currentindex:-1,
-                doctorlist:[
-                        {
-                        doctorname:'刘淑琴',
-                        job:'妇产生孩子旺sssss手术室手术室所旺我的方订单',
-                        debname:'产科',
-                        preouds:'49.00',
-                        zhi:'副主任医师'
-                    },{
-                        doctorname:'孟良',
-                        job:'妇产生孩子旺sssss手术室手术室所旺我的方订单',
-                        debname:'产科',
-                        preouds:'49.00',
-                        zhi:'副主任医师'
-                    },{
-                        doctorname:'刘淑琴',
-                        job:'妇产生孩子旺sssss手术室手术室所旺我的方订单',
-                        debname:'产科',
-                        preouds:'49.00',
-                        zhi:'副主任医师'
-                    },{
-                        doctorname:'刘淑琴',
-                        job:'妇产生孩子旺sssss手术室手术室所旺我的方订单',
-                        debname:'产科',
-                        preouds:'49.00',
-                        zhi:'副主任医师'
-                    }
-                ],
-                doctorType:[
-                    // {
-                    //     depname:'妇产科',
-                    // },
-                    // {
-                    //     depname:'妇产科',
-                    // },
-                    // {
-                    //     depname:'妇产科',
-                    // },
-                    // {
-                    //     depname:'妇产科',
-                    // },
-                    // {
-                    //     depname:'妇产科',
-                    // },
-                    // {
-                    //     depname:'妇产科',
-                    // },
-                    // {
-                    //     depname:'妇产科',
-                    // },
-                    // {
-                    //     depname:'妇产科',
-                    // }
-                ],
+                doctorlist:[],
+                doctorType:[],
             }
         },
         methods:{
@@ -112,8 +62,10 @@ import tabbar from "../../common/tabbar";
                 this.currentindex=index
             },
             //问医生
-            goDescribecondition(){
-               this.$router.push({name:'consulOrder'});
+            goDescribecondition(item){
+                var zixundoctor =  JSON.stringify(item);
+                localStorage.setItem('zixundoctor',zixundoctor);
+               this.$router.push('/Describecondition');
             },
             //消息列表
             godoctorList(){
@@ -142,7 +94,7 @@ import tabbar from "../../common/tabbar";
                     }
                 });
             },
-             //处理获取医生的数据 此方法只在页面加载时触发一次
+             //合并科室数据
             _dealdata(data) {
             
                 var _this = this;
@@ -178,7 +130,7 @@ import tabbar from "../../common/tabbar";
                     _this.carouselarr.push(_arritem)
                 }
             },
-            //点击选择医生
+            //点击医生列表
             clickdocto(depitem){
                 let _this = this;
                 var depcode =[];
@@ -198,32 +150,26 @@ import tabbar from "../../common/tabbar";
                 }
                 depcodes = dep.substring(0, dep.lastIndexOf(','));
                 _this.$store.commit("setdepcodes", depcodes);
-                this.$router.push('/yishenList');
+                _this.$router.push(`/yishenList?depCode=${depcodes}`);
             },
             getdoctors(){
-                let url=this.$store.getters.getUrl + "advisory/getAllDoctors.do"
-                let _this=this
+                let url=this.$store.getters.getUrl + "doctors/getFamousDoctorsList.do";
+                // let url='http://192.168.33.137:8080/HisCloud_war/doctors/getFamousDoctorsList.do'
+                let _this=this;
+                var  size = _this.size;
                 $.ajax({
                     url: url,
                     type: "post",
                     dataType: "json",
                     async: true,
-                    data: {deptCode:''},
+                    data: {},
                     success: function(data) {
-                        debugger
                         if(data.code==200){
-                            _this.doctorlist=data.data
-                        }
-                        //_this.isshowloading = false;
-                        // let resarr=JSON.parse(data.data)
-                        // // let concatarr=[]
-                        // // console.log(resarr)
-                        // // for(let i=0;i<resarr.length;i++){
-                        // //     console.log(resarr[i])
-                        // // }
-                        // // _this.doctorType=concatarr
-                        // // _this.doctorType=resarr
-                        // console.log(_this.doctorType)
+                            for(var i = 0;i<data.data.length;i++){
+                                data.data[i].consultationPrice=data.data[i].consultationPrice.toFixed(2);
+                            }
+                            _this.doctorlist=data.data;
+                        }   
                         
                     },
                     error: function(data) {

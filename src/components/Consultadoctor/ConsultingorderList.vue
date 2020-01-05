@@ -7,7 +7,7 @@
         <div class="arrow-icon" @click="tobackdetail">
           <Icon size="30" type="ios-arrow-back" />
       </div
-      >挂号列表
+      >咨询订单
       </div>
       <div class="xuanze"  style="position: relative;">
          <div style="display:inline-block;width:100%">
@@ -38,11 +38,7 @@
         <div class="lineItem" v-if="orderList.length!==0">
           <p>
             <span>滦平县妇幼保健院</span>
-            <span  class="green">待支付</span>
-            <span v-if="item.status==1" class="green">待就诊</span>
-            <span v-if="item.status==2">待评价</span>
-            <span v-if="item.status==3">已评价</span>
-            <span v-if="item.status==4" style="color:red">已退款</span>
+            <span class="green">待支付</span>
           </p>
           <p>
             <span>订单号</span>
@@ -54,46 +50,32 @@
           </p>
           <p>
             <span>患者姓名</span>
-            <span>{{item.name}}</span>
+            <span>{{item.username}}</span>
           </p>
           <p>
-            <span>挂号时间</span>
-            <span>{{item.regdate}}</span>
+            <span>订单时间</span>
+            <span>{{item.orderTime}}</span>
           </p>
           <p>
             <span>医生姓名</span>
-            <span>{{item.hosdocname}}</span>
+            <span>{{item.docName}}</span>
           </p>
           <p>
-            <span>挂号费用</span>
-            <span style="color:red">￥{{item.registerfee}}</span>
+            <span>咨询费用</span>
+            <span style="color:red">￥{{item.price}}</span>
           </p>
           <p>
-            <span>科室名称</span>
-            <span>{{item.hosdepname}}</span>
-          </p>
+              <span>患病时长</span>
+              <span>￥{{item.ilnessTime}}</span>
+            </p>
           <p>
-            <span>挂号科目</span>
-            <span>{{item.regcode}}</span>
+            <span>咨询内容</span>
+            <span>{{item.text}}</span>
           </p>
           <p>
             <span></span>
             <span>
               <Button type="success" @click.stop="payment(item)" v-bind:disabled="isDisabl" >去支付</Button>
-              <Button type="info" v-if="item.status==2||item.pj==0" @click.stop="evaluate(item)">评价</Button>
-              <!-- <Button type="warning" v-if="item.status==4||item.status==3||item.status==0" @click.stop="tests(index)">删除订单</Button> -->
-              <!-- <Modal v-model="modal101" width="360">
-                <p slot="header" style="color:#f60;text-align:center">
-                  <Icon type="ios-information-circle"></Icon>
-                  <span>删除订单</span>
-                </p>
-                <div style="text-align:center">
-                  <p>您确认要删除订单吗</p>
-                </div>
-                <div slot="footer">
-                  <Button type="success" size="large" long @click="topayments()">确定</Button>
-                </div>
-              </Modal> -->
             </span>
           </p>
         </div>
@@ -103,11 +85,13 @@
           <div>
             <p>
               <span>滦平县妇幼保健院</span>
-              <span v-if="item.status==1&&item.doctorno==0" class="green">待就诊</span>
               <span v-if="item.status==2&&item.pj==0&&time <= item.regdate">待评价</span>
               <span v-if="item.status==2&&item.pj==1">已评价</span>
             </p>
-            <p></p>
+            <p>
+                <span>订单号</span>
+                <span>{{item.tradeno}}</span>
+            </p>
             <p>
               <span>卡号</span>
               <span>{{item.cardno}}</span>
@@ -117,42 +101,29 @@
               <span>{{item.name}}</span>
             </p>
             <p>
-              <span>挂号时间</span>
-              <span>{{item.regdate}}</span>
+              <span>订单时间</span>
+              <span>{{item.orderTime}}</span>
             </p>
             <p>
               <span>医生姓名</span>
               <span>{{item.hosdocname}}</span>
             </p>
             <p>
-              <span>挂号费用</span>
-              <span style="color:red">￥{{item.registerfee}}</span>
+              <span>咨询费用</span>
+              <span style="color:red">￥{{item.price}}</span>
             </p>
             <p>
-              <span>科室名称</span>
-              <span>{{item.hosdepname}}</span>
+              <span>患病时长</span>
+              <span>{{item.registerfee}}</span>
             </p>
             <p>
-              <span>挂号科目</span>
+              <span>咨询内容</span>
               <span>{{item.regcode}}</span>
             </p>
             <p>
               <span></span>
               <span>
                 <Button type="info" v-if="item.status==2&&item.pj==0&&time <=item.regdate" @click.stop="evaluate(item)">评价</Button>
-                <Button type="info" v-if="item.doctorno==0&&item.operator=='wx'" @click.stop="test(index)">取消挂号</Button>
-                <Modal v-model="modal10" width="360">
-                  <p slot="header" style="color:#f60;text-align:center">
-                    <Icon type="ios-information-circle"></Icon>
-                    <span>取消挂号</span>
-                  </p>
-                  <div style="text-align:center">
-                    <p>您确认要取消挂号吗</p>
-                  </div>
-                  <div slot="footer">
-                    <Button type="success" size="large" long @click="topayment()">确定</Button>
-                  </div>
-                </Modal>
               </span>
             </p>
           </div>
@@ -168,14 +139,14 @@
 </template>
 <script>
 //医生头像
-import personicon from "../common/personicon";
+import personicon from "../../common/personicon"
 //底部公共组件
-import tabbar from "../common/tabbar";
+import tabbar from "../../common/tabbar";
 // 加载动画
-import loading from "../common/loading";
+import loading from "../../common/loading";
 //下拉刷新
 // import pullRefresh from "../common/scrollRefresh";
-import {hidemenu} from "../common/js/hide"
+import {hidemenu} from "../../common/js/hide"
 let currentDay = new Date();
 //获取当前年份
 let year = currentDay.getFullYear();
@@ -205,7 +176,15 @@ export default {
     return {
       isloading:false,
       //顶单列表
-      orderList: [],
+      orderList: [{
+          tradeno:'202010103030',
+          cardno:'130506354',
+          name:'孟良',
+          regdate:'2020-01-03',
+          hosdocname:'刘淑琴',
+          registerfee:0.01,
+          regcode:'感冒'
+      }],
       orderListes:[],
       fsorderListes:[],
       cityList: [], //select数据
@@ -238,22 +217,21 @@ export default {
     tobackdetail(){
         this.$router.push('/Myaccount');
     },
-    //点击开启弹窗 取消挂号
-    test(index) {
-      this.currentIndex = index;
-      this.modal10 = true;
-    },
-    //删除订单
-    tests(index) {
-      this.currentIndex = index;
-      this.modal101 = true;
-    },
     //时间转换
     getLocalTime(timestamp) {
       // 如果以秒为单位
       // var dateObj = new Date(timestamp * 1000);
       // 如果以毫秒为单位
       var dateObj = new Date(timestamp);
+      return dateObj.getFullYear() + '-' +
+        (((dateObj.getMonth() + 1) > 9) ? (dateObj.getMonth() + 1) : '0' + (dateObj.getMonth() + 1)) + '-' +
+        ((dateObj.getDate() > 9) ? dateObj.getDate() : '0' + dateObj.getDate());
+    },
+    //时间转换
+    ampm(dateObj) {
+      // 如果以秒为单位
+      // var dateObj = new Date(timestamp * 1000);
+      // 如果以毫秒为单位
       return dateObj.getFullYear() + '-' +
         (((dateObj.getMonth() + 1) > 9) ? (dateObj.getMonth() + 1) : '0' + (dateObj.getMonth() + 1)) + '-' +
         ((dateObj.getDate() > 9) ? dateObj.getDate() : '0' + dateObj.getDate());
@@ -282,7 +260,7 @@ export default {
     updated() {
       var that = this;
       // var url = "http://192.168.33.159:8080/register/getRegisterInfo.do";
-      var url = that.$store.getters.getUrl + "register/getRegisterRedis.do";
+      var url = that.$store.getters.getUrl + "orders/queryNoPayOrder.do";
       // that.$Loading.start();
       var cardno =  localStorage.getItem("cardno");
       that.isloading=true;
@@ -299,30 +277,13 @@ export default {
         },
         success: function(data) {
           that.orderList=[];
-           that.isloading=false;
-          if(data.length>0){
-             var dept=JSON.parse(data);
-             //获取到订单列表的数据
-            for(var i = 0;i<dept.length;i++){
-              var a;
-              
-              if(that.value1==''){
-                 a = that.datatime(currentDay)
-              }else{
-                a = that.value1
-              }
-               if( /\d{4}-\d{1,2}/g.exec(dept[i].regdate)[0]==a){
-               that.orderList.push(dept[i]);
-             }else{
-               that.orderList=[];
-             }
-            }
+          if(data.code==200){
             
-          //关闭加载动画
-          // that.$Loading.finish();
+            that.orderList=JSON.parse(data.data);
           }else{
-               that.orderList=[]
-             }
+            that.orderList=[];
+          }
+           that.isloading=false;
         },
         error: function(data) {
           //关闭加载动画
@@ -361,7 +322,7 @@ export default {
     //获取待评价关注列表
     Tobeevaluated(){
        var that = this;
-        var url = that.$store.getters.getUrl + "register/getRegisterInfo.do";
+        var url = that.$store.getters.getUrl + "/orders/queryPayedOrders.do";
         var cardno =  localStorage.getItem("cardno");
         var time =that.value1;;
         var size = that.size; 
@@ -374,36 +335,13 @@ export default {
         // async: false,
         data: {
           //卡号
-          patientId: cardno,
-          time:time,
+          cardno: cardno,
+          month:time,
           size:size
         },
         success: function(data) {
           that.orderListes=[];  
-          var datas= JSON.parse(data);
           that.isloading=false;
-             //获取到订单列表的数据
-             if(datas.status==1){
-              var orderListes =[];
-              for(var i = 0;i<datas.data.length;i++){
-                datas.data[i].tradeno=datas.data[i].clinicno;
-
-              }
-              // var a =datas.data;
-              var b=[]
-              orderListes=JSON.parse(JSON.stringify(datas.data));
-              for(var i = 0; i<orderListes.length;i++){
-                if(orderListes[i].regdate<that.time){
-                  if(orderListes[i].status!=1){
-                     b.push(orderListes[i]);
-                  }
-                }else{
-                  b.push(orderListes[i]);
-                }
-              }
-              
-              that.orderListes=b;
-             }
         },
         error: function(data) {
           //关闭加载动画
@@ -414,7 +352,6 @@ export default {
         complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
             if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
               ajaxTimeOut.abort(); //取消请求
-              
               that.$Modal.warning({     //超时提示：网络不稳定
                 title: '友情提示',
                 content: '请求超时',
@@ -422,108 +359,6 @@ export default {
             }
           }
       });
-    },
-    //取消挂号 并退款
-    refund() {
-      let _this = this;
-      //判断点的是第几个
-      let index = _this.currentIndex;
-      //关闭弹窗
-      _this.modal10 = false;
-      let obj = {};
-      //卡号
-      obj.cardno = _this.orderListes[index].cardno;
-      //科室编码
-      obj.deptcode = _this.orderListes[index].hosdepcode;
-      //挂号时间
-      obj.visitdate = _this.orderListes[index].regdate;
-      //订单号
-      obj.tradeno = _this.orderListes[index].tradeno;
-      //openid
-      obj.openid = _this.orderListes[index].openid;
-      //患者姓名
-      obj.name = _this.orderListes[index].name;
-      //科室名称
-      obj.hosdepname = _this.orderListes[index].hosdepname;
-      //医生姓名
-      obj.docname = _this.orderListes[index].hosdocname;
-      //白天还是昼夜
-      obj.amorpm = _this.orderListes[index].amorpm;
-      //挂号支付费用
-      obj.fee = _this.orderListes[index].registerfee;
-      //就诊序号
-      obj.visitno=_this.orderListes[index].visitno;
-      var url = _this.$store.getters.getUrl + "register/registeredRefund.do";
-      _this.modal10 = false;
-      _this.isloading=true;
-      let ajaxTimeOut =$.ajax({
-        url: url,
-        type: "post",
-        dataType: "json",
-        timeout: 15000, //通过timeout属性，设置超时时间
-        // async: false,
-        //传送数据
-        data: obj,
-        success: function(data) {
-          //关闭弹窗
-          _this.isloading=false;
-          _this.isDisable = false;
-          if (data.code == 200) {
-            //返回模板信息
-            //用户提示
-            _this.$Message.success("您已成功取消订单");
-            //刷新数据
-            _this.Tobeevaluated();
-          } else {
-            //退款失败提示
-            _this.$Message.error("退款失败");
-          }
-        },
-        error: function(data) {
-           _this.isDisable = false;
-          _this.isloading=false;
-        },
-        complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
-            if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
-              ajaxTimeOut.abort(); //取消请求
-              
-              _this.$Modal.warning({     //超时提示：网络不稳定
-                title: '友情提示',
-                content: '请求超时',
-              });
-            }
-          }
-      });
-    },
-    //当状态等于3时可以选择删除订单
-    delateOrder(item) {
-      let _this = this;
-    },
-    //点击退款时触发
-    topayment() {
-      //开始退款改为true，表示在isDisable为true的时候禁止用户再次点击
-      if (!this.isDisable) {
-        //如果isDisable为false，将它改为true
-        this.isDisable = true;
-        //调用取消订单的方法
-        this.refund();
-      } else {
-        //这时isDisable为true禁止用户再次点击
-        return;
-      }
-    },
-    //点击退款时触发
-    topayments() {
-      //开始退款改为true，表示在isDisable为true的时候禁止用户再次点击
-      if (!this.isDisables) {
-        //如果isDisable为false，将它改为true
-        this.isDisables = true;
-        //调用取消订单的方法
-        this.delatea();
-      } else {
-        //这时isDisable为true禁止用户再次点击
-        return;
-      }
     },
     //进入评价页面
     evaluate(item) {
@@ -551,17 +386,17 @@ export default {
          //将localStorage里的订单号替换
           localStorage.setItem("tradeno", item.tradeno);
           //将vuex里的费用替换
-          that.$store.commit("setRegprice", item.registerfee);
+          that.$store.commit("setRegprice", item.price);
           //将vuex里的卡号替换
           that.$store.commit("setCardCode", item.cardno);
       }
      
-      localStorage.setItem("body", '微信挂号');
-      localStorage.setItem('time', item.starttime);
+      localStorage.setItem("body", '咨询医生');
+      localStorage.setItem('time', item.orderTime);
       //跳转到支付页面
-      var url  =  that.$store.getters.getUrl + "register/getVerification.do";
-      let cardno=that.$store.getters.getCardCode
-      let doctorno =item.hosdoccode;
+      var url  =  that.$store.getters.getUrl + "orders/qureyOrderOutTime.do";
+      let cardno=item.cardno;
+      let doctorno =item.docCode;
       let ajaxTimeOut = $.ajax({
         url:url,
         type:'post',
@@ -569,14 +404,14 @@ export default {
         timeout: 15000, //通过timeout属性，设置超时时间
         data:{
           cardno:cardno,
-          doctorno:doctorno
+          doccode:doctorno
         },
         success:function(data){
-          if(data.status==1){
+          if(data.code==200){
             that.$router.push("/payment");
-          }else if(data.status==0){
-            that.updated()
-            that.btnTimer("支付超时，请重新挂号",0);
+          }else if(data.code==500){
+            that.updated();
+            that.btnTimer("支付超时，请重新预约",0);
             // that.$Message.success("");
           }else if(data.status==-1){
             that.btnTimer("请求异常",0);
@@ -619,63 +454,6 @@ export default {
           },1400)
         }
     },
-    //删除订单
-    delatea(){
-      var that =this;
-      var index = that.currentIndex;
-      var url = that.$store.getters.getUrl + "register/cancelPay.do";
-      var cardno=that.orderList.data[index].cardno;
-      var tradeno=that.orderList.data[index].tradeno;
-      var status=that.orderList.data[index].status;
-      that.isloading=true;
-
-       let ajaxTimeOut =$.ajax({
-        type:'post',
-        url:url,
-        dataType:'json',
-         timeout: 15000, //通过timeout属性，设置超时时间
-        data:{
-          cardno:cardno,
-          tradeno:tradeno,
-          status:status
-        },
-        success:function(data){
-           that.isloading=false;
-          that.isDisables = false;
-          
-          that.modal101 = false;
-          if(data.status==1){
-            that.$Message.success("您已成功删除订单");
-            
-            that.updated();
-          }
-          if(data.status==0){
-             that.$Message.error("删除订单失败");
-          }
-          if(data.status==-1){
-             that.$Message.error("删除异常");
-          }
-        },
-        error:function(data){
-           that.isloading=true;
-          that.isDisables = false;
-        },
-         complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
-            if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
-              ajaxTimeOut.abort(); //取消请求
-              
-              that.$Modal.warning({     //超时提示：网络不稳定
-                title: '友情提示',
-                content: '请求超时',
-              });
-            }
-          }
-      })
-    },
-    // selector(){
-      
-    
-    // }
   },
   mounted(){
     let that=this
@@ -700,7 +478,7 @@ export default {
     //请求数据列表
     
     this.updated();
-    this.Tobeevaluated();
+    // this.Tobeevaluated();
      let that=this
     const requesturl=that.$store.getters.getUrl + "SweepCode.do";
     hidemenu(requesturl);

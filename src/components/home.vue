@@ -11,7 +11,7 @@
           扫二维码即时挂号
           <img src=".././assets/saoma.png" alt width="40" style="position: absolute;right: 8.33333vw;top: 7.33333vw;"> 
         </p>
-        <p class="other-info">地址：滦平县滦平镇居安里56号</p>
+        <p class="other-info">地址：滦平镇居安里56号</p>
       </div>
       <div class="doctor-list">
         <div class="tab-list">
@@ -89,10 +89,10 @@ export default {
     };
   },
   created(){
-      
+      // localStorage.setItem('openid','oTLsfuMa17FKRJmJ6Vy1zj3GuMgQ');
   },
   beforeDestroy(){
-    //只在页面加载时执行一次
+      //只在页面加载时执行一次
       //定义url地址
       if(!localStorage.getItem('cardno')){
         var url = this.$store.getters.getUrl + "card/getAllCards.do";
@@ -130,9 +130,45 @@ export default {
   mounted() {
     //请求才cookies里的openid
     // initwxshare(requesturl,1,"测试数据",targurl)
+    // localStorage.setItem('openid','oTLsfuOOVhzjzfclh7-S-LZwMWlA')
     this.getDepartments();
+    this.qingq();
   },
   methods: {
+    qingq(){
+       if(localStorage.getItem('cardno')==undefined||localStorage.getItem('cardno')==''){
+        var url = this.$store.getters.getUrl + "card/getAllCards.do";
+        var _this = this;
+        //取得openid
+        var openid = localStorage.getItem("openid");
+        $.ajax({
+          url: url,
+          type: "post",
+          dataType: "json",
+          async: false,
+          data: {
+            openid: openid
+          },
+          success: function(data) {
+            //判断已有几张卡
+            if(data.data.length>0){
+              localStorage.setItem('cardno',data.data[0].cardno)  ;
+              localStorage.setItem('cardername',data.data[0].name);
+              _this.$store.commit('setCardCode',data.data[0].cardno);
+            }
+          },
+          error: function(data) {
+            //关闭加载动画
+            _this.spinShow = false;
+            //关闭加载动画
+            _this.$Modal.error({
+              title: "提示信息",
+              content: "请求失败!"
+            });
+          }
+        })
+      }
+    },
     //ces
     tia(){
       // this.$router.push('/consultadoctor')

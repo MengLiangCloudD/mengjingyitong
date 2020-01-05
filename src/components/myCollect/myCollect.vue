@@ -23,8 +23,7 @@
               <span>滦平县妇幼保健院</span>
             </div>
             <div class="star-class">
-              <img class="star-img" src="../../assets/pingjia.png" alt>
-              <span>4.8</span>
+              <span>{{item.hosdepname}}</span>
               <Button class="noCollect" type="success" @click="goappointment(index)">去找医生</Button>
             </div>
           </div>
@@ -271,7 +270,7 @@ export default {
   font-family: PingFangSC;
   font-weight: 400;
   font-size: 14px;
-  color: #ff9800;
+  /* color: #ff9800; */
   margin: 10px 0;
   position: relative;
 }

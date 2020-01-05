@@ -29,8 +29,8 @@
         <div class="zhe" style="width:100%;background: rgb(255, 255, 255);height: 100%;position: absolute;z-index: 900;" v-show="isshowmask" @click="clicusers()"></div>
         <div class="header" style="z-index:910;position:relative">
           <div class="userssss"  style="padding-left: 5%; border-bottom:1px solid #ccc;">
-            <img :src="headimgurl" alt="" width="50px;" style="vertical-align: top;border-radius: 50%;" >
-            <div class="user" style="display: inline-block;vertical-align: top;margin-left:10px;">
+            <img :src="headimgurl" alt="" width="50px;" style="vertical-align: middle;border-radius: 50%;" >
+            <div class="user" style="display: inline-block;vertical-align: middle;margin-left:10px;">
               <p><span>患者姓名：</span><span>{{name}}</span></p>
               <p><span>身份证号：</span><span>{{idno}}</span></p>
               <p><span>患者卡号：</span><span>{{cardno}}</span></p>
@@ -43,8 +43,8 @@
           <div class="userss" style="display:none;position:absolute;z-index:100;width:100%;padding-bottom:50px;" v-show="showuserlist">
             <RadioGroup  v-model="index" size="large" style="width:100%;">
               <div class="users" v-for="(item,index) in myCardType"  :key="index" style="border-bottom:1px solid #ccc;padding-left: 5%;background:#fff;" @click="seledoctor(index)">
-                <img :src="headimgurl" alt="" width="50px;" style="vertical-align: top;border-radius: 50%;">
-                <div class="user" style="display: inline-block;vertical-align: top;margin-left:10px;">
+                <img :src="headimgurl" alt="" width="50px;" style="vertical-align: middle;border-radius: 50%;">
+                <div class="user" style="display: inline-block;vertical-align: middle;margin-left:10px;">
                   <p><span>患者姓名：</span><span>{{item.name}}</span></p>
                   <p><span>身份证号：</span><span>{{item.idno}}</span></p>
                   <p><span>患者卡号：</span><span>{{item.cardno}}</span></p>
@@ -62,6 +62,11 @@
           <img src="./../../assets/guahao.png" alt width="24">
           <span>我的挂号</span>
         </p>
+        <p @click="goConsultingorderList">
+          <img src="./../../assets/guahao.png" alt width="24">
+          <span>我的咨询订单</span>
+        </p>
+        
         <p @click="goMyCard">
           <img src="./../../assets/carder.png" alt width="24">
           <span>我的就诊卡</span>
@@ -228,7 +233,7 @@ export default {
           data: {idNo:idNo},
           success: function(data){
             that.spinShow=false;
-            if(data.code==200){
+            if(data.code==200&&data.data.adminLevel<5){
                 localStorage.setItem('Administrator',JSON.stringify(data.data));
                 that.$router.push('/admin');
             }else{
@@ -242,7 +247,6 @@ export default {
             that.spinShow=false;
           }
         })
-        
     },
     //切换医生身份
     changestate(){
@@ -271,7 +275,7 @@ export default {
                 localStorage.setItem('ysdepcode',data.data[0].dept_code);
                 localStorage.setItem('ysdepname',data.data[0].dept_name);
                 localStorage.setItem('ysdocname',data.data[0].name);
-                localStorage.setItem('adminLevel',data.data[0].adminLevel);
+                localStorage.setItem('adminLevel',data.data[0].adminlevel);
                 localStorage.setItem('idno',data.data[0].idno);
                 localStorage.setItem('deptVisible',JSON.stringify(data.data[0].deptVisible));
                 that.$router.push('/Personalcenter');
@@ -296,6 +300,10 @@ export default {
     //跳转到我的挂号订单页
     goOrderList() {
       this.$router.push("/orderList");
+    },
+    //跳到咨询列表
+    goConsultingorderList(){
+      this.$router.push("/ConsultingorderList");
     },
     //跳转到我的就诊卡
     goMyCard() {
@@ -512,7 +520,7 @@ export default {
   /* text-align: center; */
   padding-left: 10%;
   line-height: 50px;
-  font-size: 20px;
+  font-size: 16px;
   font-family: PingFangSC-regular;
 }
 .headerimage {

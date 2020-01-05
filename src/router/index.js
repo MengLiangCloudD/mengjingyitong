@@ -186,6 +186,12 @@ export default new Router({
       name: "consultadoctor",
       component: resolve=>(require(["@/components/Consultadoctor/consultadoctor"],resolve)),
     },
+    
+    {
+      path: "/ConsultingorderList",
+      name: "ConsultingorderList",
+      component: resolve=>(require(["@/components/Consultadoctor/ConsultingorderList"],resolve)),
+    },
     {
       path: "/doctorList",
       name: "doctorList",
@@ -350,10 +356,16 @@ export default new Router({
       path: "/Personalcenter",
       name: "Personalcenter",
       component: resolve=>(require(["@/components/doctor/doctorpersonal/Personalcenter"],resolve))
-    },{
+    },
+    {
       path: "/settingup",
       name: "settingup",
       component: resolve=>(require(["@/components/doctor/doctorpersonal/settingup"],resolve))
+    },
+    {
+      path: "/settingup1",
+      name: "settingup1",
+      component: resolve=>(require(["@/components/doctor/doctorpersonal/settingup1"],resolve))
     },
     //医生个人简介
     {

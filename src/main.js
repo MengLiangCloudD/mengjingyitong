@@ -5,7 +5,7 @@ import App from "./App";
 import router from "./router";
 import store from "./store";
 import "./common/style/base.css";
-import { Button,Icon,Spin,Collapse,Panel,Modal,Message,Form,FormItem,Select,Option,Checkbox,CheckboxGroup,Radio,Input,Badge,Poptip,Menu,MenuItem,RadioGroup,LoadingBar,Step,Steps,Carousel,CarouselItem,Switch,Dropdown} from 'iview';
+import { Button,Icon,Spin,Collapse,Panel,Modal,Message,Form,FormItem,Select,Option,Checkbox,CheckboxGroup,Radio,Input,Badge,Poptip,Menu,MenuItem,RadioGroup,LoadingBar,Step,Steps,Carousel,CarouselItem,Switch,Dropdown,Upload } from 'iview';
 import { DatePicker} from 'element-ui';
 import "iview/dist/styles/iview.css";
 import Calendar from "vue-mobile-calendar";
@@ -41,6 +41,10 @@ Vue.component('Steps', Steps);
 Vue.component("Carousel",Carousel);
 Vue.component("CarouselItem",CarouselItem);
 Vue.component("Switchs",Switch);
+// Vue.component("Grid",Grid);
+Vue.component("Upload",Upload);
+
+
 Vue.prototype.$Message=Message;
 Vue.prototype.$Modal=Modal;
 
@@ -90,16 +94,16 @@ router.beforeEach((to,from,next)=>{
         }
         for(let i=0;i<cookiearr.length;i++){
           if(cookiearr[i].key.trim()=="openid"){
-            this.key1=cookiearr[i].key
-            let value1=cookiearr[i].value
+            this.key1=cookiearr[i].key;
+            let value1=cookiearr[i].value;
             if(value1.length>0){
               localStorage.setItem('openid',value1);
             }else{
               location.href=store.getters.getUrl + "depart/wxLogin.do?status=2";
             }
           }else if(cookiearr[i].key.trim()=="headimgurl"){
-            this.key2=cookiearr[i].key
-            let value2=cookiearr[i].value
+            this.key2=cookiearr[i].key;
+            let value2=cookiearr[i].value;
             let user={headimgurl:value2}
             if(value2.length>0){
               localStorage.setItem('user',JSON.stringify(user))

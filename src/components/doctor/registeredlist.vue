@@ -140,7 +140,7 @@ export default {
       if(state){
         this.$router.push("/Historicpatients");
       }
-      this.tabstatu=!this.tabstatu
+      this.tabstatu=!this.tabstatu;
     },
     hasunpatient(arr){
       let bState=true

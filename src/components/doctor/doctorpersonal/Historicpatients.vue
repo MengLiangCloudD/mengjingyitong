@@ -105,7 +105,6 @@ var time = year + "-" + month;
               var m = this.p(d.getMonth() + 1);
               var t = this.p(d.getDate());
               var resDate = y + "-" + m;
-
               return resDate;
             },
             p(s) {
@@ -151,7 +150,6 @@ var time = year + "-" + month;
                 complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
                     if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
                       ajaxTimeOut.abort(); //取消请求
-                      
                       that.$Modal.warning({     //超时提示：网络不稳定
                         title: '友情提示',
                         content: '请求超时',
@@ -169,8 +167,6 @@ var time = year + "-" + month;
                 localStorage.setItem('tiao',0);
                 this.$router.push("/doctorckeck");
               }
-              
-              
             },
             //时间转换
             datatransss(data) {

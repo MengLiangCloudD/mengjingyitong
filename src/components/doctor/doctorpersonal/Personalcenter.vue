@@ -25,8 +25,8 @@
          <div class="content">
               <div class="userssss"  style="padding-left: 5%; border-bottom:1px solid #ccc;">
                 <!-- <img src="./../../../assets/avatar.png" alt="" width="50px;" style="vertical-align: top;margin-left:10px;" > -->
-                 <img :src="headimgurl" alt="" width="60px;" style="vertical-align: top;border-radius: 50%;" >
-                <div class="user" style="display: inline-block;vertical-align: top;margin-left:10px;" v-for="(item,index) in docxiang" :key="index" >
+                 <img :src="headimgurl" alt="" width="60px;" style="vertical-align: middle;border-radius: 50%;" >
+                <div class="user" style="display: inline-block;vertical-align: middle;margin-left:10px;" v-for="(item,index) in docxiang" :key="index" >
                     <p><span>医生姓名：</span><span>{{ysdocname}}</span></p>
                     <p><span>所属科室：</span><span>{{ysdepname}}</span></p>
                     <p><span>医生职位：</span><span>{{item.job}}</span></p>
@@ -279,7 +279,7 @@ import {hidemenu} from "../../../common/js/hide"
                   data: {idNo},
                   success: function(data){
                        that.spinShow=false;
-                       if(data.code==200){
+                       if(data.code==200&&data.data.adminLevel<5){
                           localStorage.setItem('Administrator',JSON.stringify(data.data));
                           that.$router.push('/admin');
                       }else{
@@ -486,7 +486,7 @@ span.s-right{
   height: 50px;
   /* text-align: center; */
   line-height: 50px;
-  font-size: 20px;
+  font-size: 4.2vw;
   font-family: PingFangSC-regular;
   position: relative;
   padding-left: 28px

@@ -54,7 +54,7 @@ export default {
   mounted(){ 
     let _this = this;
     //判断是否需要启动倒计时
-    if(localStorage.getItem('body')=='微信挂号'){
+    if(localStorage.getItem('body')=='微信挂号'||localStorage.getItem('body')=='咨询医生'){
         _this.timeFns(localStorage.getItem('time'));
     }else{
       $('.b').html('');
@@ -142,8 +142,8 @@ export default {
                      var url =_this.$store.getters.getUrl+'register/addRegister.do';
                      var tradeno = localStorage.getItem("tradeno");
                      var cardno  = localStorage.getItem('cardno');
-                     var hosdoccode =_this.$store.getters.getDoccode; //挂号医生编号
-                          _this.spinShow = true;
+                     var hosdoccode = _this.$store.getters.getDoccode; //挂号医生编号
+                      _this.spinShow = true;
                      let ajaxTimeOut =$.ajax({
                       type:"post",
                       url:url,
@@ -255,6 +255,47 @@ export default {
                                 }
                               })
                   
+                  }else if(localStorage.getItem("body")=="咨询医生"){
+                    var url =_this.$store.getters.getUrl+'orders/addOrders.do';
+                    // var url ='http://192.168.33.137:8080/HisCloud_war/orders/addOrders';
+                    var tradeno = localStorage.getItem("tradeno");
+                    var cardno  = localStorage.getItem('cardno');
+                    var hosdoccode = _this.$store.getters.getDoccode; //挂号医生编号
+                     _this.spinShow = true;
+                     let ajaxTimeOut =$.ajax({
+                      type:"post",
+                      url:url,
+                      dataType:'json',
+                      timeout: 15000, //通过timeout属性，设置超时时间
+                      // async:false,
+                      data:{
+                        tradeno:tradeno,
+                        cardno:cardno,
+                        doccode:hosdoccode
+                      },
+                       success:function(data){
+                        //  _this.spinShow = false;
+                         if(data.code==200){
+                            window.location.href =_this.$store.getters.getUrl + "#/Successfulpayment";
+                         }else if(data.status==0){
+                           _this.isDisabl=true;
+                            $('.b').html('支付失败，请重新提交订单');
+                            alert('支付失败，请重新提交订单');
+                         }
+                       },
+                       error:function(data){
+                         _this.spinShow = false;
+                       },
+                       complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
+                          if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
+                            ajaxTimeOut.abort(); //取消请求
+                            _this.$Modal.warning({     //超时提示：网络不稳定
+                              title: '友情提示',
+                              content: '请求超时',
+                            });
+                          }
+                        }
+                    })
                   }
                 }else{
                   alert('支付失败');
@@ -326,7 +367,7 @@ export default {
           debugger
             // b[i].innerHTML='';
             this.isDisabl=true;
-            $('.b').html('支付超时，请重新挂号');
+            $('.b').html('支付超时，请重新提交订单');
             var add = document.getElementsByClassName('add-btn')[0];
             add.style.background="#ccc"
         }

@@ -198,10 +198,6 @@ export default {
         }, 2000);
       });
     },
-    //改变就诊人
-    selectcard(value) {
-      this.examineList(value);
-    },
     //返回上一层
     tobackdetail(){
         this.$router.push('/Myaccount');

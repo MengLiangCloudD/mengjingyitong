@@ -7,8 +7,8 @@
         </div>
         <div class="content">
             <div class="content1">
-                <!-- <span><span>{{depcor}}—{{doctor}}</span><span>￥49.00</span></p> -->
-                <p><span>实付款</span><span style="color:red">￥49.00</span></p>
+                <p><span>咨询医生</span><span>{{doctor}}</span></p>
+                <p><span>实付款</span><span style="color:red">￥{{consultationPrice}}</span></p>
             </div>
             <div class="content2">
                <p style="text-align: left;font-size:22px;padding: 10px 5%;padding-left:5%;font-weight: 900">支付方式</p>
@@ -23,12 +23,15 @@
         </div>
         <div class="footer">
             <div class="footer_left">
-                <p><span>合计：</span><span style="color:red;font-size:25px;">￥49.00</span></p>
+                <p><span>合计：</span><span style="color:red;font-size:25px;">￥{{consultationPrice}}</span></p>
             </div>
-            <div class="footer_right" @click="gonewpay()">
+            <div class="footer_right" @click="valiregistered()">
                 <p>立即支付</p>
             </div>
         </div>
+        <Modal v-model="paymented"  @on-ok="toorderlist" title="挂号提示信息">
+        <p>您已存在一个支付成功的挂号订单</p>
+      </Modal>
     </div>
 </template>
 
@@ -38,7 +41,9 @@
         data() {
             return {
                 doctor:'',
-                depcor:''
+                depcor:'',
+                consultationPrice:'',
+                paymented:false
             }
         },
         methods:{
@@ -46,12 +51,128 @@
             tobackdetail(){
                 history.go(-1)
             },
+            getNowFormatDate() {//获取当前时间
+                var date = new Date();
+                var seperator1 = "-";
+                var seperator2 = ":";
+                var month = date.getMonth() + 1<10? "0"+(date.getMonth() + 1):date.getMonth() + 1;
+                var strDate = date.getDate()<10? "0" + date.getDate():date.getDate();
+                var currentdate = date.getFullYear() + seperator1  + month  + seperator1  + strDate
+                    + " "  + date.getHours()  + seperator2  + date.getMinutes()
+                    + seperator2 + date.getSeconds();
+                return currentdate;
+                },
+                toorderlist(){
+                    this.paymented=false
+                    // this.insertcardinfo()
+                    this.$router.push("/ConsultingorderList");
+                },
+                //判断是否重复提交
+                valiregistered(){
+                    let _this=this
+                    var url = this.$store.getters.getUrl + "orders/judgeOrders.do";
+                    
+                    //患者信息
+                    var postermen = JSON.parse(localStorage.getItem('postermen'));
+                    //医生信息
+                    var zixundoctor = JSON.parse(localStorage.getItem('zixundoctor'));
+                    let cardno= postermen.cardno;
+                    let doctorno = zixundoctor.userName;
+                    let ajaxTimeOut =$.ajax({
+                        url: url,
+                        type: "POST",
+                        dataType: "json",
+                        timeout: 15000, //通过timeout属性，设置超时时间
+                        async: true,
+                        data:{cardno:cardno,doccode:doctorno},
+                        success: function(res){
+                            if(res.code==200){
+                                _this.gonewpay();
+                            }else{
+                                //重复提交
+                                _this.paymented=true;
+                            }
+                        },
+                        erroy: function(data) {
+                        _this.$Message.error('请求失败');
+                        },
+                        complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
+                            if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
+                            ajaxTimeOut.abort(); //取消请求
+                            
+                            _this.$Modal.warning({     //超时提示：网络不稳定
+                                title: '友情提示',
+                                content: '请求超时',
+                            });
+                            }
+                        }
+                    });
+                },
             //前往支付页面
             gonewpay(){
-                this.$router.push({name:'describecondition'});
+                var that  = this;
+                var url =that.$store.getters.getUrl+'orders/generateOrder.do';
+                // var url = 'http://192.168.33.137:8080/HisCloud_war/orders/generateOrder.do';
+                var data = {}
+                //病情描述
+                var patients = JSON.parse(localStorage.getItem('patients'));
+                //患者信息
+                var postermen = JSON.parse(localStorage.getItem('postermen'));
+                //医生信息
+                var zixundoctor = JSON.parse(localStorage.getItem('zixundoctor'));
+                 that.$store.commit("setCardCode",postermen.cardno);
+                 that.$store.commit("setRegprice", zixundoctor.consultationPrice);
+                 that.$store.commit("setDoccode", zixundoctor.userName);
+                //病情描述
+                data.content =  patients.content;
+                //患病时长
+                data.timer = patients.timer;
+                //患者姓名
+                data.name = postermen.name;
+                // 患者卡号
+                data.cardno = postermen.cardno;
+                // 患者身份证号
+                data.idno = postermen.idno;
+                //openid
+                data.openid = postermen.openid;
+                //患者电话
+                data.phone = postermen.phone;
+                //患者性别
+                data.sex = postermen.sex;
+                //医生姓名
+                data.docname =  zixundoctor.name;
+                //医生编码
+                data.doccode = zixundoctor.userName;
+                //科室编码
+                data.deptCode = zixundoctor.deptCode;
+                //咨询价格
+                data.consultationPrice = zixundoctor.consultationPrice;
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    dataType: "json",
+                    async: false,
+                    data:data,
+                    timeout: 2000, //通过timeout属性，设置超时时间
+                    success:function(data){
+                        if(data.code==200){
+                            localStorage.setItem("tradeno",data.data); //保存订单号
+                            localStorage.setItem("body", '咨询医生'); //保存订单号
+                            localStorage.setItem("time", that.getNowFormatDate());
+                            that.$router.push("/payment"); 
+                        }
+                    },
+                    error:function(data){
+
+                    }
+                })
+                // this.$router.push({name:'Successfulpayment'});
             }
         },
         mounted() {
+            var zixundoctor =JSON.parse(localStorage.getItem('zixundoctor')); 
+            this.doctor= zixundoctor.name;
+            this.consultationPrice= zixundoctor.consultationPrice;
         },
     }
 </script>

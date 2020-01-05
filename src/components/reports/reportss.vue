@@ -861,7 +861,7 @@ import {hidemenu} from "../../common/js/hide"
                   dataType: "json",
                   timeout: 15000, //通过timeout属性，设置超时时间
                   // async: false,
-                  data: arr ,
+                  data: arr,
                   success:function(data){
                     that.isshowloading = false;
                     if(data.status==1){
@@ -1466,7 +1466,8 @@ import {hidemenu} from "../../common/js/hide"
                   data: {
                     patientid:patientid,
                     visitdate:visitdate,
-                    doccode:doccode
+                    doccode:doccode,
+                    visitno:''
                   },
                   success:function(data){
                     that.isshowloading = false;

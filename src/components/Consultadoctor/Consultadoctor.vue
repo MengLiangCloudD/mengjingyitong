@@ -5,7 +5,7 @@
                 <Icon size="30" type="ios-arrow-back" color="" @click.prevent="goback"/>
                 <span style="font-size:18px;">
                     <!-- {{name}} -->
-                    张清北医生
+                    {{docname}}医生
                 </span>
             </div>
         </div>
@@ -155,7 +155,10 @@ import countdown from "../../common/countdown"
                 appId : "", // 必填,公众号的唯一标识
                 timestamp :"",// 必填,生成签名的时间戳
                 nonceStr : "", // 必填,生成签名的随机串
-                signature : ""
+                signature : "",
+                cardno:'',
+                doccode:'',
+                docname:''
             }
         },
         methods:{
@@ -200,15 +203,11 @@ import countdown from "../../common/countdown"
             },
             sendmsg(type,type1,value){
                 let _this=this
+                 var  receiver = _this.doccode;
+                var  sender = _this.cardno;
                 if(type==0){
                     if(_this.value.trim()){
-                        let _timestamp =(new Date()).getTime()
-                        // this.neirong.push({
-                        //     content:_this.value,
-                        //     ctxtype:0,
-                        //     role:"p",
-                        //     timestamp:_timestamp
-                        // })
+                        let _timestamp =(new Date()).getTime();
                         let ctx={
                                 content:_this.value,
                                 ctxtype:0,
@@ -216,8 +215,8 @@ import countdown from "../../common/countdown"
                                 timestamp:_timestamp
                             }
                         _this.addchatrecord({
-                            sender: "123",
-                            receiver: "000QB",
+                            sender: sender,
+                            receiver: receiver,
                             content:JSON.stringify(ctx) ,
                             chatTime: _timestamp,
                             patStatus: "1",
@@ -229,15 +228,7 @@ import countdown from "../../common/countdown"
                     this.value=""
                 }else if(type==1){
                         let time=Math.floor((_this.endTime-_this.startTime)/1000)
-                        let _timestamp =(new Date()).getTime()
-                        // this.neirong.push({
-                        //     content:value,
-                        //     type:type1,
-                        //     ctxtype:1,
-                        //     len:time,
-                        //     role:"p",
-                        //     timestamp:_timestamp
-                        // })
+                        let _timestamp =(new Date()).getTime();
                         let ctx={
                                 content:value,
                                 ctxtype:1,
@@ -246,8 +237,8 @@ import countdown from "../../common/countdown"
                                 timestamp:_timestamp
                             }
                         _this.addchatrecord({
-                            sender: "123",
-                            receiver: "000QB",
+                            sender: sender,
+                            receiver: receiver,
                             content:JSON.stringify(ctx) ,
                             chatTime: _timestamp,
                             patStatus: "1",
@@ -271,8 +262,8 @@ import countdown from "../../common/countdown"
                                 timestamp:_timestamp
                             }
                         _this.addchatrecord({
-                            sender: "123",
-                            receiver: "000QB",
+                            sender: sender,
+                            receiver: receiver,
                             content:JSON.stringify(ctx) ,
                             chatTime: _timestamp,
                             patStatus: "1",
@@ -554,13 +545,15 @@ import countdown from "../../common/countdown"
             getchatrecord(){
                 let _this=this
                 var url = this.$store.getters.getUrl + "chat/getchatrecord.do";
+                var  receiver = _this.doccode;
+                var  sender = _this.cardno;
                 $.ajax({
                     url: url,
                     type: "post",
                     dataType: "json",
                     // contentType:"application/json",
                     async: true,
-                    data:{cpsid:"1"},
+                    data:{cpsid:"1",receiver:receiver,sender:sender},
                     success: function(data) {
                         if(data.code==200){
                             let recordarr=data.data.map(function(item) {
@@ -576,20 +569,28 @@ import countdown from "../../common/countdown"
             }
         },
         created(){
+            
             if(!localStorage.getItem("patientchatstate")){
                 localStorage.setItem("patientchatstate","1")
                 location.reload()
             }
             websocket("p")
             let _this=this
+            var zixundoctor = JSON.parse(localStorage.getItem('zixundoctor'));
+            _this.doccode=zixundoctor.userName;
+            _this.docname= zixundoctor.name;
+            _this.cardno= localStorage.getItem('cardno');
             this.initWebsocketOnmassage()
             this.setconfig()
             //语音动画
             _this.initVoiceAnimate()
+            
         },
         mounted(){
-            let _this=this
-            this.getchatrecord()
+            let _this=this;
+            _this.getchatrecord();
+            //医生信息
+            
             // this.reply(1,"http://up_mp4.t57.cn/2018/1/03m/13/396131232171.m4a",50)
             // this.reply(1,"http://up_mp4.t57.cn/2018/1/03m/13/396131232171.m4a",50)
             // this.reply(2,"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1572586103773&di=4f21c3b576fb719750ab7f3b1c4e5868&imgtype=0&src=http%3A%2F%2Fpic.lvmama.com%2Fuploads%2Fpc%2Fplace2%2F2014-11-10%2F1415604500644.jpg")

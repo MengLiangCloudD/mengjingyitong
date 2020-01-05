@@ -16,8 +16,8 @@
         <div class="content">
             <div class="userssss"  style="padding-left: 5%; border-bottom:1px solid #ccc;">
                 <!-- <img src="./../assets/avatar.png" alt="" width="50px;" style="vertical-align: top;margin-left:10px;" > -->
-                 <img :src="headimgurl" alt="" width="50px;" style="vertical-align: top;border-radius: 50%;margin-left:10px;" >
-                <div class="user" style="display: inline-block;vertical-align: top;margin-left:10px;"  >
+                 <img :src="headimgurl" alt="" width="50px;" style="vertical-align: middle;border-radius: 50%;margin-left:10px;" >
+                <div class="user" style="display: inline-block;vertical-align: middle;margin-left:10px;"  >
                     <p><span>管理员姓名：</span><span>{{Administrator.name}}</span></p>
                     <p><span>所属部门：</span><span>&nbsp;&nbsp;&nbsp;{{Administrator.deptName}}</span></p>
                     <p><span>管理职位：</span><span>&nbsp;&nbsp;&nbsp;{{Administrator.job}}</span></p>
@@ -126,7 +126,7 @@
                           localStorage.setItem('ysdepcode',data.data[0].dept_code);
                           localStorage.setItem('ysdepname',data.data[0].dept_name);
                           localStorage.setItem('ysdocname',data.data[0].name);
-                          localStorage.setItem('adminLevel',data.data[0].adminLevel);
+                          localStorage.setItem('adminLevel',data.data[0].adminlevel);
                           localStorage.setItem('idno',data.data[0].idno);
                           localStorage.setItem('deptVisible',JSON.stringify(data.data[0].deptVisible));
                           that.$router.push('/Personalcenter');
@@ -161,7 +161,7 @@
   height: 50px;
   /* text-align: center; */
   line-height: 50px;
-  font-size: 20px;
+ font-size: 4.2vw;
   font-family: PingFangSC-regular;
   position: relative;
   padding-left: 28px

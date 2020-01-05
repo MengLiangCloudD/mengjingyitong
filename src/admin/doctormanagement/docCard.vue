@@ -76,8 +76,8 @@
             }
         },
         mounted(){
-            this.docCode=  localStorage.getItem('ysdoccode');
-            this.docName = localStorage.getItem('ysdocname');
+            this.docCode=  localStorage.getItem('IDdoccode');
+            this.docName = localStorage.getItem('IDdocname');
             this.QRcode();
         }
     }

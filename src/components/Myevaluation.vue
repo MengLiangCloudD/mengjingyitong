@@ -20,7 +20,6 @@
         <div class="content" v-for="(item,index) in commentList" :key="index">
           <!-- <img src=".././assets/x.png" alt width="20" class="sha" @click.stop="test(index)"> -->
           <div>
-            
           </div>
           <p style="display: inline-block;vertical-align: middle;"> 
             <span>
@@ -29,7 +28,7 @@
             <!-- <span style="font-size:18px">{{item.docname}}</span> -->
           </p>
           <p style="font-size: 16px;display: inline-block;vertical-align: middle;">
-            <span style="font-size: 18px">{{item.docnames}}</span><br>
+            <span style="font-size: 18px">{{item.docname}}</span><br>
             <span >{{ /\d{4}-\d{1,2}-\d{1,2}/g.exec(item.pjdate)[0]}}</span>
             <span >{{item.doccode}}</span>
             <span style="  font-size: 20px;color:#f37f12;display: inline-block;vertical-align: middle;">{{calculate(index)}}</span><img src="./../assets/_星星1.png" alt="" width="22" style="vertical-align: middle;">

@@ -9,10 +9,10 @@
                 <div class="doctort" v-for="(item,index) in singleDoctorList" :key="index">
                     <img class="avatar" src="./../../assets/toux.png" alt="" height="14%">
                     <div class="docto">
-                       <p><span style="font-weight: 900;font-size:20px;">{{item.name}}</span><span style="font-weight: 500;font-size:18px;padding: 0px 10px;display: inline-block;">副主任</span></p>
+                       <p><span style="font-weight: 900;font-size:20px;">{{item.name}}</span><span style="font-weight: 500;font-size:18px;padding: 0px 10px;display: inline-block;">{{item.title}}</span></p>
                        <p  style="font-size:16px;"><span>滦平县妇幼保健院</span><span style="padding: 0px 10px;display: inline-block;">{{item.title}}</span></p>
-                       <p style="font-size:16px;" class="ppo"><span>擅长：</span><span >妇产生孩子旺sssss手术室手术室所旺我的方订单</span></p>
-                       <p><span style="font-size:20px;color:#00BBBB">￥68</span><span><Button shape="circle" class="btn" @click="goDescribecondition(item)">问医生</Button></span></p> 
+                       <p style="font-size:16px;" class="ppoo" :class="{ppo:currentindex==index}"><span>擅长：</span><span @click="showjob(index)">{{item.expertJob}}</span></p>
+                       <p><span style="font-size:20px;color:#00BBBB">￥{{item.consultationPrice}}</span><span><Button shape="circle" class="btn" @click="goDescribecondition(index)">问医生</Button></span></p> 
                     </div>
                 </div>
             </div>
@@ -23,10 +23,14 @@
     export default {
         data() {
             return {
-                singleDoctorList:[]
+                singleDoctorList:[],
+                currentindex:-1,
             }
         },
          methods:{
+             showjob(index){
+                this.currentindex=index
+            },
             //返回上一层
             tobackdetail(){
                 this.$router.push('/consultationHome');
@@ -35,12 +39,12 @@
             goDescribecondition(item){
                 var zixundoctor =  JSON.stringify(item);
                 localStorage.setItem('zixundoctor',zixundoctor);
-                this.$router.push('/consulOrder');
+                this.$router.push('/Describecondition');
             },
             selectDoctor(){
                 let url=this.$store.getters.getUrl + "advisory/getAllDoctors.do"
                 let _this=this
-                 var deptCode =  _this.$store.getters.getdepcodes;
+                 var deptCode =  this.$route.query.depCode;
                 $.ajax({
                     url: url,
                     type: "post",
@@ -49,69 +53,14 @@
                     data: {deptCode},
                     success: function(data) {
                         if(data.code==200){
-                            _this.doctorlist=data.data
+                            _this.singleDoctorList=data.data
                         }
-                        //_this.isshowloading = false;
-                        // let resarr=JSON.parse(data.data)
-                        // // let concatarr=[]
-                        // // console.log(resarr)
-                        // // for(let i=0;i<resarr.length;i++){
-                        // //     console.log(resarr[i])
-                        // // }
-                        // // _this.doctorType=concatarr
-                        // // _this.doctorType=resarr
-                        // console.log(_this.doctorType)
-                        
                     },
                     error: function(data) {
                         // _this.isshowloading = false;
                     }
                 });
             }
-            //查询对应医生
-            // selectDoctor(){
-            //     let _this = this;
-            //     var depcodes =  _this.$store.getters.getdepcodes;
-            //     var url = _this.$store.getters.getUrl +'depart/DepartDoctors.do';
-            //     let ajaxTimeOut=$.ajax({
-            //         url: url,
-            //         type: "post",
-            //         dataType: "json",
-            //         timeout: 15000, //通过timeout属性，设置超时时间
-            //         // async: false,
-            //         data:{
-            //             // depCode:depcodes,
-            //             depCode:"1001"
-            //         },
-            //         success:function(data){
-            //         //清空当前显示的医生列表
-            //         _this.isshowloading=false
-            //         _this.singleDoctorList = [];
-            //             var arr =data.data;
-            //             for(var i=0;i<arr.length;i++){
-            //                 if(arr[i]!=""){
-            //                     var arr1 = JSON.parse(arr[i])
-            //                     for(var j=0;j<arr1.length;j++){
-            //                         _this.singleDoctorList.push(arr1[j])
-            //                     }
-            //                 }
-            //             }
-            //         },
-            //         error:function(data){
-            //         _this.isshowloading=false
-            //         },
-            //         complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
-            //             if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
-            //                     ajaxTimeOut.abort(); //取消请求
-                                
-            //                     _this.$Modal.warning({     //超时提示：网络不稳定
-            //                                 title: '友情提示',
-            //                                 content: '请求超时',
-            //                 });
-            //             }
-            //         } 
-            //     })
-            // },
         },
         mounted() {
             this.selectDoctor();
@@ -135,6 +84,7 @@
   left: 5px;
   top: 0px;
 }
+
 .doctort{
     padding: 10px 5% 10px 5%;
     width: 100%;
@@ -145,6 +95,11 @@
     margin-top: 8px;
     width: 14%;
 }
+.doctort{
+    padding: 10px 5% 10px 5%;
+    width: 100%;
+    border-bottom: 1px solid #eee;
+}
 .docto{
     display: inline-block;
     vertical-align: top;
@@ -152,16 +107,27 @@
     position: relative;
     width: 85%;
 }
-.docto p{
-    line-height: 2;
-}
-.ppo{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.ppoo{
     width:100%;
     display: inline-block;
     vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}    
+.ppo{
+    overflow:unset;
+    text-overflow:unset;
+    white-space:unset;
+    
+}
+.avatar{
+    vertical-align: top;
+    margin-top: 8px;
+    width: 14%;
+}
+.docto p{
+    line-height: 2;
 }
 .btn{
     position: absolute;

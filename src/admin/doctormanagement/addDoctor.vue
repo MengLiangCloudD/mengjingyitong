@@ -428,12 +428,21 @@ import loading from "../../common/loading";
                     this.formInline.jurisdiction='';
                 }
                 if(docinforItem.adminLevel!=undefined){
-                   if(docinforItem.adminLevel>this.Administrator.adminLevel){
-                        this.formInline.identity=docinforItem.adminLevel; 
+                    if(docinforItem.adminLevel>this.Administrator.adminLevel){
+                        this.formInline.identity=docinforItem.adminLevel;
+                        var index  
+                         for(var i=0;i<this.authorityList.length;i++){
+                            if(this.authorityList[i].value==this.Administrator.adminLevel){
+                                index=i
+                                }
+                            }
+                            this.authorityList.splice(index,5);
                     }else{
                         this.formInline.identity=docinforItem.adminLevel; 
                         this.disabled=true;
                     }
+                }else{
+                    this.formInline.identity='';
                 }
                 if(docinforItem.deptVisible!=undefined){
                    this.formInline.deptVisible=JSON.parse(docinforItem.deptVisible); 
@@ -484,12 +493,21 @@ import loading from "../../common/loading";
                     this.formInline.jurisdiction='';
                 }
                 if(docinforItem.adminLevel!=undefined){
-                   if(docinforItem.adminLevel>this.Administrator.adminLevel){
-                        this.formInline.identity=docinforItem.adminLevel; 
+                    if(docinforItem.adminLevel>this.Administrator.adminLevel){
+                        this.formInline.identity=docinforItem.adminLevel;
+                        var index  
+                         for(var i=0;i<this.authorityList.length;i++){
+                            if(this.authorityList[i].value==this.Administrator.adminLevel){
+                                index=i
+                            }
+                        }
+                            this.authorityList.splice(index,5);
                     }else{
                         this.formInline.identity=docinforItem.adminLevel; 
                         this.disabled=true;
                     }
+                }else{
+                    this.formInline.identity='';
                 }
                 if(docinforItem.deptVisible!=undefined){
                    this.formInline.deptVisible=JSON.parse(docinforItem.deptVisible); 

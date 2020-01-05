@@ -16,10 +16,10 @@
       <Icon class="tabicon" type="ios-cube-outline"/>
       <span class="text">发现</span>
     </div>
-    <!-- <div class="tabitem" :class="{active:currentindex==4}" @click="getpath(4)">
-      <Icon class="tabicon" type="ios-cube-outline"/>
+    <div class="tabitem" :class="{active:currentindex==4}" @click="getpath(4)">
+      <Icon class="tabicon" type="ios-chatboxes-outline" />
       <span class="text">咨询</span>
-    </div> -->
+    </div>
     <div class="tabitem" :class="{active:currentindex==3}" @click="getpath(3)">
       <Icon class="tabicon" type="ios-person"/>
       <span class="text">我的</span>
@@ -81,7 +81,7 @@ export default {
         //如果为3跳转到我的账号页
       } else if (index == 3) {
         this.$router.push("/Myaccount");
-      }else{
+      }else if (index == 4){
         this.$router.push("/consultationHome");
       }
       
@@ -241,6 +241,8 @@ export default {
       this.currentindex = 0;
     } else if (pathname.matched[0].path == "/home"||pathname.matched[0].path == "/appointment"||pathname.matched[0].path == "/registeredInfo"||(pathname.matched[0].path == "/payment"&&localStorage.getItem("body")=='微信挂号')) {
       this.currentindex = 1;
+    }else if(localStorage.getItem("body")=='咨询医生'){
+      this.currentindex = 4;
     }
     if(location.hash.indexOf('Myaccount')!=-1
       ||location.hash.indexOf('orderList')!=-1
@@ -259,7 +261,7 @@ export default {
     ){
       this.currentindex=3
     }
-    if(location.hash.indexOf('consultationHome')!=-1){
+    if(location.hash.indexOf('consultationHome')!=-1||pathname.matched[0].path == "/consultationHome"){
       this.currentindex=4
     }
     if(location.hash.indexOf('reportss')!=-1){

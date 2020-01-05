@@ -256,7 +256,6 @@ export default {
           if(status !='timeout'){
             that.$Message.error('请求失败');
           }
-          
         },
          complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
             if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 

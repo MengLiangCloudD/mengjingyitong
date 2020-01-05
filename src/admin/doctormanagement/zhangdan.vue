@@ -133,6 +133,7 @@ var time = year + "-" + month + "-" + day;
                 let _this=this
                 var url = _this.$store.getters.getUrl + "getDoctorSourceInfo.do";
                 var doccode=_this.doctor;
+                debugger
                  let ajaxTimeOut =$.ajax({
                     url: url,
                     type: "post",

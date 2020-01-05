@@ -39,13 +39,8 @@
         name:"selectionpatients",
         data() {
                 return {
-                    Patient:[{
-                        name:'孟良',
-                        sex:'男',
-                        birthdate:'22',
-                        idno:'610581199802232234',
-                        phone:'18701113009'
-                    }]
+                    Patient:[],
+                    postermen:{}
                 }
         },
         methods:{
@@ -60,11 +55,13 @@
                     Patien[i].style.border = '1px solid #ddd';
                 }
                 Patien[index].style.border  = '1px solid  #28b8a1'
+                this.postermen=this.Patient[index];
             },
             //下一步
             goConsulOrder(){
-                localStorage.setItem("patientchatstate","")
-                this.$router.push({name:'consultadoctor'}); 
+                localStorage.setItem("patientchatstate","");
+                localStorage.setItem("postermen",JSON.stringify(this.postermen));
+                this.$router.push('/ConsulOrder'); 
                 // let url=this.$store.getters.getUrl+"#/consultadoctor"
                 // window.location.href=url
             },
@@ -90,9 +87,14 @@
                         _this.isshowloading=false;
                         //  _this.$Loading.finish();
                         //返回回来的数据
-                        if(data.status==1){
-                            
-                            _this.Patient = data.data;
+                        var maycard=[];
+                        if(data.status==1&&data.data.length!==0){
+                            for(var i =0;i<data.data.length;i++){
+                                if(data.data[i].stauts==1){
+                                    maycard.push(data.data[i])
+                                }
+                            }
+                            _this.Patient = maycard;
                         }else{
                             _this.Patient = [];
                         }
@@ -104,7 +106,7 @@
                     });
             },
             //通过出生日期计算年龄
-             jsGetAge(strBirthday) {
+            jsGetAge(strBirthday) {
                 var returnAge;
                 var strBirthdayArr = strBirthday.split("-");
                 var birthYear = strBirthdayArr[0];
@@ -152,9 +154,10 @@
         mounted(){
             var Patien = document.getElementsByClassName('Patient');
             Patien[0].style.border  = '1px solid  #28b8a1';
+            this.postermen=this.Patient[0];
         },
         created(){
-            // this.getAllcards();
+            this.getAllcards();
         }
     }
 </script>

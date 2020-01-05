@@ -15,17 +15,17 @@
             </div>
             <div class="content3">
                  <Button type="primary" style="width: 40%;padding: 10px 0;margin: 10px;font-size: 15px;background:rgb(0,187,187);border:none" @click="goConsultadoctor()">进入咨询</Button>
-                 <Button type="primary" ghost style="width: 40%;padding: 10px 0;margin: 10px;font-size: 15px;border:1px solid rgb(0,187,187);color:rgb(0,187,187)" @click="goOrderdetails()">查看订单</Button>
+                 <Button type="primary" ghost style="width: 40%;padding: 10px 0;margin: 10px;font-size: 15px;border:1px solid rgb(0,187,187);color:rgb(0,187,187)" @click="goOrderdetails()">咨询列表</Button>
             </div>
              <p style="text-align: left;font-size:22px;padding: 10px 5%;padding-left:5%;font-weight: 900">推荐医生 <span style="text-align: left;font-size:16px;padding: 10px 0;padding-left:15px;font-weight: 100">获取更多诊疗建议</span></p>
             <div class="content2">
                 <div class="doctort" v-for="(item,index) in doctorlist" :key="index">
                     <img class="avatar" src="./../../assets/toux.png" alt="" height="14%">
                     <div class="docto">
-                       <p><span style="font-weight: 900;font-size:20px;">{{item.doctorname}}</span><span style="font-weight: 500;font-size:18px;padding: 0px 10px;display: inline-block;">{{item.zhi}}</span></p>
-                       <p  style="font-size:16px;"><span>滦平县妇幼保健院</span><span style="padding: 0px 10px;display: inline-block;">{{item.debname}}</span></p>
-                       <p @click="showdetail(index)" style="font-size:16px;" class="ppoo" :class="{ppo:currentindex==index}"><span>擅长：</span><span >{{item.job}}</span></p>
-                       <p><span style="font-size:20px;color:#00BBBB">￥{{item.preouds}}</span><span><Button shape="circle" class="btn" @click="goDescribecondition()">问医生</Button></span></p> 
+                       <p><span style="font-weight: 900;font-size:20px;">{{item.name}}</span><span style="font-weight: 500;font-size:18px;padding: 0px 10px;display: inline-block;">{{item.title}}</span></p>
+                       <p  style="font-size:16px;"><span>滦平县妇幼保健院</span><span style="padding: 0px 10px;display: inline-block;">{{item.title}}</span></p>
+                       <p style="font-size:16px;" class="ppoo" :class="{ppo:currentindex==index}"><span>擅长：</span><span @click="showjob(index)">{{item.expertJob}}</span></p>
+                       <p><span style="font-size:20px;color:#00BBBB">￥{{item.consultationPrice}}</span><span><Button shape="circle" class="btn" @click="goDescribecondition(index)">问医生</Button></span></p> 
                     </div>
                 </div>
             </div>
@@ -68,11 +68,11 @@
          methods:{
             //返回上一层
             tobackdetail(){
-                // this.$router.push('/selectionpatients');
+                this.$router.push('/ConsultationHome');
             },
             //前往订单详情
             goOrderdetails(){
-                // this.$router.push('/Orderdetails');
+                this.$router.push('/doctorList');
             },
             //前往咨询
             goConsultadoctor(){
@@ -87,8 +87,36 @@
             },
             showdetail(index){
                 this.currentindex=index
+            },
+            getdoctors(){
+                let url=this.$store.getters.getUrl + "doctors/getFamousDoctorsList.do";
+                // let url='http://192.168.33.137:8080/HisCloud_war/doctors/getFamousDoctorsList.do'
+                let _this=this;
+                var  size = _this.size;
+                 _this.isshowloading = true;
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    dataType: "json",
+                    async: true,
+                    data: {},
+                    success: function(data) {
+                        if(data.code==200){
+                            for(var i = 0;i<data.data.length;i++){
+                                data.data[i].consultationPrice=data.data[i].consultationPrice.toFixed(2);
+                            }
+                            _this.doctorlist=data.data;
+                        }  
+                    },
+                    error: function(data) {
+                        _this.isshowloading = false;
+                    }
+                });
             }
-        }
+        },
+        created() {
+            this.getdoctors()
+        },
     }
 </script>
 

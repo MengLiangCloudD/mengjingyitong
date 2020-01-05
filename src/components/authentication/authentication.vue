@@ -146,7 +146,7 @@ export default {
             }else{
               that.$Modal.warning({     //超时提示：网络不稳定
                   title: '提示',
-                  content: '频繁操作，请一个小时之后进行操作',
+                  content: '频繁操作，请十分钟之后进行操作',
                 });
             }
           },
@@ -304,9 +304,8 @@ export default {
                         }
                     },
                     error: function(data) {
-                      
                        _this.spinShow=false;
-                        _this.$Message.error('请求失败!');
+                      _this.$Message.error('请求失败!');
                     },
                     complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
                       if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 

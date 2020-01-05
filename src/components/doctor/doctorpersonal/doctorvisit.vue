@@ -20,8 +20,18 @@
             title="提示">
             <p>{{infomsg}}</p>
         </Modal>
-        <Modal v-model="statemodel"  @on-ok="changestate" title="挂号提示信息">
-            <p>请确认是否修改！</p>
+        <Modal v-model="statemodel"  @on-ok="changestate" title="修改出诊时间">
+            <!-- <p>请确认是否修改！</p> -->
+             <div class="div">
+                <input type="radio" name="paixu" id="paixu1" checked>
+                <label for="paixu1" style="cursor:pointer">全天出诊</label>
+                <input type="radio" name="paixu" id="paixu2">
+                <label for="paixu2" style="cursor:pointer">上午出诊</label>
+                <input type="radio" name="paixu" id="paixu3">
+                <label for="paixu3" style="cursor:pointer">下午出诊</label>
+                <input type="radio" name="paixu" id="paixu4">
+                <label for="paixu4" style="cursor:pointer">不出诊</label>
+            </div>
         </Modal>
         <loading v-show="isShowLoading"></loading>
     </div>
@@ -161,4 +171,41 @@ import loading from '../../../common/loading'
   text-align: right;
   background: rgb(160,165,170);
 } 
+.div>input{
+    display: none;
+    
+}
+.div>label{
+    position: relative;
+    margin-right: 34px;
+    display: block;
+    line-height: 2;
+    
+    font-size:16px;
+}
+.div>label::before{
+    display: inline-block;
+    content: "";
+    width: 5.26667vw;
+    height: 5.26667vw;
+    /* border-radius: 50%; */
+    border: 1px solid rgb(219, 219, 219);
+    margin-right: 6px;
+    vertical-align: middle;
+}
+.div>input:checked+label::before{
+    background-color:#1989fa;
+}
+.div>input:checked+label::after{
+    display: inline-block;
+    content: "";
+    width: 2vw;
+    height: 2vw;
+    /* border-radius: 50%; */
+    position: absolute;
+    left: 1.7vw;
+    bottom: 2.7vw;
+    background-color: white;
+    
+}
 </style>

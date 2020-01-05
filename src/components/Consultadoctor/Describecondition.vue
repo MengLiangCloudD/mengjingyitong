@@ -45,12 +45,31 @@
         methods:{
             //返回上一层
             tobackdetail(){
-               this.$router.push('/yishenList');
+               this.$router.push('/ConsultationHome');
             },
             //选择患者
             goSelectionpatients(){
-                 this.$router.push({name:'selectionpatients'});
-            }
+                var that =this;
+                if(that.value6!=''&&that.button4!=''){
+                    var patients = {};
+                    patients.content= that.value6;
+                    patients.timer = that.button4;
+                    localStorage.setItem('patients',JSON.stringify(patients));
+                    that.$router.push({name:'selectionpatients'});
+                }else if(that.value6==''){
+                    that.$Modal.warning({     //超时提示：网络不稳定
+                        title: '友情提示',
+                        content: '请描述病情信息',
+                    });
+                }else if(that.button4==''){
+                    that.$Modal.warning({     //超时提示：网络不稳定
+                        title: '友情提示',
+                        content: '请填写患病时常',
+                    });
+                }
+                
+            },
+
         }
     }
 </script>
