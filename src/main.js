@@ -57,9 +57,14 @@ fastClick.attach(document.body);
 window.router = router;
 router.beforeEach((to,from,next)=>{
   // 强制给index.html 加上时间戳
-  if (document.URL.indexOf('index.html?t=') < 0) {
+  // alert(window.top.document.URL)
+  // alert(to.fullPath);
+  // alert(0);
+  if (document.URL.indexOf('index.html?t=') < 0&&to.fullPath!=''&& to.fullPath!=undefined) {
     var storage = window.localStorage;
     storage.clear();
+    // alert(to.fullPath);
+    // alert(1);
     let timestamp = (new Date()).valueOf();
     window.location.href = '/index.html?t=' + timestamp + '#' + to.fullPath;
   }
@@ -200,7 +205,7 @@ router.beforeEach((to,from,next)=>{
         location.href=store.getters.getUrl + "depart/wxLogin.do?status=4";
       } 
     }
-  }else if(to.path=="/Myaccount"){
+  }else if(to.path=="/Myaccount"||to.path=="/authentication"){
     if(localStorage.getItem('openid')&&localStorage.getItem('openid')!="undefined"){
       next()
     }else{

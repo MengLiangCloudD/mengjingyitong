@@ -23,15 +23,17 @@
         <Modal v-model="statemodel"  @on-ok="changestate" title="修改出诊时间">
             <!-- <p>请确认是否修改！</p> -->
              <div class="div">
-                <input type="radio" name="paixu" id="paixu1" checked>
-                <label for="paixu1" style="cursor:pointer">全天出诊</label>
-                <input type="radio" name="paixu" id="paixu2">
-                <label for="paixu2" style="cursor:pointer">上午出诊</label>
-                <input type="radio" name="paixu" id="paixu3">
-                <label for="paixu3" style="cursor:pointer">下午出诊</label>
-                <input type="radio" name="paixu" id="paixu4">
-                <label for="paixu4" style="cursor:pointer">不出诊</label>
+                 <p  v-for="(item,index) in inplist" :key="index" @click="chenge(index)">
+                     <input type="radio" name="paixu" :id="item.id" :value="item.value"  v-model="checIndex">
+                    <label :for="item.id" style="cursor:pointer">{{item.lable}}</label>
+                 </p>
             </div>
+        </Modal>
+        <Modal v-model="tishi"  title="提示信息">
+            <p>当前时间已经超出12:00:00，无法修改为上午</p>
+        </Modal>
+        <Modal v-model="tishi1"  title="提示信息">
+            <p>为了您的方便,请在十二点之后再将其修改</p>
         </Modal>
         <loading v-show="isShowLoading"></loading>
     </div>
@@ -41,6 +43,14 @@
 import {changedoctorstate,fetchdoctorstate} from "./../js/registeredist"
 import {hidemenu} from "../../../common/js/hide"
 import loading from '../../../common/loading'
+var myDate = new Date();
+var s = myDate.getHours();
+if(s<10){
+    s = '0' +  myDate.getHours();
+}
+var f = myDate.getMinutes(); 
+var m = myDate.getSeconds();
+var date =  s + ':' + f + ':' + m;
     export default {
         name:"doctorvisit",
         data(){
@@ -50,13 +60,41 @@ import loading from '../../../common/loading'
                 infomodel:false,
                 infomsg:"",
                 statemodel:false,
-                currentitem:{}
+                currentitem:{},
+                checIndex:'',
+                inplist:[{
+                    value:0,
+                    lable:'全天出诊',
+                    id:'paixu1'
+                },{
+                    value:1,
+                    lable:'上午出诊',
+                    id:'paixu2'
+                },{
+                    value:2,
+                    lable:'下午出诊',
+                    id:'paixu3'
+                },{
+                    value:-1,
+                    lable:'不出诊',
+                    id:'paixu4'
+                }],
+                tishi:false,
+                tishi1:false
             }
         },
         components:{
             loading
         },
         methods:{
+            chenge(index){
+                if(index==3){
+                    this.checIndex=-1;
+                }else{
+                    this.checIndex=index;
+                }
+                
+            },
             tobackdetail(){
                 this.$router.push('/Personalcenter');
             },
@@ -69,7 +107,8 @@ import loading from '../../../common/loading'
                 let deptVisible =JSON.parse(localStorage.getItem("deptVisible"));
                 const codedata=fetchdoctorstate(url,doccode,that,deptVisible,adminLevel);
                 if(codedata.status=="1"){
-                    this.visitlist=codedata.data
+                    that.visitlist=[];
+                    that.visitlist=codedata.data
                 }else if(codedata.status=="0"){
                     
                 }else{
@@ -78,27 +117,62 @@ import loading from '../../../common/loading'
                 }
             },
             ischangestate(item){
-                this.currentitem=item
-                this.statemodel=true
+                this.currentitem=item;
+                if(item.visitstatus==0){
+                    if(item.noon==0){
+                        this.checIndex=0;
+                    }else if(item.noon==1){
+                        this.checIndex=1;
+                    }else if(item.noon==2){
+                        this.checIndex=2;
+                    }else if(item.noon==-1){
+                        this.checIndex=-1;
+                    }
+                }
+                if(item.visitstatus==1){
+                    this.checIndex=-1;
+                }
+                
+                this.statemodel=true;
             },
             async changestate(){
                 let item=this.currentitem
                 let that=this
-                    const cliniclabel=item.cliniclabel;
-                    let code
-                    if(item.visitstatus=="1"){
-                        code=0
-                    }else{
-                        code=1
+                const cliniclabel=item.cliniclabel;
+                var noon;
+                let code;
+                if(item.noon!==that.checIndex){
+                    if(date>'12:00:00'&&that.checIndex==1){
+                        that.tishi=true;
+                    }if(date<'12:00:00'&&that.checIndex==2){
+                        that.tishi1=true;
+                    }else{  
+                        if(that.checIndex!=-1){
+                            code=0
+                        }else{
+                            code=1
+                        }
+                        if(that.checIndex==0){
+                            noon=0
+                        }else if(that.checIndex==1){
+                            noon=1
+                        }else if(that.checIndex==2){
+                            noon=2
+                        }else if(that.checIndex==-1){
+                            noon=-1
+                        };
+                        let url=that.$store.getters.getUrl + "doctorvisit/NoVisit.do";
+                        const codedata=await changedoctorstate(url,cliniclabel,code,that,noon);
+                        if(codedata.status=="1"){
+                            that.fetchyscode()
+                        }else if(codedata.status=="-1"){
+                            that.infomodel=true;
+                            that.infomsg="修改状态失败！"
+                        }
                     }
-                    let url=that.$store.getters.getUrl + "doctorvisit/NoVisit.do";
-                    const codedata=await changedoctorstate(url,cliniclabel,code,that)
-                    if(codedata.status=="1"){
-                        that.fetchyscode()
-                    }else if(codedata.status=="-1"){
-                        that.infomodel=true
-                        that.infomsg="修改状态失败！"
-                    }
+                    
+                }else{
+                }
             }
         },
         created(){
@@ -109,7 +183,16 @@ import loading from '../../../common/loading'
                 hidemenu(requesturl);
             },10)
             
-        }
+        },
+        mounted() {
+            var that=this;
+            //  setTimeout(function(){
+            //      $('input[type=radio][name=paixu]').eq(that.checIndex).attr('checked', true);
+            // },100)
+            // $('input[type=radio][name=paixu]').change(function() {
+            //     that.checIndex=this.value;
+            // });
+        },
     }
 </script>
 
@@ -171,11 +254,11 @@ import loading from '../../../common/loading'
   text-align: right;
   background: rgb(160,165,170);
 } 
-.div>input{
+.div p>input{
     display: none;
     
 }
-.div>label{
+.div p>label{
     position: relative;
     margin-right: 34px;
     display: block;
@@ -183,7 +266,7 @@ import loading from '../../../common/loading'
     
     font-size:16px;
 }
-.div>label::before{
+.div p>label::before{
     display: inline-block;
     content: "";
     width: 5.26667vw;
@@ -193,10 +276,10 @@ import loading from '../../../common/loading'
     margin-right: 6px;
     vertical-align: middle;
 }
-.div>input:checked+label::before{
+.div p>input:checked+label::before{
     background-color:#1989fa;
 }
-.div>input:checked+label::after{
+.div p>input:checked+label::after{
     display: inline-block;
     content: "";
     width: 2vw;

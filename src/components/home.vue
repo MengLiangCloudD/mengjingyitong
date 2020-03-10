@@ -128,9 +128,6 @@ export default {
       }
   },
   mounted() {
-    //请求才cookies里的openid
-    // initwxshare(requesturl,1,"测试数据",targurl)
-    // localStorage.setItem('openid','oTLsfuOOVhzjzfclh7-S-LZwMWlA')
     this.getDepartments();
     this.qingq();
   },

@@ -164,7 +164,7 @@ export default {
     this.spinShow = true;
     this.getdoctorinfo();
     this.doctorxinxi();
-    if(localStorage.getItem('cardno')!=undefined&& localStorage.getItem('cardno')!=''){
+    if(localStorage.getItem('cardno')!=undefined && localStorage.getItem('cardno')!=''){
         this.select();
     }
     

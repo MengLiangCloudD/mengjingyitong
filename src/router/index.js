@@ -244,6 +244,12 @@ export default new Router({
       name: "pReplylist",
       component: resolve=>(require(["@/components/Consultadoctor/Replylist"],resolve)),
     },
+    //在线问诊
+    {
+      path: "/Onlinevisits",
+      name: "Onlinevisits",
+      component: resolve=>(require(["@/components/Consultadoctor/Onlinevisits"],resolve)),
+    },
     
     /**====================================================医生端======================================================== */
     {

@@ -276,8 +276,11 @@ export default {
                        success:function(data){
                         //  _this.spinShow = false;
                          if(data.code==200){
-                            window.location.href =_this.$store.getters.getUrl + "#/Successfulpayment";
-                         }else if(data.status==0){
+                           localStorage.setItem('zitime',data.data[0].paydate);
+                           localStorage.setItem('dddName',data.data[0].docname);
+                            localStorage.setItem('dddoccode',data.data[0].doccode);
+                            _this.$router.push("/Successfulpayment"); 
+                         }else{
                            _this.isDisabl=true;
                             $('.b').html('支付失败，请重新提交订单');
                             alert('支付失败，请重新提交订单');

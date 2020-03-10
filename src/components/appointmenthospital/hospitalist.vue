@@ -4,7 +4,7 @@
             <div class="arrow-icon" @click="tobackdetail">
                 <Icon size="30" type="ios-arrow-back" />
             </div>
-            预约列表
+            住院申请
         </div>
     </div>
 </template>

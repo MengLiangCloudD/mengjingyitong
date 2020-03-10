@@ -76,10 +76,7 @@
             },
             //前往咨询
             goConsultadoctor(){
-                var zixundoctor =JSON.parse(localStorage.getItem('zixundoctor'));
-                // localStorage.setItem('dddName',zixundoctor.docname);
-                localStorage.setItem('dddName','刘淑琴');
-                this.$router.push({name:'consultadoctor'});
+                this.$router.push('/consultadoctor');
             },
              //问医生
             goDescribecondition(){

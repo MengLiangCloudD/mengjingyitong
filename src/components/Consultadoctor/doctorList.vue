@@ -19,32 +19,26 @@
             <div class="mop"  v-for="(item,index) in huanList" :key="index" @click="addclick(item)">
                   <img src="./../../assets/toux.png" alt="" width="50px;" style="vertical-align: top;margin:0 15px;">
                   <div class="user">
-                      <p style="color:#000;font-size: 16px;">{{item.name}}</p>
-                      <p >{{item.cardno}}</p>
+                      <p style="color:#000;font-size: 16px;">{{item.docname}}</p>
+                      <p >{{item.type}}</p>
                   </div>
                   <p class="poop">1分钟前</p>
             </div>
         </div>
+        <loading v-show="isShowLoading"></loading>
     </div>
 </template>
 
 <script>
+import loading from '../../common/loading'
     export default {
+        components:{
+            loading
+        },
         data() {
             return {
-                huanList:[{
-                    name:'刘淑琴',
-                    cardno:'建议先服用药物来控制调理，看看效果怎么样',
-                    time:'2019-10-10 15:03:23'
-                },{
-                    name:'王宝民',
-                    cardno:'建议先服用药物来控制调理，看看效果怎么样',
-                    time:'2019-10-10 15:13:23'
-                },{
-                    name:'曲博',
-                    cardno:'建议先服用药物来控制调理，看看效果怎么样',
-                    time:'2019-10-10 15:23:23'
-                }],
+                huanList:[],
+                isShowLoading:false
             }
         },
         methods:{
@@ -53,11 +47,39 @@
               this.$router.push('/consultationHome');
             },
             addclick(item){
-                localStorage.setItem('dddName',item.name);
-                localStorage.setItem('dddcardno',item.cardno);
-                this.$router.push({name:'consultadoctor'});
+                localStorage.setItem('dddName',item.docname);
+                localStorage.setItem('dddoccode',item.doccode);
+                this.$router.push('/consultadoctor');
+            },
+            getuserList(){
+                var that  = this;
+                var url = that.$store.getters.getUrl + "orders/qureyPatientNewsList.do";
+               var cardno = localStorage.getItem('cardno');
+               that.isShowLoading=true;
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    dataType: "json",
+                    async: true,
+                    data:{cardno:cardno},
+                    success: function(data) {
+                        that.isShowLoading=false;
+                        that.huanList=[];
+                        if(data.code==200){
+                            that.huanList=data.data;
+                        }else{
+                            that.huanList=[];
+                        }
+                    },
+                    error: function(data) {
+                        that.isShowLoading=false;
+                    }
+                });
             }
-        }
+        },
+        created() {
+            this.getuserList();
+        },
     }
 </script>
 

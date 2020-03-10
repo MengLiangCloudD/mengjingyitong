@@ -163,7 +163,7 @@ import countdown from "../../common/countdown"
         },
         methods:{
             goback(){
-                this.$router.push("/pReplylist")
+                this.$router.push("/doctorList")
             },
             inputLoseFocus(){
                 setTimeout(() => {
@@ -560,37 +560,114 @@ import countdown from "../../common/countdown"
                                 return JSON.parse(item.content)
                             })
                             _this.neirong=recordarr
+                             _this.scrolBottome()
                         }
                     },
                     error: function(data) {
 
                     }
                 });
-            }
+            },
+             //倒计时
+            daojis(){
+                var that=this;
+                that.ter = setTimeout(function () {
+                    that.timeFns(localStorage.getItem('time'))
+                }, 1000)
+            },
+             // 计算两个时间差 dateBegin 开始时间
+            timeFns(time) {
+                var dateBegin= new Date('2020-01-17 09:32:38'.replace(new RegExp(/-/gm) ,"/")).getTime();
+                var dateEnd = new Date();//获取当前时间
+                var dateDiff = dateEnd.getTime() - dateBegin;//时间差的毫秒数
+                var dayDiff = parseInt(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+                var leave1=dateDiff%(24*3600*1000)  //计算天数后剩余的毫秒数
+                var hours=parseInt(leave1/(3600*1000))//计算出小时数
+                //计算相差分钟数
+                var leave2=leave1%(3600*1000)  //计算小时数后剩余的毫秒数
+                var minutes=parseInt(leave2/(60*1000))//计算相差分钟数
+                //计算相差秒数
+                var leave3=leave2%(60*1000)   //计算分钟数后剩余的毫秒数
+                var seconds=Math.round(leave3/1000)
+                var leave4=leave3%(60*1000)   //计算分钟数后剩余的毫秒数
+                var minseconds=Math.round(leave4/1000);
+                if(dayDiff==0){
+                var a = hours * 60 * 60 + minutes* 60  + seconds; 
+                var shengyu = 3600 - parseInt(a);
+                }else{
+                 return ''
+                }
+                var day = parseInt( shengyu/ (24*3600) ); // Math.floor()向下取整 
+                var hour = parseInt( (shengyu - day*24*3600) / 3600); 
+                var minute = parseInt( (shengyu - day*24*3600 - hour*3600) /60 ); 
+                var second = shengyu - day * 24 * 3600 - hour*3600 - minute*60;
+                if(shengyu>0){
+                    this.daojis()
+                    if(hour<10){
+                        hour='0' + hour;
+                    }
+                    if(minute<10){
+                    minute='0' + minute;
+                    }
+                    if(second<10){
+                    second='0' + second;
+                    }
+                    $('.a').html(hour + ':'+ minute + ':'+ second);
+                    if(shengyu<300&&this.tan==true){
+                        this.tismods=true;
+                        this.tan=false;
+                    }
+                // return minute + ':'+ second;
+                }else{
+                    
+                     clearInterval(this.ter);
+                    // //到达咨询时间修改状态
+                    // var url = this.$store.getters.getUrl + "/orders/updateOrderStatus.do";
+                    // var tradeno = localStorage.getItem('tradeno')
+                    //  $.ajax({
+                    //     url: url,
+                    //     type: "post",
+                    //     dataType: "json",
+                    //     contentType:"application/json",
+                    //     async: true,
+                    //     data:{
+                    //         tradeno:'2005526552'
+                    //     },
+                    //     success: function(data) {
+
+                    //         clearInterval(this.ter)
+                            
+                    //     },
+                    //     error: function(data) {
+
+                    //     }
+                    // });
+                }
+                
+            },
         },
         created(){
             
             if(!localStorage.getItem("patientchatstate")){
                 localStorage.setItem("patientchatstate","1")
-                location.reload()
+                location.reload();
             }
             websocket("p")
             let _this=this
-            var zixundoctor = JSON.parse(localStorage.getItem('zixundoctor'));
-            _this.doccode=zixundoctor.userName;
-            _this.docname= zixundoctor.name;
+            _this.doccode=localStorage.getItem('dddoccode');
+            _this.docname= localStorage.getItem('dddName');
             _this.cardno= localStorage.getItem('cardno');
-            this.initWebsocketOnmassage()
-            this.setconfig()
+            this.initWebsocketOnmassage();
+            this.setconfig();
             //语音动画
-            _this.initVoiceAnimate()
-            
+            _this.initVoiceAnimate();
         },
         mounted(){
             let _this=this;
             _this.getchatrecord();
             //医生信息
-            
+            //打开倒计时
+            // _this.timeFns(localStorage.getItem('time'));
             // this.reply(1,"http://up_mp4.t57.cn/2018/1/03m/13/396131232171.m4a",50)
             // this.reply(1,"http://up_mp4.t57.cn/2018/1/03m/13/396131232171.m4a",50)
             // this.reply(2,"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1572586103773&di=4f21c3b576fb719750ab7f3b1c4e5868&imgtype=0&src=http%3A%2F%2Fpic.lvmama.com%2Fuploads%2Fpc%2Fplace2%2F2014-11-10%2F1415604500644.jpg")
@@ -752,11 +829,5 @@ import countdown from "../../common/countdown"
 .voice-img{
     width: 50px;
     margin: 10px;
-}
-.imghua{
-
-}
-.bars{
-
 }
 </style>

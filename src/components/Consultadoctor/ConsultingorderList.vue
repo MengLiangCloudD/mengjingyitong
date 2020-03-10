@@ -98,15 +98,15 @@
             </p>
             <p>
               <span>患者姓名</span>
-              <span>{{item.name}}</span>
+              <span>{{item.username}}</span>
             </p>
             <p>
               <span>订单时间</span>
-              <span>{{item.orderTime}}</span>
+              <span>{{getLocalTime(item.paydate)}}</span>
             </p>
             <p>
               <span>医生姓名</span>
-              <span>{{item.hosdocname}}</span>
+              <span>{{item.docname}}</span>
             </p>
             <p>
               <span>咨询费用</span>
@@ -114,11 +114,11 @@
             </p>
             <p>
               <span>患病时长</span>
-              <span>{{item.registerfee}}</span>
+              <span>{{item.illnessTime}}</span>
             </p>
             <p>
               <span>咨询内容</span>
-              <span>{{item.regcode}}</span>
+              <span>{{item.descriotion}}</span>
             </p>
             <p>
               <span></span>
@@ -322,7 +322,7 @@ export default {
     //获取待评价关注列表
     Tobeevaluated(){
        var that = this;
-        var url = that.$store.getters.getUrl + "/orders/queryPayedOrders.do";
+        var url = that.$store.getters.getUrl + "orders/queryPayedOrders.do";
         var cardno =  localStorage.getItem("cardno");
         var time =that.value1;;
         var size = that.size; 
@@ -342,6 +342,11 @@ export default {
         success: function(data) {
           that.orderListes=[];  
           that.isloading=false;
+          if(data.code==200){
+            that.orderListes=data.data;
+          }else{
+            that.orderListes=[];
+          }
         },
         error: function(data) {
           //关闭加载动画
@@ -478,7 +483,7 @@ export default {
     //请求数据列表
     
     this.updated();
-    // this.Tobeevaluated();
+    this.Tobeevaluated();
      let that=this
     const requesturl=that.$store.getters.getUrl + "SweepCode.do";
     hidemenu(requesturl);

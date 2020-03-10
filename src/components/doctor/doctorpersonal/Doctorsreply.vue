@@ -5,15 +5,14 @@
                 <Icon size="30" type="ios-arrow-back" color="" @click.prevent="goback"/>
                 <span style="font-size:18px;">
                     <!-- {{name}} -->
-                    张清北医生
+                    {{docname}}
                 </span>
             </div>
         </div>
-        
         <div class="contents">
             <div style="background:rgb(243, 253, 251)">
                 <div style="color:rgb(26,214,190);padding:10px;text-align:center;font-size:14px;">
-                    正在咨询中，此咨询将在23小时后结束
+                    正在咨询中，此咨询将在<span class="a" style="color:orange;font-size:18px"></span>后结束
                 </div>
             </div>
             <div>
@@ -24,7 +23,7 @@
             <div class="content"  v-for="(item,index) in neirong" :key="index">
                 <div class="comment" v-if="item.role=='d'">
                     <div class="content1" >
-                        <img src="./../../../assets/avatar.png" alt="" width="40px;" style="vertical-align: top;margin:0 15px;float: right;border-radius:50%;" />
+                        <img src="./../../../assets/toux.png" alt="" width="40px;" style="vertical-align: top;margin:0 15px;float: right;border-radius:50%;" />
                         <div class="send" v-if="item.ctxtype==0">
                             <p>{{item.content}}</p> 
                         </div>
@@ -39,7 +38,7 @@
                 </div>
                 <div class="comment"  v-if="item.role=='p'">
                     <div class="content1">
-                        <img src="./../../../assets/toux.png" alt="" width="40px;" style="vertical-align: top;margin:0 15px;border-radius:50%;" >
+                        <img src="./../../../assets/avatar.png" alt="" width="40px;" style="vertical-align: top;margin:0 15px;border-radius:50%;" >
                         <div class="send1" v-if="item.ctxtype==0">
                             <p>{{item.content}}</p> 
                         </div>
@@ -114,16 +113,24 @@
             </div>
         </div>
         <audio ref="audio" src="" ></audio>
+        <Modal
+                v-model="tismods"
+                @on-ok="delateImage"
+                ok-text="续费"
+                cancel-text="取消"
+                title="提示">
+                <p>您的咨询时间还剩五分钟，是否续费继续咨询！</p>
+            </Modal>
     </div>
 </template>
 
 <script>
-import {websocket} from "../websocket.js"
+import {websocket} from "../../doctor/websocket.js"
 import voiceanimate from "../../../common/voice"
 import countdown from "../../../common/countdown"
     export default {
         // 数据结构，网络原理，组成原理
-        name:"doctorsreply",
+        name:"consultadoctor",
         components:{
             voiceanimate,
             countdown
@@ -156,7 +163,12 @@ import countdown from "../../../common/countdown"
                 appId : "", // 必填,公众号的唯一标识
                 timestamp :"",// 必填,生成签名的时间戳
                 nonceStr : "", // 必填,生成签名的随机串
-                signature : ""
+                signature : "",
+                cardno:'',
+                doccode:'',
+                docname:'',
+                tismods:false,
+                tan:true
             }
         },
         methods:{
@@ -176,8 +188,8 @@ import countdown from "../../../common/countdown"
                 if(type==0){
                     this.neirong.push({
                         content:value,
-                        role:role,
                         ctxtype:0,
+                        role:role,
                         timestamp:timestamp
                     })
                     this.value=""
@@ -201,9 +213,11 @@ import countdown from "../../../common/countdown"
             },
             sendmsg(type,type1,value){
                 let _this=this
+                 var  sender = _this.doccode;
+                var  receiver = _this.cardno;
                 if(type==0){
                     if(_this.value.trim()){
-                        let _timestamp =(new Date()).getTime()
+                        let _timestamp =(new Date()).getTime();
                         let ctx={
                                 content:_this.value,
                                 ctxtype:0,
@@ -211,8 +225,8 @@ import countdown from "../../../common/countdown"
                                 timestamp:_timestamp
                             }
                         _this.addchatrecord({
-                            sender: "000QB",
-                            receiver: "1234",
+                            sender: sender,
+                            receiver: receiver,
                             content:JSON.stringify(ctx) ,
                             chatTime: _timestamp,
                             patStatus: "1",
@@ -224,18 +238,17 @@ import countdown from "../../../common/countdown"
                     this.value=""
                 }else if(type==1){
                         let time=Math.floor((_this.endTime-_this.startTime)/1000)
-                        let _timestamp =(new Date()).getTime()
+                        let _timestamp =(new Date()).getTime();
                         let ctx={
-                            content:value,
-                            type:type1,
-                            ctxtype:1,
-                            role:"d",
-                            len:time,
-                            timestamp:_timestamp
-                        }
+                                content:value,
+                                ctxtype:1,
+                                role:"d",
+                                len:time,
+                                timestamp:_timestamp
+                            }
                         _this.addchatrecord({
-                            sender: "000QB",
-                            receiver: "123",
+                            sender: sender,
+                            receiver: receiver,
                             content:JSON.stringify(ctx) ,
                             chatTime: _timestamp,
                             patStatus: "1",
@@ -245,23 +258,33 @@ import countdown from "../../../common/countdown"
                         window.websocketobj.send(JSON.stringify({to:'p',content:value,ctxtype:1,role:"d",timestamp:_timestamp,len:time}));
                 }else{
                         let _timestamp =(new Date()).getTime()
+                        // this.neirong.push({
+                        //     content:value,
+                        //     type:type1,
+                        //     ctxtype:2,
+                        //     role:"p",
+                        //     timestamp:_timestamp
+                        // })
                         let ctx={
-                            content:value,
-                            type:type1,
-                            ctxtype:2,
-                            role:"d",
-                            timestamp:_timestamp
-                        }
+                                content:value,
+                                ctxtype:2,
+                                role:"d",
+                                timestamp:_timestamp
+                            }
                         _this.addchatrecord({
-                            sender: "000QB",
-                            receiver: "123",
+                            sender: sender,
+                            receiver: receiver,
                             content:JSON.stringify(ctx) ,
                             chatTime: _timestamp,
                             patStatus: "1",
                             docStatus: "1",
                             cpsId: "1"
                         })
+                        // alert("开始发送websocket")
                         window.websocketobj.send(JSON.stringify({to:'p',content:value,ctxtype:2,role:"d",timestamp:_timestamp}));
+                        // window.websocketobj.send(JSON.stripngify({to:'d',content:value,ctxtype:2,role:"p",timestamp:_timestamp}));
+                        // alert(JSON.stringify(ctx))
+                        // alert("websocket已发送")
                 }
                 this.scrolBottome()
                 // 发送信息到websocket
@@ -279,7 +302,7 @@ import countdown from "../../../common/countdown"
                             localId: localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
                             isShowProgressTips: 1, // 默认为1，显示进度提示
                             success: function (res) {
-                                var serverId = res.serverId; // 返回图片的服务器端ID
+                                var serverId = res.serverId; //返回图片的服务器端ID
                                 $.ajax({
                                     url:_this.$store.getters.getUrl+"down/downPic.do",
                                     type: "post",
@@ -287,9 +310,8 @@ import countdown from "../../../common/countdown"
                                     async: true,
                                     data:{mediaId:serverId},
                                     success: function(data) {
-                                        let imgpath=_this.$store.getters.getUrl+data.data.slice(1)
+                                        let imgpath=_this.$store.getters.getUrl+data.data.slice(1);
                                         _this.sendmsg(2,1,imgpath)
-                                        console.log(imgpath)
                                     },
                                     error: function(data) {
                                     }
@@ -321,9 +343,9 @@ import countdown from "../../../common/countdown"
                 _this.counttimerout=setTimeout(function() {
                     if(!_this.isShowVoiceAnimat){
                         //关闭录音动画
-                         clearInterval(_this.counttimerout)
+                         clearInterval(_this.counttimerout);
                     }else{
-                        _this.isShowVoiceAnimat=false
+                        _this.isShowVoiceAnimat=false;
                         _this.countDownState=true//显示倒计时
                         clearInterval(_this.counttimerout)
                     }
@@ -500,8 +522,10 @@ import countdown from "../../../common/countdown"
             initWebsocketOnmassage(){
                 let _this=this
                 window.websocketobj.onmessage=function(event) {    //心跳检测重置
+                // alert("websocket接收到了消息")
+                // alert(event.data)
                     let obj=JSON.parse(event.data)
-                    console.log(event)
+                    console.log(event.data)
                     _this.reply(obj.ctxtype,obj.content,obj.role,obj.timestamp,obj.len)
                 }
             },
@@ -522,7 +546,6 @@ import countdown from "../../../common/countdown"
                     async: true,
                     data:JSON.stringify(msg),
                     success: function(data) {
-                        console.log(data)
                     },
                     error: function(data) {
 
@@ -532,42 +555,132 @@ import countdown from "../../../common/countdown"
             getchatrecord(){
                 let _this=this
                 var url = this.$store.getters.getUrl + "chat/getchatrecord.do";
+                var  sender = _this.doccode;
+                var  receiver = _this.cardno;
                 $.ajax({
                     url: url,
                     type: "post",
                     dataType: "json",
                     // contentType:"application/json",
                     async: true,
-                    data:{cpsid:"1"},
+                    data:{cpsid:"1",receiver:receiver,sender:sender},
                     success: function(data) {
                         if(data.code==200){
                             let recordarr=data.data.map(function(item) {
                                 return JSON.parse(item.content)
                             })
-                            _this.neirong=recordarr
+                            _this.neirong=recordarr;
+                            _this.scrolBottome();
                         }
                     },
                     error: function(data) {
 
                     }
                 });
-            }
+            },
+            //倒计时
+            daojis(){
+                var that=this;
+                that.ter = setTimeout(function () {
+                    that.timeFns(localStorage.getItem('time'))
+                }, 1000)
+            },
+             // 计算两个时间差 dateBegin 开始时间
+            timeFns(time) {
+                var dateBegin= new Date('2020-01-17 09:32:38'.replace(new RegExp(/-/gm) ,"/")).getTime();
+                var dateEnd = new Date();//获取当前时间
+                var dateDiff = dateEnd.getTime() - dateBegin;//时间差的毫秒数
+                var dayDiff = parseInt(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+                var leave1=dateDiff%(24*3600*1000)  //计算天数后剩余的毫秒数
+                var hours=parseInt(leave1/(3600*1000))//计算出小时数
+                //计算相差分钟数
+                var leave2=leave1%(3600*1000)  //计算小时数后剩余的毫秒数
+                var minutes=parseInt(leave2/(60*1000))//计算相差分钟数
+                //计算相差秒数
+                var leave3=leave2%(60*1000)   //计算分钟数后剩余的毫秒数
+                var seconds=Math.round(leave3/1000)
+                var leave4=leave3%(60*1000)   //计算分钟数后剩余的毫秒数
+                var minseconds=Math.round(leave4/1000);
+                if(dayDiff==0){
+                var a = hours * 60 * 60 + minutes* 60  + seconds; 
+                var shengyu = 3600 - parseInt(a);
+                }else{
+                 return ''
+                }
+                var day = parseInt( shengyu/ (24*3600) ); // Math.floor()向下取整 
+                var hour = parseInt( (shengyu - day*24*3600) / 3600); 
+                var minute = parseInt( (shengyu - day*24*3600 - hour*3600) /60 ); 
+                var second = shengyu - day * 24 * 3600 - hour*3600 - minute*60;
+                if(shengyu>0){
+                    this.daojis()
+                    if(hour<10){
+                        hour='0' + hour;
+                    }
+                    if(minute<10){
+                    minute='0' + minute;
+                    }
+                    if(second<10){
+                    second='0' + second;
+                    }
+                    $('.a').html(hour + ':'+ minute + ':'+ second);
+                    if(shengyu<300&&this.tan==true){
+                        this.tismods=true;
+                        this.tan=false;
+                    }
+                // return minute + ':'+ second;
+                }else{
+                    
+                     clearInterval(this.ter);
+                    // //到达咨询时间修改状态
+                    // var url = this.$store.getters.getUrl + "/orders/updateOrderStatus.do";
+                    // var tradeno = localStorage.getItem('tradeno')
+                    //  $.ajax({
+                    //     url: url,
+                    //     type: "post",
+                    //     dataType: "json",
+                    //     contentType:"application/json",
+                    //     async: true,
+                    //     data:{
+                    //         tradeno:'2005526552'
+                    //     },
+                    //     success: function(data) {
+
+                    //         clearInterval(this.ter)
+                            
+                    //     },
+                    //     error: function(data) {
+
+                    //     }
+                    // });
+                }
+                
+            },
         },
         created(){
-            if(!localStorage.getItem("doctorchatstate")){
-                localStorage.setItem("doctorchatstate","1")
-                location.reload()
-            }
-            websocket("d")
-            let _this=this
-            this.initWebsocketOnmassage()
-            this.setconfig()
-            //语音动画
-            _this.initVoiceAnimate()
+            
+            // if(!localStorage.getItem("patientchatstate")){
+            //     localStorage.setItem("patientchatstate","1")
+            //     location.reload()
+            // }
+            // websocket("d")
+            // let _this=this
+            // _this.doccode=localStorage.getItem('ysdoccode');
+            // _this.docname= localStorage.getItem('dddName');
+            // _this.cardno= localStorage.getItem('dddcardno');
+            // this.initWebsocketOnmassage()
+            // this.setconfig()
+            // //语音动画
+            // _this.initVoiceAnimate()
+            
         },
         mounted(){
-            let _this=this
-            this.getchatrecord()
+            let _this=this;
+            
+            // _this.getchatrecord();
+            //启动倒计时
+            _this.timeFns(localStorage.getItem('time'));
+            //医生信息
+            
             // this.reply(1,"http://up_mp4.t57.cn/2018/1/03m/13/396131232171.m4a",50)
             // this.reply(1,"http://up_mp4.t57.cn/2018/1/03m/13/396131232171.m4a",50)
             // this.reply(2,"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1572586103773&di=4f21c3b576fb719750ab7f3b1c4e5868&imgtype=0&src=http%3A%2F%2Fpic.lvmama.com%2Fuploads%2Fpc%2Fplace2%2F2014-11-10%2F1415604500644.jpg")
@@ -575,7 +688,7 @@ import countdown from "../../../common/countdown"
             // this.name = localStorage.getItem('ReplyName')
         },
         destroyed(){
-            localStorage.setItem("doctorchatstate","")
+            
         }
     }
 </script>
@@ -729,11 +842,5 @@ import countdown from "../../../common/countdown"
 .voice-img{
     width: 50px;
     margin: 10px;
-}
-.imghua{
-
-}
-.bars{
-
 }
 </style>

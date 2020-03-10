@@ -44,7 +44,7 @@ const requestpatients=(url,deptcode,docname)=>{
     })
 }
 
-const changedoctorstate=(url,cliniclabel,code,that)=>{
+const changedoctorstate=(url,cliniclabel,code,that,noon)=>{
     let state
     that.isShowLoading=true
     return new Promise((resolve,reject)=>{
@@ -56,7 +56,8 @@ const changedoctorstate=(url,cliniclabel,code,that)=>{
             async: true,
             data: {
                 cliniclabel,
-                code
+                code,
+                noon
             },
             success: function(data) {
                 that.isShowLoading=false
@@ -101,6 +102,7 @@ const fetchdoctorstate=(url,doctorno,that,deptVisible,adminLevel)=>{
             deptVisible:deptVisible
         },
         success: function(data) {
+            
             that.isShowLoading=false
             result=data
         },

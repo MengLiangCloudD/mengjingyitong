@@ -36,7 +36,7 @@
             <div class="card-btn">
                <span @click.stop="test(index)" v-if="item.stauts==1" style="display:block;padding:30px 0;">解绑</span>
               <span @click.stop="test(index)" v-if="item.stauts==0" style="display:block;padding:30px 0;">激活</span>
-              <span class="recharge">充值</span>
+              <span class="recharge" @click.stop="gorecharge()">充值</span>
               <!-- <span @click="removeCard(index)">解绑</span> -->
              
               <Modal
@@ -107,6 +107,10 @@ export default {
     hidemenu(requesturl);
   },
   methods: {
+    //前往充值界面
+    gorecharge(){
+      this.$router.push('/recharge')
+    },
     //生成条形码
     setBarcode() {
       var that = this;

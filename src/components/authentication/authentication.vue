@@ -278,24 +278,7 @@ export default {
                     _this.spinShow=false;
                     //返回数据后关闭加载动画
                         if(data.code==200){
-                            // if(data.data == '1'){
-                            //     _this.erromodal=true;
-                            //     $('.name').val('');
-                            //     _this.Name=''; //姓名
-                            //     _this.IdNumber='';  //证件号码
-                            //     _this.phoneNumber=''; //电话
-                            //     _this.authCode='';
-                            // }else{
-                            //   // 登录成功后，返回上次进入的页面；
-                            //   _this.$Message.info(data.message);
-                            //    $('.name').val('');
-                            //     _this.Name=''; //姓名
-                            //     _this.IdNumber='';  //证件号码
-                            //     _this.phoneNumber=''; //电话
-                            //     _this.authCode='';
-                            //   history.go(-1);
-                            // }  
-                            history.go(-1);
+                             history.go(-1);
                             _this.spinShow=false;
                         }else{
                               _this.spinShow=false;

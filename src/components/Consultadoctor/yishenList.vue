@@ -12,7 +12,7 @@
                        <p><span style="font-weight: 900;font-size:20px;">{{item.name}}</span><span style="font-weight: 500;font-size:18px;padding: 0px 10px;display: inline-block;">{{item.title}}</span></p>
                        <p  style="font-size:16px;"><span>滦平县妇幼保健院</span><span style="padding: 0px 10px;display: inline-block;">{{item.title}}</span></p>
                        <p style="font-size:16px;" class="ppoo" :class="{ppo:currentindex==index}"><span>擅长：</span><span @click="showjob(index)">{{item.expertJob}}</span></p>
-                       <p><span style="font-size:20px;color:#00BBBB">￥{{item.consultationPrice}}</span><span><Button shape="circle" class="btn" @click="goDescribecondition(index)">问医生</Button></span></p> 
+                       <p><span style="font-size:20px;color:#00BBBB">￥{{item.consultationPrice}}</span><span><Button shape="circle" class="btn" @click="goDescribecondition(item)">问医生</Button></span></p> 
                     </div>
                 </div>
             </div>
@@ -39,6 +39,7 @@
             goDescribecondition(item){
                 var zixundoctor =  JSON.stringify(item);
                 localStorage.setItem('zixundoctor',zixundoctor);
+                debugger
                 this.$router.push('/Describecondition');
             },
             selectDoctor(){
