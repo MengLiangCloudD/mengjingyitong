@@ -83,7 +83,7 @@ export default {
       //控制扫一扫显示
       isscan: false,
       key1:"",
-      value1:"",
+      value1:"", 
       key2:"",
       value2:""
     };
